@@ -1,0 +1,19 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Safar Home";
+}
+
+<nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+        <a class="navbar-brand text-success font-weight-bold" style="font-size: 24px; letter-spacing: 1px;" asp-page="/Index">🟢 SAFAR</a>
+        <div>
+            <a class="btn btn-success px-4" style="background-color: #004d26; border-color: #004d26; font-weight: 500;" asp-page="/Login">Admin Login</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container text-center" style="margin-top: 20vh;">
+    <h1 class="display-4 text-muted" style="font-weight: 300;">Welcome to Safar Portal</h1>
+    <p class="lead text-secondary">Customer booking pipeline will be initialized here.</p>
+</div>

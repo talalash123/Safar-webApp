@@ -1,0 +1,423 @@
+﻿@page
+@model Safar.Pages.LoginModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safar | Access Portal</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-emerald: #004d26;
+            --dark-emerald: #002611;
+            --input-focus-glow: rgba(0, 77, 38, 0.08);
+            --slate-dark: #111827;
+            --slate-muted: #4b5563;
+            --border-light: #e5e7eb;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* LEFT PANEL: Elegant Speed Train Layout */
+        .visual-panel {
+            flex: 1.3;
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=1200&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px;
+            box-shadow: inset -20px 0 40px rgba(0,0,0,0.3);
+        }
+
+            /* Dark Emerald Overlay Tint */
+            .visual-panel::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(0, 38, 17, 0.45) 0%, rgba(0, 77, 38, 0.85) 100%);
+                z-index: 1;
+            }
+
+        .panel-header, .panel-body, .panel-footer {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Glassmorphic Badge */
+        .mini-logo-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 12px 20px;
+            border-radius: 14px;
+            width: fit-content;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .main-hero-text {
+            color: #ffffff;
+            font-size: 46px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            max-width: 520px;
+        }
+
+        .hero-desc {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 460px;
+            margin-top: 16px;
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .glass-badge {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 22px;
+            border-radius: 12px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* RIGHT PANEL: Highly Professional Sleek Form Styling */
+        .auth-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 100px;
+            background: #ffffff;
+        }
+
+        .auth-wrapper {
+            max-width: 420px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .welcome-heading {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--slate-dark);
+            letter-spacing: -0.8px;
+        }
+
+        .welcome-subtext {
+            font-size: 15px;
+            color: var(--slate-muted);
+            margin-top: 6px;
+        }
+
+        /* Modern OAuth Slots */
+        .social-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 32px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            background: #ffffff;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+            .social-btn:hover {
+                background: #f9fafb;
+                border-color: #d1d5db;
+                color: #111827;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+
+        .divider-container {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 12px;
+            margin: 28px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 500;
+        }
+
+            .divider-container::before, .divider-container::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #f3f4f6;
+            }
+
+            .divider-container:not(:empty)::before {
+                margin-right: 1em;
+            }
+
+            .divider-container:not(:empty)::after {
+                margin-left: 1em;
+            }
+
+        /* Advanced Premium Form Inputs Grid */
+        .custom-label-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-dark);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon-prefix {
+            position: absolute;
+            left: 16px;
+            color: #9ca3af;
+            font-size: 16px;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .premium-input-field {
+            width: 100%;
+            padding: 14px 16px 14px 44px; /* Added left padding to perfectly secure space for icons */
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--slate-dark);
+            outline: none;
+            background: #fdfdfd;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .premium-input-field::placeholder {
+                color: #9ca3af;
+                font-weight: 400;
+            }
+
+            /* High-End Target Active Interactive Focus */
+            .premium-input-field:focus {
+                border-color: var(--primary-emerald);
+                background: #ffffff;
+                box-shadow: 0 0 0 4px var(--input-focus-glow);
+            }
+
+                .premium-input-field:focus + .input-icon-prefix {
+                    color: var(--primary-emerald);
+                }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .forgot-link {
+            color: var(--slate-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+            .forgot-link:hover {
+                color: var(--primary-emerald);
+            }
+
+        /* Action Core Button Custom Mechanics */
+        .btn-action-trigger {
+            background: var(--primary-emerald);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0, 77, 38, 0.2);
+        }
+
+            .btn-action-trigger:hover {
+                background: var(--dark-emerald);
+                box-shadow: 0 6px 22px rgba(0, 77, 38, 0.3);
+                transform: translateY(-1px);
+            }
+
+            .btn-action-trigger:active {
+                transform: translateY(1px);
+            }
+
+        .footer-account-text {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 32px;
+        }
+
+            .footer-account-text a {
+                color: var(--primary-emerald);
+                text-decoration: none;
+                font-weight: 700;
+            }
+
+        /* Clean Error System Frame Layout */
+        .error-toast {
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="visual-panel d-none d-md-flex">
+        <div class="panel-header">
+            <div class="mini-logo-card">
+                <span>🚆</span> Safar
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <h1 class="main-hero-text">Your Journey,<br>Our Priority</h1>
+            <p class="hero-desc">
+                Experience the future of travel with Safar. Seamless bookings, real-time tracking, and world-class comfort waiting at every platform.
+            </p>
+            <div class="badge-row">
+                <div class="glass-badge">⏱️ High Speed</div>
+                <div class="glass-badge">🌱 Sustainable</div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <span class="text-white-50 small">© 2026 Safar Rail Systems. All rights reserved.</span>
+        </div>
+    </div>
+
+    <div class="auth-panel">
+        <div class="auth-wrapper">
+            <div>
+                <h2 class="welcome-heading">Welcome Back</h2>
+                <p class="welcome-subtext">Log in to manage your bookings and rewards.</p>
+            </div>
+
+            <div class="social-row">
+                <a href="#" class="social-btn">
+                    <img src="https://www.google.com/favicon.ico" width="16" height="16" alt="Google"> Google
+                </a>
+                <a href="#" class="social-btn">
+                    <img src="https://www.apple.com/favicon.ico" width="16" height="16" alt="Apple"> Apple
+                </a>
+            </div>
+
+            <div class="divider-container">or use email</div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="error-toast shadow-sm">
+                    ⚠️ @Model.ErrorMessage
+                </div>
+            }
+
+            <form method="post">
+                <div class="custom-label-group">
+                    <label class="form-label-text">Email Address</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon-prefix">✉️</span>
+                        <input type="email" asp-for="Email" class="premium-input-field" required placeholder="name@example.com" />
+                    </div>
+                </div>
+
+                <div class="custom-label-group">
+                    <label class="form-label-text">Password</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon-prefix">🔒</span>
+                        <input type="password" asp-for="Password" class="premium-input-field" required placeholder="••••••••" />
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="text-muted d-flex align-items-center gap-2" style="cursor: pointer; user-select: none; font-weight: 500;">
+                        <input type="checkbox" class="form-check-input" style="cursor: pointer; width: 16px; height: 16px; accent-color: var(--primary-emerald);"> Remember me for 30 days
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-action-trigger">
+                    <span>Sign In</span> ➔
+                </button>
+            </form>
+
+            <div class="footer-account-text">
+                Don't have an account? <a href="#">Create an account</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
