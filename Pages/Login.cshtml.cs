@@ -19,13 +19,10 @@ namespace Safar.Pages
 
         public IActionResult OnPost()
         {
-            // Fixed credentials as requested
             if (Email == "admin@safar.com" && Password == "safar123")
             {
                 return RedirectToPage("/Admin/Dashboard");
             }
-
-            // If credentials don't match
             ErrorMessage = "Authentication failed. Invalid system credentials.";
             return Page();
         }

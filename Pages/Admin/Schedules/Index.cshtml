@@ -1,0 +1,162 @@
+﻿@page
+@model Safar.Pages.Admin.Schedules.IndexModel
+@{
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml"; // Layout strict call
+    ViewData["Title"] = "Fleet Scheduling Center";
+}
+
+<style>
+    .fleet-grid-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        transition: all 0.25s ease;
+    }
+    .fleet-grid-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px rgba(0, 77, 38, 0.04);
+        border-color: #004d26;
+    }
+    .status-badge-configured {
+        background: #e6f4ea;
+        color: #004d26;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+    .status-badge-empty {
+        background: #fef2f2;
+        color: #991b1b;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+    .btn-action-panel {
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 10px 16px;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    .btn-setup { background: #004d26; color: #ffffff; border: none; }
+    .btn-setup:hover { background: #0b2216; color: #ffffff; }
+    .btn-view { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
+    .btn-view:hover { background: #e2e8f0; color: #0f172a; }
+
+    .fleet-grid-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        transition: all 0.25s ease;
+    }
+    .fleet-grid-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px rgba(0, 77, 38, 0.04);
+        border-color: #004d26;
+    }
+    .status-badge-configured {
+        background: #e6f4ea;
+        color: #004d26;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+    .status-badge-empty {
+        background: #fef2f2;
+        color: #991b1b;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <span class="badge mb-2" style="background: #e6f4ea; color: #004d26; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">MATRIX HUB</span>
+        <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.7px; margin: 0;">Fleet Scheduling & Routing Center</h2>
+        <p class="text-muted" style="font-size:14px; margin-top:4px;">Directly manage and view complete tracks, start timings, and intermediate waypoint maps.</p>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var item in Model.SchedulesMetadataDashboard)
+        {
+            <div class="col-md-4">
+                <div class="fleet-grid-card p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span style="font-size: 24px;">🚆</span>
+                            <h5 class="fw-bold text-dark mb-0 mt-2">@item.TrainName</h5>
+                            <small class="text-muted fw-bold">Serial ID: @item.TrainId</small>
+                        </div>
+                        <div>
+                            @if (item.IsConfigured)
+                            {
+                                <span class="status-badge-configured">● Active Route</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge-empty">✕ No Route Configured</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; border-radius: 10px; padding: 12px; margin-bottom: 20px; font-size: 13px;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary fw-semibold">Base Corridor:</span>
+                            <span class="text-dark fw-bold">@item.Source ➔ @item.Destination</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Total Nodes:</span>
+                            <span class="text-dark fw-bold">@item.TotalStopsMapped Stations</span>
+                        </div>
+                    </div>
+
+                    <div class="w-100">
+                        @if (item.IsConfigured)
+                        {
+                            <button class="btn btn-light w-100 fw-bold border" type="button" data-bs-toggle="collapse" data-bs-target="#route-collapse-@item.TrainId" style="font-size: 13px; border-radius:10px; padding:10px;">
+                                🔍 View Active Station Timings
+                            </button>
+                        }
+                        else
+                        {
+                            <a href="/Admin/Schedules/Create?trainId=@item.TrainId" class="btn btn-success w-100 fw-bold" style="background:#004d26; font-size: 13px; border-radius:10px; padding:10px; text-decoration:none; display:inline-block; text-align:center; border:none;">
+                                ⚡ Configure Route & Timings ➔
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                @if (item.IsConfigured && item.StopsDetailedCollection != null)
+                {
+                    <div class="collapse show mt-2" id="route-collapse-@item.TrainId">
+                        <div class="card card-body border-0 shadow-sm p-3" style="border-radius: 12px; background: #fafafa; font-size: 13px;">
+                            <h6 class="fw-bold text-success mb-2" style="font-size:12px;">TRACK ROUTE TIMELINE:</h6>
+                            <div style="border-left: 2px solid #004d26; padding-left: 15px; margin-left: 5px;">
+                                @foreach (var stop in item.StopsDetailedCollection)
+                                {
+                                    <div class="mb-3 position-relative">
+                                        <div style="width: 10px; height: 10px; background: #004d26; border-radius: 50%; position: absolute; left: -20px; top: 5px; border: 2px solid #fff;"></div>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <strong class="text-dark" style="font-size:14px;">@stop.StationName</strong>
+                                            <span class="badge bg-white text-dark border fw-bold">🕒 @stop.ArrivalTime</span>
+                                        </div>
+                                        <div class="text-muted" style="font-size:11px;">Accumulated Fare: PKR @stop.TicketPriceFromSource</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

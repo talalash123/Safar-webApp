@@ -1,1 +1,407 @@
-﻿
+﻿@page
+@model Safar.Pages.Admin.DashboardModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Operations Control Desk";
+}
+
+<style>
+    /* Executive Layout Grid System */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .kpi-card {
+        background: var(--premium-white);
+        border: 1px solid rgba(226, 232, 240, 0.7);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.015), 0 4px 12px -5px rgba(15, 23, 42, 0.01);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 77, 38, 0.15);
+            box-shadow: 0 20px 25px -5px rgba(0, 77, 38, 0.02), 0 10px 10px -5px rgba(0, 77, 38, 0.01);
+        }
+
+    .kpi-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--slate-500);
+        text-transform: uppercase;
+        letter-spacing: 0.75px;
+    }
+
+    .kpi-value {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--slate-900);
+        margin-top: 6px;
+        letter-spacing: -0.5px;
+    }
+
+    /* Charts Matrix Grid Layouts */
+    .charts-main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .charts-lower-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .telemetry-card {
+        background: var(--premium-white);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 16px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.01);
+    }
+
+    .section-heading {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--slate-800);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        letter-spacing: -0.2px;
+    }
+
+    /* Enhanced Pipeline Activity Feed */
+    .activity-feed-container {
+        position: relative;
+        padding-left: 8px;
+        margin-top: 8px;
+    }
+
+    .activity-log {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+        font-weight: 500;
+        padding-bottom: 20px;
+        margin-bottom: 0;
+        position: relative;
+    }
+
+        /* Modern Vertical Node Connectors */
+        .activity-log::before {
+            content: '';
+            position: absolute;
+            left: 60px;
+            top: 16px;
+            bottom: -20px;
+            width: 2px;
+            background: var(--slate-100);
+        }
+
+        .activity-log:last-child::before {
+            display: none;
+        }
+
+    .activity-timestamp {
+        font-size: 11px;
+        color: var(--slate-400);
+        font-weight: 700;
+        min-width: 50px;
+        text-align: right;
+        padding-top: 2px;
+    }
+
+    /* Timeline Bullet Node */
+    .activity-log::after {
+        content: '';
+        position: absolute;
+        left: 58px;
+        top: 6px;
+        width: 6px;
+        height: 6px;
+        background: var(--slate-300);
+        border-radius: 50%;
+        border: 2px solid var(--premium-white);
+        box-shadow: 0 0 0 2px var(--slate-100);
+        z-index: 2;
+        transition: all 0.2s ease;
+    }
+
+    .activity-log:hover::after {
+        background: var(--pakistan-green);
+        box-shadow: 0 0 0 2px var(--pakistan-green-light);
+    }
+
+    .activity-details {
+        padding-left: 12px;
+    }
+
+    /* Custom CSS Station Bar Vector Analytics */
+    .station-bar {
+        width: 42px;
+        background: linear-gradient(180deg, var(--pakistan-green) 0%, #10b981 100%);
+        border-radius: 6px 6px 0 0;
+        position: relative;
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+
+        .station-bar:hover {
+            opacity: 0.9;
+            box-shadow: 0 4px 16px rgba(0, 77, 38, 0.2);
+        }
+
+        .station-bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--slate-700);
+            letter-spacing: -0.2px;
+        }
+
+    /* Fix C# Compilation Inside Style Tags using Double @@ */
+    @@media (max-width: 1200px) {
+        .kpi-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .charts-main-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .charts-lower-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .kpi-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .telemetry-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="container-fluid p-0">
+
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <span class="badge mb-2" style="background: rgba(0, 77, 38, 0.06); color: var(--pakistan-green); font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">LIVE TELEMETRY WORKSPACE</span>
+            <h2 style="font-weight: 800; color: var(--slate-900); letter-spacing: -0.8px; margin: 0;">Safar Operations Control Desk</h2>
+            <p class="text-muted small m-0 mt-1">Real-time revenue metrics, track utilization index, and smart booking summaries.</p>
+        </div>
+        <div>
+            <button class="btn btn-white fw-bold shadow-sm px-3 py-2 border" style="border-radius: 10px; font-size: 13px; background: var(--premium-white);" onclick="window.location.reload();">
+                🔄 Sync Live Diagnostics
+            </button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-title">Locomotive Fleet</div>
+                <div class="kpi-value">08</div>
+                <small class="text-success fw-bold" style="font-size: 11px;">🟢 100% Operational</small>
+            </div>
+            <span style="font-size: 24px; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #f1f5f9;">🚆</span>
+        </div>
+
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-title">Transit Schedules</div>
+                <div class="kpi-value">14</div>
+                <small class="text-muted fw-bold" style="font-size: 11px;">Tracks Active Node</small>
+            </div>
+            <span style="font-size: 24px; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #f1f5f9;">📅</span>
+        </div>
+
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-title">Bookings Issued</div>
+                <div class="kpi-value">1,240</div>
+                <small class="text-success fw-bold" style="font-size: 11px;">📈 +18% Growth</small>
+            </div>
+            <span style="font-size: 24px; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #f1f5f9;">🎟️</span>
+        </div>
+
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-title">Gross Revenue Pool</div>
+                <div class="kpi-value" style="font-size: 22px; margin-top:8px;">PKR 642K</div>
+                <small class="text-success fw-bold" style="font-size: 11px;">⚡ MongoDB Active</small>
+            </div>
+            <span style="font-size: 24px; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #f1f5f9;">💳</span>
+        </div>
+    </div>
+
+    <div class="charts-main-grid">
+
+        <div class="telemetry-card">
+            <div>
+                <div class="section-heading">
+                    <span>📈 Graph 1: Ticketing Capital Sales Wave</span>
+                    <span class="badge bg-light text-success fw-bold" style="font-size: 10px; padding: 6px 10px; border: 1px solid rgba(34,197,94,0.15);">Peak Matrix 🚀</span>
+                </div>
+                <p class="text-muted small">Continuous up-trending vector curve showing dynamic progressive growth this session.</p>
+            </div>
+
+            <div class="mt-2 p-3" style="background: #f8fafc; border-radius: 14px; border: 1px dashed #e2e8f0; position: relative;">
+                <svg viewBox="0 0 500 150" class="w-100" style="height: 155px; overflow: visible;">
+                    <defs>
+                        <pattern id="grid-lines" width="50" height="30" patternUnits="userSpaceOnUse">
+                            <path d="M 50 0 L 0 0 0 30" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                        </pattern>
+                        <linearGradient id="wave-glow" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#004d26" stop-opacity="0.18" />
+                            <stop offset="100%" stop-color="#004d26" stop-opacity="0.0" />
+                        </linearGradient>
+                    </defs>
+
+                    <rect width="100%" height="100%" fill="url(#grid-lines)" />
+
+                    <path d="M0,130 Q100,115 200,85 T400,45 T500,15 L500,150 L0,150 Z" fill="url(#wave-glow)" />
+
+                    <path d="M0,130 Q100,115 200,85 T400,45 T500,15" fill="none" stroke="var(--pakistan-green)" stroke-width="3.5" stroke-linecap="round" />
+
+                    <circle cx="200" cy="85" r="4" fill="var(--pakistan-green)" />
+                    <circle cx="400" cy="45" r="4" fill="var(--pakistan-green)" />
+                    <circle cx="500" cy="15" r="6" fill="#22c55e" stroke="#fff" stroke-width="2" />
+                </svg>
+                <div class="d-flex justify-content-between text-muted fw-bold mt-2" style="font-size: 10px; letter-spacing: 0.5px;">
+                    <span>MON (PKR 140K)</span>
+                    <span>WED (PKR 380K)</span>
+                    <span>TODAY (PKR 642K)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="telemetry-card">
+            <div class="section-heading">
+                <span>🔔 Network Tracker Nodes</span>
+            </div>
+
+            <div class="activity-feed-container">
+                <div class="activity-log">
+                    <span class="activity-timestamp">12:40 AM</span>
+                    <div class="activity-details">
+                        <strong class="text-dark d-block" style="font-size: 13px;">Route Mapping Synced</strong>
+                        <span class="text-muted" style="font-size: 11px;">IslamabadExpress timetable bound.</span>
+                    </div>
+                </div>
+
+                <div class="activity-log">
+                    <span class="activity-timestamp">11:15 PM</span>
+                    <div class="activity-details">
+                        <strong class="text-dark d-block" style="font-size: 13px;">MongoDB Cluster Write</strong>
+                        <span class="text-muted" style="font-size: 11px;">Asset diagnostic logs committed safely.</span>
+                    </div>
+                </div>
+
+                <div class="activity-log">
+                    <span class="activity-timestamp">09:34 PM</span>
+                    <div class="activity-details">
+                        <strong class="text-dark d-block" style="font-size: 13px;">Dynamic Price Engine</strong>
+                        <span class="text-muted" style="font-size: 11px;">Distance tracking matrix calculated.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-lower-grid">
+
+        <div class="telemetry-card">
+            <div>
+                <div class="section-heading">
+                    <span>📊 Graph 2: Station Traffic Volume Density</span>
+                    <span class="badge bg-light text-primary fw-bold" style="font-size: 10px; padding: 4px 8px;">Regional Terminals</span>
+                </div>
+                <p class="text-muted small">Comparative visual analysis of ticket counts checked out at destination hubs.</p>
+            </div>
+
+            <div class="d-flex align-items-end justify-content-around mt-3 pt-4 pb-2" style="height: 140px; background: #f8fafc; border-radius: 14px; border: 1px dashed #e2e8f0; background-image: linear-gradient(#f1f5f9 1px, transparent 1px); background-size: 100% 24px;">
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <div class="station-bar" style="height: 85px;" data-value="480"></div>
+                    <span class="text-slate-800 fw-bold" style="font-size: 11px;">Islamabad</span>
+                </div>
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <div class="station-bar" style="height: 110px; background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 100%) !important; box-shadow: 0 4px 12px rgba(59,130,246,0.15);" data-value="620"></div>
+                    <span class="text-slate-800 fw-bold" style="font-size: 11px;">Lahore</span>
+                </div>
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <div class="station-bar" style="height: 65px; background: linear-gradient(180deg, #6b21a8 0%, #a855f7 100%) !important; box-shadow: 0 4px 12px rgba(168,85,247,0.15);" data-value="310"></div>
+                    <span class="text-slate-800 fw-bold" style="font-size: 11px;">Karachi</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="telemetry-card">
+            <div>
+                <div class="section-heading">
+                    <span>🍩 Graph 3: Coach Tier Ticket Split Allocation</span>
+                    <span class="badge bg-light text-warning fw-bold" style="font-size: 10px; padding: 4px 8px;">Sales Ratio</span>
+                </div>
+                <p class="text-muted small">Real-time percentage categorization of dynamic seat logs requested by users.</p>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-around mt-2">
+                <div style="position: relative; width: 115px; height: 115px;">
+                    <svg viewBox="0 0 36 36" class="w-100 h-100" style="transform: rotate(-90deg);">
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f1f5f9" stroke-width="4.2" />
+
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--pakistan-green)" stroke-width="4.2" stroke-dasharray="50 100" stroke-dashoffset="0" />
+
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#3b82f6" stroke-width="4.2" stroke-dasharray="35 100" stroke-dashoffset="-50" />
+
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#a855f7" stroke-width="4.2" stroke-dasharray="15 100" stroke-dashoffset="-85" />
+                    </svg>
+
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                        <span style="font-size: 15px; font-weight: 800; color: var(--slate-900); display: block; line-height: 1;">1.2K</span>
+                        <small class="text-muted" style="font-size: 8px; font-weight: 700; uppercase; display: block; margin-top: 2px;">TICKETS</small>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-2" style="font-size: 12px; font-weight: 600; color: var(--slate-700);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 9px; height: 9px; background: var(--pakistan-green); border-radius: 50%;"></div>
+                        <span>Business Class (620)</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 9px; height: 9px; background: #3b82f6; border-radius: 50%;"></div>
+                        <span>Economy Class (434)</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 9px; height: 9px; background: #a855f7; border-radius: 50%;"></div>
+                        <span>AC Sleeper Tiers (186)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

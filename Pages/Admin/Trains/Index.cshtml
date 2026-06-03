@@ -1,0 +1,185 @@
+﻿@page
+@model Safar.Pages.Admin.Trains.IndexModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Pakistan Fleet Infrastructure";
+}
+
+<style>
+    .registry-block {
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 20px rgba(15,23,42,0.01);
+    }
+
+    .search-filter-box {
+        padding: 12px 16px;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        width: 320px;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.2s;
+    }
+
+        .search-filter-box:focus {
+            border-color: #004d26;
+            background: #ffffff;
+        }
+
+    .action-icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: none;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-size: 15px;
+    }
+
+    .btn-edit-node {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+        .btn-edit-node:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+    .btn-delete-node {
+        background: #fef2f2;
+        color: #991b1b;
+        margin-left: 6px;
+    }
+
+        .btn-delete-node:hover {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+    .btn-deploy {
+        background: #004d26;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-deploy:hover {
+            background: #002611;
+            color: white;
+        }
+
+    .pak-badge {
+        font-size: 10px;
+        font-weight: 800;
+        background: #e6f4ea;
+        color: #004d26;
+        padding: 2px 6px;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-left: 6px;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin: 0;">Pakistan Sovereign Fleet Control</h2>
+        <p style="font-size:14px; color: #64748b; margin-top: 4px;">Exclusive data cluster ledger managing tactical locomotives across Pakistan local terminals.</p>
+    </div>
+    <a href="/Admin/Trains/Add" class="btn-deploy">＋ Deploy New Locomotive</a>
+</div>
+
+<div class="registry-block">
+    <!-- Real-time Filter Dynamic UI Header Node -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <input type="text" id="fleetSearchField" class="search-filter-box" placeholder="🔍 Filter by Train Name or Code..." onkeyup="FilterFleetGridEngine()" />
+        <span class="text-muted style-span" style="font-size: 13px; font-weight: 600;">Showing <span id="activeCount">@Model.PakistanFleetRegistry.Count</span> Active Deployed Units</span>
+    </div>
+
+    <table class="table table-borderless align-middle mb-0" id="fleetDataTable">
+        <thead>
+            <tr style="border-bottom: 1.5px solid #f1f5f9; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                <th>Serial Code</th>
+                <th>Locomotive Engine Profile</th>
+                <th>Volumetric Capacity</th>
+                <th>Bogie Segments</th>
+                <th>Status State</th>
+                <th class="text-end" style="padding-right: 20px;">Administrative Operations</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 14px; font-weight: 500;">
+            @if (!Model.PakistanFleetRegistry.Any())
+            {
+                <tr id="emptyPlaceholder">
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
+                        <div style="font-weight: 700; color: #334155;">Sovereign Registry Vector Empty</div>
+                        <div style="font-size: 12px; color: #94a3b8;">No registered locomotive entities discovered inside the database pipeline.</div>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var train in Model.PakistanFleetRegistry)
+                {
+                    <tr style="border-bottom: 1px solid #f8fafc;" class="fleet-row-item">
+                        <td style="font-weight: 800; color: #0f172a;" class="target-train-id">@train.TrainId</td>
+                        <td class="target-train-name" style="font-weight:600; color:#334155;">
+                            @train.Name <span class="pak-badge">PAK-RAIL</span>
+                        </td>
+                        <td>@train.TotalCapacity Seats</td>
+                        <td>@train.TotalBogies Carriages</td>
+                        <td>
+                            <span class="badge @(train.Status == "Active" ? "bg-success" : "bg-warning")" style="font-weight:700; font-size:11px;">
+                                @train.Status
+                            </span>
+                        </td>
+                        <td class="text-end" style="padding-right: 12px;">
+                            <!-- Executable Edit and Delete Context Nodes -->
+                            <a href="/Admin/Trains/Edit?id=@train.Id" class="action-icon-btn btn-edit-node" title="Edit Parameters">⚙️</a>
+                            <a href="/Admin/Trains/Index?handler=PurgeAssetNode&id=@train.Id"
+                               onclick="return confirm('Are you completely sure you want to permanently delete this locomotive instance from the sovereign registry matrix?')"
+                               class="action-icon-btn btn-delete-node" title="Purge Asset">🗑️</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function FilterFleetGridEngine() {
+            const query = document.getElementById('fleetSearchField').value.toLowerCase();
+            const rows = document.getElementsByClassName('fleet-row-item');
+            let counter = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const trainId = rows[i].querySelector('.target-train-id').textContent.toLowerCase();
+                const trainName = rows[i].querySelector('.target-train-name').textContent.toLowerCase();
+
+                if (trainId.includes(query) || trainName.includes(query)) {
+                    rows[i].style.display = "";
+                    counter++;
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+            document.getElementById('activeCount').textContent = counter;
+        }
+    </script>
+}

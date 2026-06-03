@@ -8,9 +8,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Safar | Access Portal</title>
+    <title>Safar | Authentication Portal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
+    <!-- Premium Global Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,10 +20,11 @@
         :root {
             --primary-emerald: #004d26;
             --dark-emerald: #002611;
-            --input-focus-glow: rgba(0, 77, 38, 0.08);
-            --slate-dark: #111827;
-            --slate-muted: #4b5563;
-            --border-light: #e5e7eb;
+            --light-emerald: #007337;
+            --slate-dark: #0f172a;
+            --slate-muted: #475569;
+            --bg-light: #f8fafc;
+            --input-focus: rgba(0, 77, 38, 0.06);
         }
 
         body {
@@ -34,87 +36,89 @@
             overflow: hidden;
         }
 
-        /* LEFT PANEL: Elegant Speed Train Layout */
+        /* Left Panel - Premium Brand Showcase & Train Overlay Blur */
         .visual-panel {
-            flex: 1.3;
-            position: relative;
-            background: url('https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=1200&auto=format&fit=crop') no-repeat center center;
+            background: linear-gradient(135deg, rgba(0, 38, 17, 0.5) 0%, rgba(0, 77, 38, 0.9) 100%), url('https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=1200&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
+            flex: 1.4;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 60px;
-            box-shadow: inset -20px 0 40px rgba(0,0,0,0.3);
+            position: relative;
+            box-shadow: inset -30px 0 60px rgba(0,0,0,0.25);
         }
 
-            /* Dark Emerald Overlay Tint */
+            /* Abstract High-Tech Lines and Noise Overlay */
             .visual-panel::before {
                 content: '';
                 position: absolute;
                 inset: 0;
-                background: linear-gradient(135deg, rgba(0, 38, 17, 0.45) 0%, rgba(0, 77, 38, 0.85) 100%);
-                z-index: 1;
+                background: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+                background-size: 24px 24px;
+                mask-image: radial-gradient(circle at center, black, transparent 80%);
+                -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
+                pointer-events: none;
             }
 
-        .panel-header, .panel-body, .panel-footer {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Glassmorphic Badge */
         .mini-logo-card {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 12px 24px;
             border-radius: 14px;
-            width: fit-content;
-            color: #ffffff;
+            font-size: 15px;
             font-weight: 700;
-            font-size: 16px;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: fit-content;
+            letter-spacing: 0.8px;
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: 0.5px;
+        }
+
+        .brand-center-content {
+            max-width: 540px;
+            z-index: 2;
         }
 
         .main-hero-text {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.15;
             color: #ffffff;
-            font-size: 46px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -1px;
-            max-width: 520px;
+            letter-spacing: -1.5px;
         }
 
         .hero-desc {
+            font-size: 16px;
             color: rgba(255, 255, 255, 0.85);
-            font-size: 15px;
             line-height: 1.6;
-            max-width: 460px;
-            margin-top: 16px;
+            font-weight: 400;
+            margin-top: 20px;
         }
 
         .badge-row {
             display: flex;
             gap: 12px;
-            margin-top: 32px;
+            margin-top: 36px;
         }
 
         .glass-badge {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 10px 22px;
             border-radius: 12px;
-            color: white;
             font-size: 13px;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
-        /* RIGHT PANEL: Highly Professional Sleek Form Styling */
+        /* Right Panel - Sleek Corporate Login Form */
         .auth-panel {
             flex: 1;
             display: flex;
@@ -131,19 +135,20 @@
         }
 
         .welcome-heading {
-            font-size: 34px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 800;
             color: var(--slate-dark);
-            letter-spacing: -0.8px;
+            letter-spacing: -1px;
         }
 
         .welcome-subtext {
             font-size: 15px;
             color: var(--slate-muted);
-            margin-top: 6px;
+            margin-top: 4px;
+            font-weight: 500;
         }
 
-        /* Modern OAuth Slots */
+        /* Social OAuth Provider Row */
         .social-row {
             display: flex;
             gap: 14px;
@@ -153,54 +158,54 @@
         .social-btn {
             flex: 1;
             padding: 12px;
-            border: 1px solid var(--border-light);
+            border: 1.5px solid #e2e8f0;
             background: #ffffff;
             border-radius: 12px;
             font-size: 14px;
             font-weight: 600;
-            color: #374151;
+            color: #334155;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.25s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
         }
 
             .social-btn:hover {
-                background: #f9fafb;
-                border-color: #d1d5db;
-                color: #111827;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                background: var(--bg-light);
+                border-color: #cbd5e1;
+                color: var(--slate-dark);
+                transform: translateY(-1px);
             }
 
         .divider-container {
             display: flex;
             align-items: center;
             text-align: center;
-            color: #9ca3af;
+            color: #94a3b8;
             font-size: 12px;
             margin: 28px 0;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 500;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
 
             .divider-container::before, .divider-container::after {
                 content: '';
                 flex: 1;
-                border-bottom: 1px solid #f3f4f6;
+                border-bottom: 1px solid #f1f5f9;
             }
 
             .divider-container:not(:empty)::before {
-                margin-right: 1em;
+                margin-right: 1.2em;
             }
 
             .divider-container:not(:empty)::after {
-                margin-left: 1em;
+                margin-left: 1.2em;
             }
 
-        /* Advanced Premium Form Inputs Grid */
+        /* High-End Enterprise Input Design */
         .custom-label-group {
             margin-bottom: 24px;
         }
@@ -212,7 +217,7 @@
             margin-bottom: 8px;
             display: block;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
         }
 
         .input-icon-wrapper {
@@ -223,36 +228,35 @@
 
         .input-icon-prefix {
             position: absolute;
-            left: 16px;
-            color: #9ca3af;
+            left: 18px;
+            color: #94a3b8;
             font-size: 16px;
+            transition: color 0.2s ease;
             pointer-events: none;
-            transition: color 0.2s;
         }
 
         .premium-input-field {
             width: 100%;
-            padding: 14px 16px 14px 44px; /* Added left padding to perfectly secure space for icons */
-            border: 1.5px solid #e5e7eb;
+            padding: 14px 18px 14px 48px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
             border-radius: 12px;
             font-size: 15px;
             font-weight: 500;
             color: var(--slate-dark);
-            outline: none;
-            background: #fdfdfd;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
         }
 
             .premium-input-field::placeholder {
-                color: #9ca3af;
+                color: #94a3b8;
                 font-weight: 400;
             }
 
-            /* High-End Target Active Interactive Focus */
             .premium-input-field:focus {
                 border-color: var(--primary-emerald);
+                box-shadow: 0 0 0 4px var(--input-focus);
                 background: #ffffff;
-                box-shadow: 0 0 0 4px var(--input-focus-glow);
             }
 
                 .premium-input-field:focus + .input-icon-prefix {
@@ -278,28 +282,28 @@
                 color: var(--primary-emerald);
             }
 
-        /* Action Core Button Custom Mechanics */
+        /* Authorization Action Button */
         .btn-action-trigger {
             background: var(--primary-emerald);
             color: #ffffff;
             border: none;
             border-radius: 12px;
             padding: 16px;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
             width: 100%;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 77, 38, 0.18);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(0, 77, 38, 0.2);
         }
 
             .btn-action-trigger:hover {
                 background: var(--dark-emerald);
-                box-shadow: 0 6px 22px rgba(0, 77, 38, 0.3);
+                box-shadow: 0 6px 24px rgba(0, 77, 38, 0.28);
                 transform: translateY(-1px);
             }
 
@@ -310,8 +314,9 @@
         .footer-account-text {
             text-align: center;
             font-size: 14px;
-            color: #6b7280;
-            margin-top: 32px;
+            color: var(--slate-muted);
+            margin-top: 36px;
+            font-weight: 500;
         }
 
             .footer-account-text a {
@@ -320,7 +325,7 @@
                 font-weight: 700;
             }
 
-        /* Clean Error System Frame Layout */
+        /* Custom Corporate Error Alert */
         .error-toast {
             background-color: #fef2f2;
             border: 1px solid #fee2e2;
@@ -336,14 +341,15 @@
 </head>
 <body>
 
+    <!-- Left Brand Panel Container -->
     <div class="visual-panel d-none d-md-flex">
         <div class="panel-header">
             <div class="mini-logo-card">
-                <span>🚆</span> Safar
+                <span>🚆</span> SAFAR
             </div>
         </div>
 
-        <div class="panel-body">
+        <div class="brand-center-content">
             <h1 class="main-hero-text">Your Journey,<br>Our Priority</h1>
             <p class="hero-desc">
                 Experience the future of travel with Safar. Seamless bookings, real-time tracking, and world-class comfort waiting at every platform.
@@ -355,17 +361,19 @@
         </div>
 
         <div class="panel-footer">
-            <span class="text-white-50 small">© 2026 Safar Rail Systems. All rights reserved.</span>
+            <span class="text-white-50 small" style="letter-spacing: 0.5px;">© 2026 Safar Rail Systems. All rights reserved.</span>
         </div>
     </div>
 
+    <!-- Right Login Form Panel Container -->
     <div class="auth-panel">
         <div class="auth-wrapper">
-            <div>
+            <div class="mb-2">
                 <h2 class="welcome-heading">Welcome Back</h2>
                 <p class="welcome-subtext">Log in to manage your bookings and rewards.</p>
             </div>
 
+            <!-- Social Framework Row -->
             <div class="social-row">
                 <a href="#" class="social-btn">
                     <img src="https://www.google.com/favicon.ico" width="16" height="16" alt="Google"> Google
@@ -384,7 +392,8 @@
                 </div>
             }
 
-            <form method="post">
+            <form method="post" autocomplete="off">
+                <!-- Username Block -->
                 <div class="custom-label-group">
                     <label class="form-label-text">Email Address</label>
                     <div class="input-icon-wrapper">
@@ -393,6 +402,7 @@
                     </div>
                 </div>
 
+                <!-- Password Block -->
                 <div class="custom-label-group">
                     <label class="form-label-text">Password</label>
                     <div class="input-icon-wrapper">
@@ -401,6 +411,7 @@
                     </div>
                 </div>
 
+                <!-- Extra Action Parameters -->
                 <div class="form-options">
                     <label class="text-muted d-flex align-items-center gap-2" style="cursor: pointer; user-select: none; font-weight: 500;">
                         <input type="checkbox" class="form-check-input" style="cursor: pointer; width: 16px; height: 16px; accent-color: var(--primary-emerald);"> Remember me for 30 days
@@ -408,9 +419,8 @@
                     <a href="#" class="forgot-link">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="btn-action-trigger">
-                    <span>Sign In</span> ➔
-                </button>
+                <!-- Action Trigger Button -->
+                <button type="submit" class="btn-action-trigger">Sign In ➔</button>
             </form>
 
             <div class="footer-account-text">

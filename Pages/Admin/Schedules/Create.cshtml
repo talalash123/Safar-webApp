@@ -1,0 +1,240 @@
+﻿@page
+@model Safar.Pages.Admin.Schedules.CreateModel
+@{
+    ViewData["Title"] = "Configure Dynamic Route Configuration";
+}
+
+<style>
+    :root {
+        --pakistan-green: #004d26;
+        --premium-white: #ffffff;
+        --slate-900: #0f172a;
+        --slate-600: #475569;
+    }
+
+    .schedule-panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 25px rgba(0, 77, 38, 0.01);
+    }
+
+    .custom-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 9px;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .form-input-node {
+        width: 100%;
+        padding: 14px 18px;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+        .form-input-node:focus {
+            border-color: var(--pakistan-green);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.06);
+        }
+
+    .stopover-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 16px;
+        animation: elementPop 0.25s ease-out;
+    }
+
+    .dashed-action-btn {
+        background: transparent;
+        color: var(--pakistan-green);
+        border: 2px dashed #004d26;
+        border-radius: 12px;
+        padding: 16px;
+        font-weight: 700;
+        font-size: 14px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .dashed-action-btn:hover {
+            background: rgba(0, 77, 38, 0.03);
+            border-color: #0b2216;
+        }
+
+    .btn-compile {
+        background: var(--pakistan-green);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 36px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 77, 38, 0.15);
+    }
+
+        .btn-compile:hover {
+            background: #0b2216;
+        }
+
+    @@keyframes elementPop {
+        from {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+<div class="container-fluid" style="max-width: 850px; margin-top: 10px;">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <span class="badge mb-2" style="background: rgba(0, 77, 38, 0.06); color: #004d26; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">SCHEDULING ENGINE v2</span>
+            <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.7px; margin: 0;">Configure Operational Timings & Route</h2>
+            <p class="text-muted small mt-1">Target Locomotive Asset: <strong class="text-success">@Model.TargetTrain.Name (@Model.TargetTrain.TrainId)</strong></p>
+        </div>
+        <a href="/Admin/Schedules/Index" class="btn btn-light fw-bold px-3 py-2" style="border-radius: 10px; font-size: 13px;">➔ View All Schedules</a>
+    </div>
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <div asp-validation-summary="All" class="small fw-semibold"></div>
+        </div>
+    }
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+        
+        <!-- Hidden core references passing values securely to MongoDB schema -->
+        <input type="hidden" asp-for="MasterSchedule.TrainId" value="@Model.TargetTrain.TrainId" />
+
+        <!-- 1. Master Stations & Timings Box -->
+        <div class="card p-4 border-0 shadow-sm mb-4" style="border-radius: 18px; background: #ffffff;">
+            <h5 class="fw-bold text-dark mb-3" style="font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                <span style="color: #004d26;">📍</span> 1. Primary Terminals & Global Budget
+            </h5>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3" style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <label class="form-label small fw-bold text-success text-uppercase tracking-wider" style="font-size: 11px;">STARTING SOURCE STATION</label>
+                        <input type="text" asp-for="MasterSchedule.SourceStation" value="@Model.TargetTrain.DefaultSource" class="form-control mb-2 fw-bold" placeholder="e.g., Karachi Cantt" required />
+                        
+                        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wider" style="font-size: 11px;">DEPARTURE TIME FROM SOURCE</label>
+                        <input type="time" name="SourceDepartureTime" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3" style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <label class="form-label small fw-bold text-danger text-uppercase tracking-wider" style="font-size: 11px;">FINAL DESTINATION TERMINAL</label>
+                        <input type="text" asp-for="MasterSchedule.DestinationStation" value="@Model.TargetTrain.DefaultDestination" class="form-control mb-2 fw-bold" placeholder="e.g., Lahore Cantt" required />
+                        
+                        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wider" style="font-size: 11px;">FINAL ARRIVAL TIME AT DESTINATION</label>
+                        <input type="time" name="DestinationArrivalTime" class="form-control" required />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label small fw-bold text-secondary text-uppercase tracking-wider" style="font-size: 11px;">TOTAL ENTIRE ROUTE TICKET PRICE (PKR)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light fw-bold text-secondary" style="border-radius: 10px 0 0 10px;">Rs.</span>
+                    <input type="number" asp-for="MasterSchedule.BasePrice" class="form-control form-control-lg fw-bold text-dark" placeholder="Lump sum price for full path (e.g., 5000)" style="border-radius: 0 10px 10px 0; font-size: 16px;" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Dynamic Intermediate Waypoints Box -->
+        <div class="card p-4 border-0 shadow-sm mb-4" style="border-radius: 18px; background: #ffffff;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark m-0" style="font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #004d26;">🛤️</span> 2. Intermediate Waypoint Stations
+                </h5>
+                <span class="badge bg-light text-secondary fw-bold" id="stopCounterBadge" style="font-size: 11px; padding: 6px 10px; border-radius: 6px;">0 Stops Added</span>
+            </div>
+            
+            <p class="text-muted small mb-3">Add intermediate stations in sequential order. System will automatically divide the total price step-by-step.</p>
+
+            <!-- Dynamic Nodes Target Wrapper Container -->
+            <div id="stopoverDynamicWrapper"></div>
+
+            <button type="button" class="btn btn-outline-success w-100 py-3 fw-bold" style="border-style: dashed; border-width: 2px; border-radius:12px; font-size:14px;" onclick="InjectWaypointStopoverRow()">
+                ＋ Append Intermediate Stopover Node
+            </button>
+        </div>
+
+        <!-- Action Control Row -->
+        <div class="row g-3">
+            <div class="col-md-4">
+                <a href="/Admin/Schedules/Index" class="btn btn-light w-100 py-3 fw-bold" style="border-radius:12px; color: #64748b; background: #f1f5f9;">✕ Abort Changes</a>
+            </div>
+            <div class="col-md-8">
+                <button type="submit" class="btn btn-success w-100 py-3 fw-bold" style="background: #004d26; border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0, 77, 38, 0.15);">
+                    ⚡ Compile Operational Schedule & Save To Database ➔
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let stopPointerIndex = 0;
+
+        function InjectWaypointStopoverRow() {
+            const hostContainer = document.getElementById('stopoverDynamicWrapper');
+            const elementMarkup = `
+                <div class="card p-3 mb-3 border-0 shadow-sm animate-fade-in" id="waypoint-card-${stopPointerIndex}" style="background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0 !important;">
+                    <div class="row align-items-end g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary" style="font-size:10px; letter-spacing:0.5px;">MID STATION NAME</label>
+                            <input type="text" name="MasterSchedule.Stops[${stopPointerIndex}].StationName" class="form-control" placeholder="e.g., Rohri / Multan Cantt" style="border-radius:8px; font-size:14px;" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary" style="font-size:10px; letter-spacing:0.5px;">EXPECTED TIME OF ARRIVAL (ETA)</label>
+                            <input type="time" name="MasterSchedule.Stops[${stopPointerIndex}].ArrivalTime" class="form-control" style="border-radius:8px; font-size:14px;" required />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-outline-danger w-100 fw-bold" style="padding: 7px; border-radius: 8px; font-size:13px;" onclick="PurgeWaypointStopoverRow(${stopPointerIndex})">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            hostContainer.insertAdjacentHTML('beforeend', elementMarkup);
+            stopPointerIndex++;
+            UpdateStopBadgeCount();
+        }
+
+        function PurgeWaypointStopoverRow(indexReference) {
+            document.getElementById(`waypoint-card-${indexReference}`).remove();
+            UpdateStopBadgeCount();
+        }
+
+        function UpdateStopBadgeCount() {
+            const currentNodesCount = document.getElementById('stopoverDynamicWrapper').children.length;
+            document.getElementById('stopCounterBadge').innerText = `${currentNodesCount} Stops Mapped`;
+        }
+    </script>
+}

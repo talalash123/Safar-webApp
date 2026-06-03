@@ -1,0 +1,156 @@
+﻿@page
+@model Safar.Pages.Admin.Trains.EditModel
+@{
+    ViewData["Title"] = "Modify Locomotive Parameters";
+}
+
+<style>
+    .glass-edit-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 750px;
+        box-shadow: 0 10px 25px rgba(0, 77, 38, 0.02);
+        margin-top: 20px;
+    }
+
+    .input-wrapper {
+        margin-bottom: 24px;
+    }
+
+    .premium-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 9px;
+        display: block;
+    }
+
+    .premium-input {
+        width: 100%;
+        padding: 14px 18px;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #0f172a;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+        .premium-input:focus {
+            border-color: #004d26;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.06);
+        }
+
+    .btn-update-fleet {
+        background: #004d26;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 12px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .btn-update-fleet:hover {
+            background: #0b2216;
+        }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 16px 32px;
+        border-radius: 12px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+        transition: all 0.2s;
+    }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+</style>
+
+<div class="container-fluid">
+    <div class="mb-2">
+        <span class="badge mb-2" style="background: #fff7ed; color: #c2410c; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">CONFIGURATION ENGINE</span>
+        <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.7px; margin: 0;">Modify Locomotive Parameters</h2>
+        <p style="font-size: 14px; color: #64748b; margin-top: 4px;">Update capacity matrices, operational route terminals, or structural identifiers for this active token.</p>
+    </div>
+
+    <div class="glass-edit-card">
+        <form method="post">
+            <input type="hidden" asp-for="SelectedTrain.Id" />
+
+            <div class="row">
+                <div class="col-md-6 input-wrapper">
+                    <label class="premium-label">Train Code / Serial ID</label>
+                    <input type="text" asp-for="SelectedTrain.TrainId" class="premium-input" required />
+                </div>
+                <div class="col-md-6 input-wrapper">
+                    <label class="premium-label">Locomotive Model Name</label>
+                    <input type="text" asp-for="SelectedTrain.Name" class="premium-input" required />
+                </div>
+            </div>
+
+            <div class="row mb-2" style="background: #f8fafc; padding: 20px 10px 0 10px; border-radius: 14px; border: 1px dashed #e2e8f0; margin: 0 0 24px 0;">
+                <div class="col-md-6 input-wrapper">
+                    <label class="premium-label" style="color: #004d26;">Operational From (Source)</label>
+                    <input type="text" asp-for="SelectedTrain.DefaultSource" class="premium-input" style="background: #ffffff;" placeholder="e.g., Karachi Cantt" required />
+                </div>
+                <div class="col-md-6 input-wrapper">
+                    <label class="premium-label" style="color: #004d26;">Operational To (Destination)</label>
+                    <input type="text" asp-for="SelectedTrain.DefaultDestination" class="premium-input" style="background: #ffffff;" placeholder="e.g., Lahore Cantt" required />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 input-wrapper">
+                    <label class="premium-label">Passenger Seating Capacity</label>
+                    <input type="number" asp-for="SelectedTrain.TotalCapacity" class="premium-input" required />
+                </div>
+                <div class="col-md-6 input-wrapper">
+                    <label class="premium-label">Total Coaches / Bogies</label>
+                    <input type="number" asp-for="SelectedTrain.TotalBogies" class="premium-input" required />
+                </div>
+            </div>
+
+            <div class="input-wrapper mb-4">
+                <label class="premium-label">Deployment Operational Status</label>
+                <select asp-for="SelectedTrain.Status" class="premium-input">
+                    <option value="Active">Active Operational Service</option>
+                    <option value="In-Maintenance">In-Maintenance Quarantine</option>
+                </select>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <a href="/Admin/Trains/Index" class="btn-cancel">✕ Abort Changes</a>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn-update-fleet">
+                        💾 Push System Updates ➔
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

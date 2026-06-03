@@ -1,0 +1,130 @@
+﻿@page
+@model Safar.Pages.Admin.Trains.AddModel
+@{
+    ViewData["Title"] = "Deploy Sovereign Asset";
+}
+
+<style>
+    .glass-form-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 750px;
+        box-shadow: 0 10px 25px rgba(0, 77, 38, 0.02);
+        margin-top: 20px;
+    }
+
+    .input-wrapper {
+        margin-bottom: 24px;
+    }
+
+    .premium-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 9px;
+        display: block;
+    }
+
+    .premium-input {
+        width: 100%;
+        padding: 14px 18px;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #0f172a;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+        .premium-input:focus {
+            border-color: #004d26;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.06);
+        }
+
+    .btn-sync-fleet {
+        background: #004d26;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 12px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(0, 77, 38, 0.15);
+    }
+
+        .btn-sync-fleet:hover {
+            background: #0b2216;
+            transform: translateY(-1px);
+        }
+</style>
+
+<div class="container-fluid" style="max-width: 750px; margin-top: 20px;">
+    <div class="mb-3">
+        <span class="badge mb-2" style="background: #e6f4ea; color: #004d26; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">FLEET WING</span>
+        <h2 style="font-weight: 800; color: #0f172a;">Deploy New Locomotive Asset</h2>
+        <p class="text-muted">Register a train profile along with its operational base terminals.</p>
+    </div>
+
+    <div class="card p-4 border-0 shadow-sm" style="border-radius: 16px; background:#ffffff; border: 1px solid #e2e8f0 !important;">
+        <form method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Train Code / Serial ID</label>
+                    <input type="text" asp-for="NewTrain.TrainId" class="form-control form-control-lg" placeholder="e.g., T1" style="border-radius:10px; font-size:14px;" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Locomotive Model Name</label>
+                    <input type="text" asp-for="NewTrain.Name" class="form-control form-control-lg" placeholder="e.g., IslamabadExpress" style="border-radius:10px; font-size:14px;" required />
+                </div>
+            </div>
+
+            <div class="row mb-3" style="background: #f8fafc; padding: 15px; border-radius: 12px; margin: 0 0 16px 0; border: 1px solid #e2e8f0;">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-success small text-uppercase" style="font-size:11px;">Operational From (Default Source)</label>
+                    <input type="text" asp-for="NewTrain.DefaultSource" class="form-control" placeholder="e.g., Islamabad" style="border-radius:8px;" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-success small text-uppercase" style="font-size:11px;">Operational To (Default Destination)</label>
+                    <input type="text" asp-for="NewTrain.DefaultDestination" class="form-control" placeholder="e.g., Karachi" style="border-radius:8px;" required />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Passenger Seating Capacity</label>
+                    <input type="number" asp-for="NewTrain.TotalCapacity" class="form-control" style="border-radius:8px;" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Total Coaches / Bogies</label>
+                    <input type="number" asp-for="NewTrain.TotalBogies" class="form-control" style="border-radius:8px;" required />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Status</label>
+                <select asp-for="NewTrain.Status" class="form-select" style="border-radius:8px;">
+                    <option value="Active">Active Operational Service</option>
+                    <option value="In-Maintenance">In-Maintenance</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 py-3 fw-bold" style="background: #004d26; border-radius: 12px; border:none;">
+                ⚡ Synchronize Asset Registry & Return ➔
+            </button>
+        </form>
+    </div>
+</div>

@@ -28,3 +28,12 @@ C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\refint\Safar.dll
 C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\Safar.pdb
 C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\Safar.genruntimeconfig.cache
 C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\ref\Safar.dll
+C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\Safar.sourcelink.json
+C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\Safar.csproj.AssemblyReference.cache
+C:\Users\usama\source\repos\Safar\Safar\bin\Debug\net8.0\DnsClient.dll
+C:\Users\usama\source\repos\Safar\Safar\bin\Debug\net8.0\MongoDB.Bson.dll
+C:\Users\usama\source\repos\Safar\Safar\bin\Debug\net8.0\MongoDB.Driver.dll
+C:\Users\usama\source\repos\Safar\Safar\bin\Debug\net8.0\SharpCompress.dll
+C:\Users\usama\source\repos\Safar\Safar\bin\Debug\net8.0\Snappier.dll
+C:\Users\usama\source\repos\Safar\Safar\bin\Debug\net8.0\ZstdSharp.dll
+C:\Users\usama\source\repos\Safar\Safar\obj\Debug\net8.0\Safar.csproj.Up2Date
