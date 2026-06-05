@@ -1,107 +1,192 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Safar.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Safar.Pages.Admin.Schedules
 {
     public class CreateModel : PageModel
     {
-        private readonly IMongoCollection<Schedule> _scheduleCollection;
-        private readonly IMongoCollection<Train> _trainCollection;
-
-        [BindProperty]
-        public Schedule MasterSchedule { get; set; } = new Schedule();
-
-        public Train TargetTrain { get; set; } = new Train();
+        private readonly IMongoDatabase _database;
 
         public CreateModel(IMongoDatabase database)
         {
-            _scheduleCollection = database.GetCollection<Schedule>("Schedules");
-            _trainCollection = database.GetCollection<Train>("Trains");
+            _database = database;
         }
 
-        public IActionResult OnGet(string trainId)
+        [BindProperty]
+        public Schedule ScheduleData { get; set; } = new Schedule();
+
+        [BindProperty]
+        public string[] SelectedDays { get; set; }
+
+        // Dropdown list items
+        public List<SelectListItem> AvailableTrains { get; set; } = new List<SelectListItem>();
+
+        public async Task OnGetAsync()
         {
-            if (string.IsNullOrEmpty(trainId))
+            try
             {
-                return RedirectToPage("/Admin/Schedules/Index");
+                // Dynamic mapping directly using BsonDocument to avoid missing model class errors
+                var trainCollection = _database.GetCollection<BsonDocument>("Trains");
+                var trainsInDb = await trainCollection.Find(_ => true).ToListAsync();
+
+                foreach (var doc in trainsInDb)
+                {
+                    string id = doc.Contains("_id") ? doc["_id"].ToString() : "";
+                    if (string.IsNullOrEmpty(id) && doc.Contains("Id")) id = doc["Id"].ToString();
+
+                    string name = "";
+                    if (doc.Contains("LocomotiveEngineProfile")) name = doc["LocomotiveEngineProfile"].ToString();
+                    else if (doc.Contains("TrainName")) name = doc["TrainName"].ToString();
+                    else if (doc.Contains("trainName")) name = doc["trainName"].ToString();
+
+                    if (string.IsNullOrEmpty(name))
+                    {
+                        foreach (var element in doc.Elements)
+                        {
+                            if (element.Name != "_id" && element.Name != "Id" && element.Value.IsString)
+                            {
+                                name = element.Value.AsString;
+                                break;
+                            }
+                        }
+                    }
+
+                    string serialCode = doc.Contains("SerialCode") ? doc["SerialCode"].ToString() : "";
+                    if (string.IsNullOrEmpty(serialCode) && doc.Contains("serialCode")) serialCode = doc["serialCode"].ToString();
+
+                    if (string.IsNullOrEmpty(name)) name = "Registered Locomotive";
+                    string displayText = !string.IsNullOrEmpty(serialCode) ? $"{serialCode} - {name}" : name;
+
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        AvailableTrains.Add(new SelectListItem
+                        {
+                            Value = id,
+                            Text = displayText
+                        });
+                    }
+                }
             }
-
-            TargetTrain = _trainCollection.Find(t => t.TrainId == trainId).FirstOrDefault();
-
-            if (TargetTrain == null)
+            catch (Exception ex)
             {
-                return RedirectToPage("/Admin/Schedules/Index");
+                AvailableTrains.Add(new SelectListItem { Value = "error", Text = $"DB Error: {ex.Message}" });
             }
-
-            return Page();
         }
 
-        public IActionResult OnPost(string sourceDepartureTime, string destinationArrivalTime)
+        public async Task<IActionResult> OnPostAsync()
         {
-            // Re-fetch configuration context safely in case parameters fail validation blocks
-            TargetTrain = _trainCollection.Find(t => t.TrainId == MasterSchedule.TrainId).FirstOrDefault();
+            ModelState.Clear();
 
-            if (TargetTrain == null)
+            if (string.IsNullOrEmpty(ScheduleData.TrainId) || ScheduleData.TrainId == "error")
             {
-                return RedirectToPage("/Admin/Schedules/Index");
-            }
-
-            if (string.IsNullOrEmpty(sourceDepartureTime) || string.IsNullOrEmpty(destinationArrivalTime) || MasterSchedule.BasePrice <= 0)
-            {
-                ModelState.AddModelError(string.Empty, "Please fill departure, arrival timings and global ticket values properly.");
+                await OnGetAsync();
                 return Page();
             }
 
             try
             {
-                // Create a temporary operational track sequence list
-                List<Stop> CompiledTransitLineNodes = new List<Stop>();
-
-                // Node 1: Inject Source Station Endpoint Element at Index 0
-                CompiledTransitLineNodes.Add(new Stop
+                // Fetch Selected Train Profile from DB
+                var trainCollection = _database.GetCollection<BsonDocument>("Trains");
+                if (ObjectId.TryParse(ScheduleData.TrainId, out ObjectId filterId))
                 {
-                    StationName = MasterSchedule.SourceStation,
-                    ArrivalTime = sourceDepartureTime,
-                    TicketPriceFromSource = 0 // Starting vertex is free
-                });
-
-                // Node 2: Dynamic Append Mid-Way stations provided by Admin sequence
-                if (MasterSchedule.Stops != null && MasterSchedule.Stops.Count > 0)
-                {
-                    int totalStopsCount = MasterSchedule.Stops.Count;
-                    // Divide budget price seamlessly across segments
-                    int calculatedSegmentPrice = MasterSchedule.BasePrice / (totalStopsCount + 1);
-
-                    for (int i = 0; i < totalStopsCount; i++)
+                    var targetTrain = await trainCollection.Find(Builders<BsonDocument>.Filter.Eq("_id", filterId)).FirstOrDefaultAsync();
+                    if (targetTrain != null)
                     {
-                        MasterSchedule.Stops[i].TicketPriceFromSource = calculatedSegmentPrice * (i + 1);
-                        CompiledTransitLineNodes.Add(MasterSchedule.Stops[i]);
+                        if (targetTrain.Contains("LocomotiveEngineProfile")) ScheduleData.TrainName = targetTrain["LocomotiveEngineProfile"].ToString();
+                        else if (targetTrain.Contains("TrainName")) ScheduleData.TrainName = targetTrain["TrainName"].ToString();
+                        else if (targetTrain.Contains("trainName")) ScheduleData.TrainName = targetTrain["trainName"].ToString();
                     }
                 }
 
-                // Node 3: Append Final Destination Base Line Terminal Node at the end
-                CompiledTransitLineNodes.Add(new Stop
+                // Setup default or selected track days
+                if (SelectedDays != null && SelectedDays.Length > 0)
                 {
-                    StationName = MasterSchedule.DestinationStation,
-                    ArrivalTime = destinationArrivalTime,
-                    TicketPriceFromSource = MasterSchedule.BasePrice
+                    ScheduleData.OperatingDays = SelectedDays.ToList();
+                }
+                else
+                {
+                    ScheduleData.OperatingDays = new List<string> { "Daily Track" };
+                }
+
+                // Build Clean Route Map List
+                var cleanStops = new List<StationStop>();
+
+                // Source Station Build
+                string srcDeparture = Request.Form["ScheduleData.RouteStops[0].DepartureTime"].ToString();
+                cleanStops.Add(new StationStop
+                {
+                    SequenceOrder = 1,
+                    StationName = ScheduleData.SourceStation,
+                    ArrivalTime = "00:00",
+                    DepartureTime = !string.IsNullOrEmpty(srcDeparture) ? srcDeparture : "08:00",
+                    PriceFromSource = 0
                 });
 
-                // Assign the compiled robust array directly to master scheme model pipeline
-                MasterSchedule.Stops = CompiledTransitLineNodes;
+                // Loop through intermediate items in payload
+                var formKeys = Request.Form.Keys.Where(k => k.StartsWith("ScheduleData.RouteStops[") && k.EndsWith("].StationName")).ToList();
+                int currentSeq = 2;
 
-                // Push clean compiled stream element block to MongoDB instance cluster
-                _scheduleCollection.InsertOne(MasterSchedule);
+                foreach (var key in formKeys)
+                {
+                    string indexStr = key.Replace("ScheduleData.RouteStops[", "").Replace("].StationName", "");
+                    if (int.TryParse(indexStr, out int idx) && idx > 0)
+                    {
+                        string stName = Request.Form[$"ScheduleData.RouteStops[{idx}].StationName"].ToString();
+                        if (!string.IsNullOrEmpty(stName))
+                        {
+                            string rawArrival = Request.Form[$"ScheduleData.RouteStops[{idx}].ArrivalTime"].ToString();
+                            string rawDeparture = Request.Form[$"ScheduleData.RouteStops[{idx}].DepartureTime"].ToString();
+                            string rawPrice = Request.Form[$"ScheduleData.RouteStops[{idx}].PriceFromSource"].ToString();
 
-                return RedirectToPage("/Admin/Schedules/Index");
+                            double.TryParse(rawPrice, out double stopPrice);
+
+                            cleanStops.Add(new StationStop
+                            {
+                                SequenceOrder = currentSeq,
+                                StationName = stName,
+                                ArrivalTime = !string.IsNullOrEmpty(rawArrival) ? rawArrival : "12:00",
+                                DepartureTime = !string.IsNullOrEmpty(rawDeparture) ? rawDeparture : "12:30",
+                                PriceFromSource = stopPrice
+                            });
+                            currentSeq++;
+                        }
+                    }
+                }
+
+                // Destination Hub Processing
+                string destArrival = Request.Form["destArrivalTime"].ToString();
+                string destPriceStr = Request.Form["destTotalPrice"].ToString();
+                double.TryParse(destPriceStr, out double destPrice);
+
+                cleanStops.Add(new StationStop
+                {
+                    SequenceOrder = currentSeq,
+                    StationName = ScheduleData.DestinationStation,
+                    ArrivalTime = !string.IsNullOrEmpty(destArrival) ? destArrival : "20:00",
+                    DepartureTime = "00:00",
+                    PriceFromSource = destPrice
+                });
+
+                ScheduleData.RouteStops = cleanStops;
+                ScheduleData.LastUpdated = DateTime.UtcNow;
+                ScheduleData.Id = null; // Forces MongoDB to register as fresh clean record
+
+                var schedulesCollection = _database.GetCollection<Schedule>("Schedules");
+                await schedulesCollection.InsertOneAsync(ScheduleData);
+
+                return RedirectToPage("./Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, $"Transactional database failure: {ex.Message}");
+                await OnGetAsync();
                 return Page();
             }
         }

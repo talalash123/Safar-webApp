@@ -1,56 +1,66 @@
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using Safar.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Safar.Pages.Admin.Schedules
 {
     public class IndexModel : PageModel
     {
-        private readonly IMongoCollection<Train> _trainCollection;
-        private readonly IMongoCollection<Schedule> _scheduleCollection;
-
-        public List<ScheduleCardViewModel> SchedulesMetadataDashboard { get; set; } = new List<ScheduleCardViewModel>();
+        private readonly IMongoDatabase _database;
 
         public IndexModel(IMongoDatabase database)
         {
-            _trainCollection = database.GetCollection<Train>("Trains");
-            _scheduleCollection = database.GetCollection<Schedule>("Schedules");
+            _database = database;
         }
 
-        public void OnGet()
+        // BsonDocument array use kar rahe hain taake model mapping crash ya model missing errors se jaan chote!
+        public List<BsonDocument> MasterTrainFleet { get; set; } = new List<BsonDocument>();
+
+        [BindProperty(SupportsGet = true)]
+        public string SearchTerm { get; set; }
+
+        public async Task OnGetAsync()
         {
-            var trains = _trainCollection.Find(_ => true).ToList();
-            var schedules = _scheduleCollection.Find(_ => true).ToList();
-
-            foreach (var train in trains)
+            try
             {
-                // Core verification link using relational entity parameters mapping
-                var matchingSchedule = schedules.FirstOrDefault(s => s.TrainId == train.TrainId);
+                // Apke database se direct "Trains" collection load ho rahi hai
+                var trainCollection = _database.GetCollection<BsonDocument>("Trains");
 
-                SchedulesMetadataDashboard.Add(new ScheduleCardViewModel
+                if (!string.IsNullOrEmpty(SearchTerm))
                 {
-                    TrainId = train.TrainId,
-                    TrainName = train.Name,
-                    Source = !string.IsNullOrEmpty(train.DefaultSource) ? train.DefaultSource : "Not Set",
-                    Destination = !string.IsNullOrEmpty(train.DefaultDestination) ? train.DefaultDestination : "Not Set",
-                    IsConfigured = matchingSchedule != null,
-                    TotalStopsMapped = matchingSchedule?.Stops?.Count ?? 0,
-                    StopsDetailedCollection = matchingSchedule?.Stops
-                });
+                    var filter = Builders<BsonDocument>.Filter.Regex("LocomotiveEngineProfile", new BsonRegularExpression(SearchTerm, "i"));
+                    MasterTrainFleet = await trainCollection.Find(filter).ToListAsync();
+                }
+                else
+                {
+                    MasterTrainFleet = await trainCollection.Find(_ => true).ToListAsync();
+                }
+            }
+            catch (Exception)
+            {
+                MasterTrainFleet = new List<BsonDocument>();
             }
         }
-    }
 
-    public class ScheduleCardViewModel
-    {
-        public string TrainId { get; set; }
-        public string TrainName { get; set; }
-        public string Source { get; set; }
-        public string Destination { get; set; }
-        public bool IsConfigured { get; set; }
-        public int TotalStopsMapped { get; set; }
-        public List<Stop> StopsDetailedCollection { get; set; }
+        public async Task<IActionResult> OnPostDeleteAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return RedirectToPage();
+
+            try
+            {
+                var trainCollection = _database.GetCollection<BsonDocument>("Trains");
+                if (ObjectId.TryParse(id, out ObjectId objId))
+                {
+                    await trainCollection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("_id", objId));
+                }
+            }
+            catch (Exception) { }
+
+            return RedirectToPage();
+        }
     }
 }

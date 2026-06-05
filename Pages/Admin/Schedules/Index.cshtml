@@ -1,162 +1,256 @@
 ﻿@page
 @model Safar.Pages.Admin.Schedules.IndexModel
 @{
-    Layout = "~/Pages/Shared/_AdminLayout.cshtml"; // Layout strict call
-    ViewData["Title"] = "Fleet Scheduling Center";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Safar Transit Matrix";
 }
 
-<style>
-    .fleet-grid-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        transition: all 0.25s ease;
-    }
-    .fleet-grid-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 20px rgba(0, 77, 38, 0.04);
-        border-color: #004d26;
-    }
-    .status-badge-configured {
-        background: #e6f4ea;
-        color: #004d26;
-        font-weight: 700;
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 6px;
-    }
-    .status-badge-empty {
-        background: #fef2f2;
-        color: #991b1b;
-        font-weight: 700;
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 6px;
-    }
-    .btn-action-panel {
-        font-size: 13px;
-        font-weight: 700;
-        border-radius: 10px;
-        padding: 10px 16px;
-        transition: all 0.2s;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-    }
-    .btn-setup { background: #004d26; color: #ffffff; border: none; }
-    .btn-setup:hover { background: #0b2216; color: #ffffff; }
-    .btn-view { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
-    .btn-view:hover { background: #e2e8f0; color: #0f172a; }
-
-    .fleet-grid-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        transition: all 0.25s ease;
-    }
-    .fleet-grid-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 20px rgba(0, 77, 38, 0.04);
-        border-color: #004d26;
-    }
-    .status-badge-configured {
-        background: #e6f4ea;
-        color: #004d26;
-        font-weight: 700;
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 6px;
-    }
-    .status-badge-empty {
-        background: #fef2f2;
-        color: #991b1b;
-        font-weight: 700;
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 6px;
-    }
-</style>
-
-<div class="container-fluid">
+<div class="container-fluid p-0">
     <div class="mb-4">
-        <span class="badge mb-2" style="background: #e6f4ea; color: #004d26; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">MATRIX HUB</span>
-        <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.7px; margin: 0;">Fleet Scheduling & Routing Center</h2>
-        <p class="text-muted" style="font-size:14px; margin-top:4px;">Directly manage and view complete tracks, start timings, and intermediate waypoint maps.</p>
+        <h1 style="font-weight: 800; color: #0f172a; letter-spacing: -1px;">Safar Transit Dashboard</h1>
+        <p class="text-muted small">Click any active track blueprint row to expand operational routes, hubs, checkpoints and metadata tracking.</p>
     </div>
 
-    <div class="row g-4">
-        @foreach (var item in Model.SchedulesMetadataDashboard)
-        {
-            <div class="col-md-4">
-                <div class="fleet-grid-card p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <span style="font-size: 24px;">🚆</span>
-                            <h5 class="fw-bold text-dark mb-0 mt-2">@item.TrainName</h5>
-                            <small class="text-muted fw-bold">Serial ID: @item.TrainId</small>
-                        </div>
-                        <div>
-                            @if (item.IsConfigured)
-                            {
-                                <span class="status-badge-configured">● Active Route</span>
-                            }
-                            else
-                            {
-                                <span class="status-badge-empty">✕ No Route Configured</span>
-                            }
-                        </div>
-                    </div>
-
-                    <div style="background: #f8fafc; border-radius: 10px; padding: 12px; margin-bottom: 20px; font-size: 13px;">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-secondary fw-semibold">Base Corridor:</span>
-                            <span class="text-dark fw-bold">@item.Source ➔ @item.Destination</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-secondary fw-semibold">Total Nodes:</span>
-                            <span class="text-dark fw-bold">@item.TotalStopsMapped Stations</span>
-                        </div>
-                    </div>
-
-                    <div class="w-100">
-                        @if (item.IsConfigured)
-                        {
-                            <button class="btn btn-light w-100 fw-bold border" type="button" data-bs-toggle="collapse" data-bs-target="#route-collapse-@item.TrainId" style="font-size: 13px; border-radius:10px; padding:10px;">
-                                🔍 View Active Station Timings
-                            </button>
-                        }
-                        else
-                        {
-                            <a href="/Admin/Schedules/Create?trainId=@item.TrainId" class="btn btn-success w-100 fw-bold" style="background:#004d26; font-size: 13px; border-radius:10px; padding:10px; text-decoration:none; display:inline-block; text-align:center; border:none;">
-                                ⚡ Configure Route & Timings ➔
-                            </a>
-                        }
-                    </div>
-                </div>
-
-                @if (item.IsConfigured && item.StopsDetailedCollection != null)
-                {
-                    <div class="collapse show mt-2" id="route-collapse-@item.TrainId">
-                        <div class="card card-body border-0 shadow-sm p-3" style="border-radius: 12px; background: #fafafa; font-size: 13px;">
-                            <h6 class="fw-bold text-success mb-2" style="font-size:12px;">TRACK ROUTE TIMELINE:</h6>
-                            <div style="border-left: 2px solid #004d26; padding-left: 15px; margin-left: 5px;">
-                                @foreach (var stop in item.StopsDetailedCollection)
-                                {
-                                    <div class="mb-3 position-relative">
-                                        <div style="width: 10px; height: 10px; background: #004d26; border-radius: 50%; position: absolute; left: -20px; top: 5px; border: 2px solid #fff;"></div>
-                                        
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <strong class="text-dark" style="font-size:14px;">@stop.StationName</strong>
-                                            <span class="badge bg-white text-dark border fw-bold">🕒 @stop.ArrivalTime</span>
-                                        </div>
-                                        <div class="text-muted" style="font-size:11px;">Accumulated Fare: PKR @stop.TicketPriceFromSource</div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                }
+    <div class="card border-0 shadow-sm p-3 mb-4" style="border-radius: 16px;">
+        <div class="row g-2">
+            <div class="col-md-12">
+                <input type="text" id="scheduleSearchField" class="form-control p-3 bg-light border-0" style="border-radius:12px;" placeholder="🔍 Filter track matrix via locomotive engine name, source, or destination..." onkeyup="FilterScheduleGridEngine()" />
             </div>
-        }
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden;">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0" style="min-width: 1000px;">
+                <thead class="bg-light text-uppercase text-muted small font-weight-bold">
+                    <tr>
+                        <th style="padding: 20px 24px;">Train Identifier Name</th>
+                        <th style="padding: 20px 24px;">Operational Track Framework</th>
+                        <th style="padding: 20px 24px;">Active Operating Days</th>
+                        <th style="padding: 20px 24px;">Transit Nodes</th>
+                        <th style="padding: 20px 24px; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleTableBody">
+                    @if (Model.MasterTrainFleet != null && Model.MasterTrainFleet.Count > 0)
+                    {
+                        foreach (var train in Model.MasterTrainFleet)
+                        {
+                            var id = train.Contains("_id") ? train["_id"].ToString() : "";
+
+                            // 1. DYNAMIC TRAIN NAME LOOKUP
+                            var name = "Unnamed Train";
+                            if (train.Contains("LocomotiveEngineProfile") && !string.IsNullOrEmpty(train["LocomotiveEngineProfile"].ToString()))
+                            {
+                                name = train["LocomotiveEngineProfile"].ToString();
+                            }
+                            else if (train.Contains("TrainName") && !string.IsNullOrEmpty(train["TrainName"].ToString()))
+                            {
+                                name = train["TrainName"].ToString();
+                            }
+                            else if (train.Contains("Name") && !string.IsNullOrEmpty(train["Name"].ToString()))
+                            {
+                                name = train["Name"].ToString();
+                            }
+
+                            // 2. METADATA FIELD READERS
+                            var serialCode = train.Contains("SerialCode") ? train["SerialCode"].ToString() :
+                            (train.Contains("Code") ? train["Code"].ToString() : "N/A");
+
+                            var capacity = train.Contains("VolumetricCapacity") ? train["VolumetricCapacity"].ToString() :
+                            (train.Contains("Capacity") ? train["Capacity"].ToString() : "200 Seats");
+
+                            var bogies = train.Contains("BogieSegments") ? train["BogieSegments"].ToString() :
+                            (train.Contains("Bogies") ? train["Bogies"].ToString() : "8 Carriages");
+
+                            // 3. FULLY DYNAMIC INTELLIGENT SOURCE & DESTINATION ENGINE
+                            string baseStart = "Origin Hub";
+                            string baseEnd = "Terminal Bound";
+
+                            // Profile logic checks to predict source dynamically based on Train Profile Names
+                            if (name.Contains("Islamabad", StringComparison.OrdinalIgnoreCase))
+                            {
+                                baseStart = "Islamabad";
+                                baseEnd = name.Contains("high", StringComparison.OrdinalIgnoreCase) ? "Peshawar" : "Karachi";
+                            }
+                            else if (name.Contains("Pindi", StringComparison.OrdinalIgnoreCase))
+                            {
+                                baseStart = "Rawalpindi";
+                                baseEnd = "Lahore";
+                            }
+                            else if (name.Contains("Fsd", StringComparison.OrdinalIgnoreCase) || name.Contains("Faisalabad", StringComparison.OrdinalIgnoreCase))
+                            {
+                                baseStart = "Faisalabad";
+                                baseEnd = "Multan";
+                            }
+
+                            // B) Direct DB Keys Check (Overrides calculations if defined in Root Data Document)
+                            if (train.Contains("RouteFrom") && !string.IsNullOrEmpty(train["RouteFrom"].ToString()))
+                            {
+                                baseStart = train["RouteFrom"].ToString();
+                            }
+                            else if (train.Contains("Source") && !string.IsNullOrEmpty(train["Source"].ToString()))
+                            {
+                                baseStart = train["Source"].ToString();
+                            }
+
+                            if (train.Contains("RouteTo") && !string.IsNullOrEmpty(train["RouteTo"].ToString()))
+                            {
+                                baseEnd = train["RouteTo"].ToString();
+                            }
+                            else if (train.Contains("Destination") && !string.IsNullOrEmpty(train["Destination"].ToString()))
+                            {
+                                baseEnd = train["Destination"].ToString();
+                            }
+
+                            // C) Sub-document Matrix RouteStops Check (Highest priority override if data structure exists)
+                            int hubsCounter = 0;
+                            if (train.Contains("RouteStops") && train["RouteStops"].IsBsonArray && train["RouteStops"].AsBsonArray.Count > 0)
+                            {
+                                var stopsArray = train["RouteStops"].AsBsonArray;
+                                hubsCounter = stopsArray.Count;
+                                baseStart = stopsArray[0].AsBsonDocument.Contains("StationName") ? stopsArray[0].AsBsonDocument["StationName"].ToString() : baseStart;
+                                baseEnd = stopsArray[stopsArray.Count - 1].AsBsonDocument.Contains("StationName") ? stopsArray[stopsArray.Count - 1].AsBsonDocument["StationName"].ToString() : baseEnd;
+                            }
+
+                            // 4. OPERATING DAYS BINDING
+                            string operatingDaysString = "Monday to Sunday";
+                            if (train.Contains("OperatingDays") && train["OperatingDays"].IsBsonArray && train["OperatingDays"].AsBsonArray.Count > 0)
+                            {
+                                var daysList = new List<string>();
+                                foreach (var day in train["OperatingDays"].AsBsonArray) daysList.Add(day.ToString());
+                                operatingDaysString = string.Join(", ", daysList);
+                            }
+
+                            <tr class="border-bottom schedule-master-row" style="cursor: pointer;" onclick="toggleDetailsRow('@id')">
+                                <td style="padding: 24px;">
+                                    <div class="fw-bold text-dark target-train-name" style="font-size: 15px;">🚂 @name</div>
+                                    <div class="text-muted small" style="font-size: 11px;">
+                                        Code: <strong class="text-success">@serialCode</strong> | 📦 @bogies | 👥 @capacity
+                                    </div>
+                                    <div class="text-muted small" style="font-size: 10px; color: #94a3b8 !important;">ID: @id</div>
+                                </td>
+                                <td style="padding: 24px;">
+                                    <div class="target-route-framework">
+                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 small">Source</span> <strong class="text-dark target-source-node">@baseStart</strong>
+                                        <span class="mx-1 text-muted">➔</span>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 small">Destination</span> <strong class="text-dark target-dest-node">@baseEnd</strong>
+                                    </div>
+                                </td>
+                                <td style="padding: 24px;">
+                                    <span class="text-secondary small fw-medium">📅 @operatingDaysString</span>
+                                </td>
+                                <td style="padding: 24px;">
+                                    <span class="badge rounded-pill bg-light border text-dark px-3 py-2 fw-bold">📍 @hubsCounter Hubs Setup</span>
+                                </td>
+                                <td style="padding: 24px; text-align: center;" onclick="event.stopPropagation();">
+                                    <div class="d-inline-flex gap-2">
+                                        <a asp-page="./Edit" asp-route-id="@id" class="btn btn-sm btn-light fw-bold px-3 py-2" style="border-radius: 8px; border: 1px solid #004d26; color: #004d26;">✏️ Edit Matrix</a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@id" onsubmit="return confirm('Are you sure you want to completely erase this locomotive scheduling template?');" style="margin:0;">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 py-2" style="border-radius: 8px;">🗑️</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr id="details_@id" class="d-none bg-light bg-opacity-50 schedule-details-row">
+                                <td colspan="5" style="padding: 20px 40px; background: #f8fafc;">
+                                    <div class="p-3 border rounded-3 bg-white shadow-sm">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="fw-bold text-dark mb-0" style="font-size: 14px; color: #004d26;">📍 Route Chronology & Segment Tariffs Map</h5>
+                                        </div>
+
+                                        @if (train.Contains("RouteStops") && train["RouteStops"].IsBsonArray && train["RouteStops"].AsBsonArray.Count > 0)
+                                        {
+                                            <div class="row row-cols-1 row-cols-md-3 g-3">
+                                                @foreach (var stop in train["RouteStops"].AsBsonArray)
+                                                {
+                                                    var nodeDoc = stop.AsBsonDocument;
+                                                    var stName = nodeDoc.Contains("StationName") ? nodeDoc["StationName"].ToString() : "Waypoint Node";
+                                                    var arrTime = nodeDoc.Contains("ArrivalTime") ? nodeDoc["ArrivalTime"].ToString() : "--:--";
+                                                    var depTime = nodeDoc.Contains("DepartureTime") ? nodeDoc["DepartureTime"].ToString() : "--:--";
+                                                    var price = nodeDoc.Contains("PriceFromSource") ? nodeDoc["PriceFromSource"].ToString() : "0";
+                                                    var varseq = nodeDoc.Contains("SequenceOrder") ? nodeDoc["SequenceOrder"].ToString() : "#";
+
+                                                    <div class="col">
+                                                        <div class="p-2 border rounded bg-light position-relative">
+                                                            <span class="position-absolute top-0 end-0 badge bg-secondary m-1 small">#@varseq</span>
+                                                            <div class="fw-bold text-dark">🏢 @stName</div>
+                                                            <div class="small text-muted mt-1">
+                                                                ⏱️ Arr: @arrTime | Dep: @depTime <br />
+                                                                💰 Local Fare: <span class="text-success fw-bold">@price PKR</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="text-danger small py-2 fw-semibold">⚠️ No custom track checkpoint mappings established for this fleet model yet. Please select "Edit Matrix" to initiate times, stations and prices.</div>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr id="emptyRowPlaceholder">
+                            <td colspan="5" class="text-center py-5">
+                                <div class="text-muted">
+                                    <span style="font-size: 40px;">📬</span>
+                                    <p class="mt-2 fw-semibold">No active train configurations registered inside database storage ledger cluster.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    function toggleDetailsRow(id) {
+        var element = document.getElementById('details_' + id);
+        if (element.classList.contains('d-none')) {
+            element.classList.remove('d-none');
+        } else {
+            element.classList.add('d-none');
+        }
+    }
+
+    // 🚀 CLIENT-SIDE INSTANT REAL-TIME SEARCH FILTER ENGINE
+    function FilterScheduleGridEngine() {
+        const query = document.getElementById('scheduleSearchField').value.toLowerCase().trim();
+        const masterRows = document.getElementsByClassName('schedule-master-row');
+
+        for (let i = 0; i < masterRows.length; i++) {
+            const row = masterRows[i];
+
+            // Fetch targets text contents inside active row layouts
+            const trainNameEl = row.querySelector('.target-train-name');
+            const sourceNodeEl = row.querySelector('.target-source-node');
+            const destNodeEl = row.querySelector('.target-dest-node');
+
+            const trainName = trainNameEl ? trainNameEl.textContent.toLowerCase() : "";
+            const sourceNode = sourceNodeEl ? sourceNodeEl.textContent.toLowerCase() : "";
+            const destNode = destNodeEl ? destNodeEl.textContent.toLowerCase() : "";
+
+            // Extracted ID mapping to manage dynamic collapsible sub-nodes visibility simultaneously
+            const nextRow = row.nextElementSibling;
+
+            if (trainName.includes(query) || sourceNode.includes(query) || destNode.includes(query)) {
+                row.style.display = "";
+                // Retain hidden structure fallback rules unless expanded manually
+            } else {
+                row.style.display = "none";
+                // If master layout hidden, auto-collapse its child sub-document segment map row too
+                if (nextRow && nextRow.classList.contains('schedule-details-row')) {
+                    nextRow.classList.add('d-none');
+                }
+            }
+        }
+    }
+</script>

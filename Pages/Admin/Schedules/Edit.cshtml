@@ -1,0 +1,218 @@
+﻿@page
+@model Safar.Pages.Admin.Schedules.EditModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Configure Operational Tracking Matrix";
+}
+
+<style>
+    .glass-form-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 950px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        margin-top: 24px;
+    }
+
+    .premium-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 9px;
+        display: block;
+    }
+
+    .premium-input {
+        width: 100%;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #0f172a;
+        outline: none;
+    }
+
+    .readonly-input {
+        background: #e2e8f0 !important;
+        color: #334155 !important;
+        font-weight: 600;
+        cursor: not-allowed;
+    }
+
+    .terminal-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .day-pill-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+
+    .day-checkbox {
+        display: none;
+    }
+
+    .day-label {
+        padding: 10px 20px;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .day-checkbox:checked + .day-label {
+        background: rgba(0, 77, 38, 0.08);
+        color: #004d26;
+        border: 1px solid rgba(0, 77, 38, 0.2);
+    }
+
+    .stop-row {
+        background: #fdfefe;
+        border: 1px solid #f1f5f9;
+    }
+</style>
+
+<div class="container-fluid p-0">
+    <div class="mb-4">
+        <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.8px;">Configure Operational Matrix</h2>
+        <p class="text-muted small">Update custom routing bounds, timetables clock frames and dynamic tariff checkpoints below.</p>
+    </div>
+
+    <div class="glass-form-card">
+        <form method="post">
+            <input type="hidden" asp-for="TrainId" />
+
+            <div class="mb-4">
+                <label class="premium-label">Selected Locomotive Target Engine Profile</label>
+                <input type="text" asp-for="TrainName" class="premium-input readonly-input" readonly />
+            </div>
+
+            <div class="mb-4">
+                <label class="premium-label">Select Weekly Operational Track Days</label>
+                <div class="day-pill-box">
+                    @{
+                        string[] days = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+                        foreach (var day in days)
+                        {
+                            bool isChecked = Model.CurrentOperatingDays.Contains(day);
+                            <input type="checkbox" name="SelectedDays" value="@day" id="day_@day" class="day-checkbox" @(isChecked ? "checked" : "") />
+                            <label for="day_@day" class="day-label">@day</label>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div>
+                <h4 style="font-weight: 700; color: #0f172a; font-size: 16px;" class="mb-3">🏁 Define Routing Framework Map</h4>
+
+                <div class="terminal-card">
+                    <span class="badge bg-success text-white mb-3 px-3 py-2">📍 Initial Source Station Base</span>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="premium-label">Station Origin Location</label>
+                            <input type="text" asp-for="SourceInputStation" class="premium-input" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="premium-label">Departure Clock Time</label>
+                            <input type="time" name="SourceDepartureTime" class="premium-input" value="@Model.ExistingSourceDepartureTime" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="premium-label">Base Tariff Rate</label>
+                            <input type="text" class="premium-input" value="0 PKR (Origin Base)" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="premium-label">Tracks Intermediate Stopovers Hubs Setup</label>
+                    <table class="table align-middle">
+                        <thead class="small text-muted text-uppercase fw-bold">
+                            <tr>
+                                <th style="width: 5%;">Seq</th>
+                                <th style="width: 35%;">Station Name</th>
+                                <th style="width: 20%;">Arrival</th>
+                                <th style="width: 20%;">Departure</th>
+                                <th style="width: 15%;">Fare from Base (PKR)</th>
+                                <th style="width: 5%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="stopsContainer"></tbody>
+                    </table>
+                    <button type="button" class="btn btn-light w-100 p-3 border fw-bold text-success" style="border-radius:10px;" onclick="addNewStopRow()">➕ Append Intermediate Route Node</button>
+                </div>
+
+                <div class="terminal-card mt-4">
+                    <span class="badge bg-danger text-white mb-3 px-3 py-2">🏁 Final Terminal Route Bound</span>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="premium-label">Terminal Destination Location</label>
+                            <input type="text" asp-for="DestinationInputStation" class="premium-input" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="premium-label">Arrival Clock Time</label>
+                            <input type="time" name="DestArrivalTime" class="premium-input" value="@Model.ExistingDestArrivalTime" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="premium-label">Total Full Journey Price (PKR)</label>
+                            <input type="number" step="1" name="DestTotalPrice" class="premium-input" value="@Model.ExistingDestTotalPrice" placeholder="e.g., 2500" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-4">
+                <div class="col-md-8">
+                    <button type="submit" class="btn btn-success p-3 w-100 fw-bold" style="background: #004d26; border-radius:12px;">💾 Commit Operational Matrix Settings</button>
+                </div>
+                <div class="col-md-4">
+                    <a asp-page="./Index" class="btn btn-light w-100 p-3" style="border-radius: 12px; font-weight: 600;">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let stopIndex = 1;
+
+        function addNewStopRow() {
+            const container = document.getElementById('stopsContainer');
+            const tr = document.createElement('tr');
+            tr.className = 'stop-row';
+            tr.innerHTML = `
+                                <td class="fw-bold text-muted seq align-middle"></td>
+                                <td><input type="text" name="RouteStops[${stopIndex}].StationName" class="premium-input" placeholder="e.g. Lahore Station" required /></td>
+                                <td><input type="time" name="RouteStops[${stopIndex}].ArrivalTime" class="premium-input" value="12:00" required /></td>
+                                <td><input type="time" name="RouteStops[${stopIndex}].DepartureTime" class="premium-input" value="12:30" required /></td>
+                                <td><input type="number" step="1" name="RouteStops[${stopIndex}].PriceFromSource" class="premium-input" placeholder="e.g. 1200" required /></td>
+                                <td><button type="button" class="btn btn-sm btn-outline-danger border-0" onclick="this.closest('tr').remove(); reindexStops();">✕</button></td>
+                            `;
+            container.appendChild(tr);
+            stopIndex++;
+            reindexStops();
+        }
+
+        function reindexStops() {
+            const rows = document.querySelectorAll('#stopsContainer .stop-row');
+            rows.forEach((row, idx) => {
+                row.querySelector('.seq').innerText = idx + 1;
+            });
+        }
+    </script>
+}

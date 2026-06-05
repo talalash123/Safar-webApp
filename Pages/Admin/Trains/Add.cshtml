@@ -3,22 +3,32 @@
 @{
     ViewData["Title"] = "Deploy Sovereign Asset";
 }
-
 <style>
+    /* Premium Glassmorphic Form Container */
     .glass-form-card {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(226, 232, 240, 0.8);
         border-radius: 20px;
         padding: 40px;
         max-width: 750px;
-        box-shadow: 0 10px 25px rgba(0, 77, 38, 0.02);
-        margin-top: 20px;
+        box-shadow: 0 20px 40px -15px rgba(0, 77, 38, 0.03), 0 8px 16px -8px rgba(15, 23, 42, 0.01);
+        margin-top: 24px;
+        position: relative;
+    }
+
+    /* Optional: Form Rows Layout Wrapper for multi-column inputs */
+    .form-row-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 
     .input-wrapper {
         margin-bottom: 24px;
+        position: relative;
     }
 
+    /* Clean Corporate Labels */
     .premium-label {
         font-size: 11px;
         font-weight: 700;
@@ -27,8 +37,14 @@
         letter-spacing: 0.8px;
         margin-bottom: 9px;
         display: block;
+        transition: color 0.2s ease;
     }
 
+    .input-wrapper:focus-within .premium-label {
+        color: #004d26; /* Input active hone par label color smoothly highlight hoga */
+    }
+
+    /* High-End Enterprise Inputs */
     .premium-input {
         width: 100%;
         padding: 14px 18px;
@@ -39,37 +55,85 @@
         font-weight: 500;
         color: #0f172a;
         outline: none;
-        transition: all 0.25s ease;
+        box-sizing: border-box;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+        /* Interactive Focus States */
         .premium-input:focus {
             border-color: #004d26;
             background: #ffffff;
             box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.06);
         }
 
+        /* Placeholder Styling for matching sleek aesthetic */
+        .premium-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* Elegant Error Handling (Razor Pages validation error compatibility) */
+        .premium-input.input-validation-error {
+            border-color: #ef4444 !important;
+            background: #fffafb;
+        }
+
+            .premium-input.input-validation-error:focus {
+                box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08) !important;
+            }
+
+    /* High-Performance Submit/Sync Button */
     .btn-sync-fleet {
         background: #004d26;
         color: #ffffff;
         font-weight: 700;
         font-size: 14px;
+        letter-spacing: -0.1px;
         padding: 16px 32px;
         border: none;
         border-radius: 12px;
         width: 100%;
         cursor: pointer;
-        transition: all 0.2s ease;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        box-shadow: 0 4px 12px rgba(0, 77, 38, 0.15);
+        box-shadow: 0 10px 20px -6px rgba(0, 77, 38, 0.25);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+        /* Micro-interactions on Hover & Click active states */
         .btn-sync-fleet:hover {
-            background: #0b2216;
-            transform: translateY(-1px);
+            background: #06391d;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -5px rgba(0, 77, 38, 0.35);
         }
+
+        .btn-sync-fleet:active {
+            transform: translateY(0) scale(0.98); /* Click par real compression effect milega */
+        }
+
+        /* Sync Button Loading state support (if applied in operations) */
+        .btn-sync-fleet i, .btn-sync-fleet svg {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-sync-fleet:hover i, .btn-sync-fleet:hover svg {
+            transform: scale(1.1);
+        }
+
+    /* Responsive adjustment for forms built inside grid layout rows */
+    @@media (max-width: 768px) {
+        .form-row-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .glass-form-card {
+            padding: 24px;
+        }
+    }
 </style>
 
 <div class="container-fluid" style="max-width: 750px; margin-top: 20px;">

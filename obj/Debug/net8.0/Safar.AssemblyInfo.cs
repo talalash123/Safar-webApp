@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Safar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9170f323a7fc5fc6b43fd662367d7984253b3637")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+195b59bded947dc1f968f1e685bbc7d61a4a8451")]
 [assembly: System.Reflection.AssemblyProductAttribute("Safar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Safar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

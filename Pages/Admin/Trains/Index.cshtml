@@ -4,93 +4,184 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "Pakistan Fleet Infrastructure";
 }
-
 <style>
+    /* Premium Data Registry Card Wrapper */
     .registry-block {
         background: #ffffff;
-        border: 1px solid #f1f5f9;
+        border: 1px solid rgba(226, 232, 240, 0.8);
         border-radius: 16px;
         padding: 28px;
-        box-shadow: 0 4px 20px rgba(15,23,42,0.01);
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.01), 0 4px 12px -5px rgba(15, 23, 42, 0.005);
+        margin-top: 20px;
     }
 
+    /* Top Control bar layout helper */
+    .registry-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    /* Enterprise Search & Filter Box */
     .search-filter-box {
-        padding: 12px 16px;
+        padding: 12px 18px;
         background: #f8fafc;
         border: 1.5px solid #e2e8f0;
         border-radius: 12px;
-        width: 320px;
+        width: 340px;
         font-size: 14px;
+        font-weight: 500;
+        color: #0f172a;
         outline: none;
-        transition: all 0.2s;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
         .search-filter-box:focus {
             border-color: #004d26;
             background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.06);
         }
 
+        .search-filter-box:choose {
+            color: #94a3b8;
+        }
+
+    /* High-End Clean Data Table Integration */
+    .registry-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 8px;
+    }
+
+        .registry-table th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .registry-table td {
+            padding: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+            transition: background 0.2s ease;
+        }
+
+        .registry-table tr:hover td {
+            background: #f8fafc;
+        }
+
+    /* Action Node Micro-Icon Buttons Setup */
     .action-icon-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
         border: none;
         text-decoration: none;
-        transition: all 0.2s;
-        font-size: 15px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 14px;
     }
 
+    /* Neutral Edit Node Trigger */
     .btn-edit-node {
         background: #f1f5f9;
-        color: #334155;
+        color: #475569;
     }
 
         .btn-edit-node:hover {
             background: #e2e8f0;
             color: #0f172a;
+            transform: translateY(-1px);
         }
 
+    /* High-Alert Destructive Delete Trigger */
     .btn-delete-node {
         background: #fef2f2;
-        color: #991b1b;
-        margin-left: 6px;
+        color: #b91c1c;
+        margin-left: 8px;
     }
 
         .btn-delete-node:hover {
             background: #fee2e2;
-            color: #7f1d1d;
+            color: #991b1b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
         }
 
+        .btn-delete-node:active, .btn-edit-node:active {
+            transform: translateY(0);
+        }
+
+    /* Dynamic Deployment Action Call-To-Action */
     .btn-deploy {
         background: #004d26;
         color: white;
-        border-radius: 10px;
-        padding: 12px 20px;
+        border-radius: 12px;
+        padding: 14px 24px;
         font-weight: 700;
         text-decoration: none;
         font-size: 14px;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        box-shadow: 0 8px 16px -4px rgba(0, 77, 38, 0.25);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
         .btn-deploy:hover {
-            background: #002611;
+            background: #06391d;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -4px rgba(0, 77, 38, 0.35);
         }
 
+        .btn-deploy:active {
+            transform: translateY(0);
+        }
+
+    /* Minimalist Operational Metric Badges */
     .pak-badge {
         font-size: 10px;
         font-weight: 800;
-        background: #e6f4ea;
+        background: rgba(0, 77, 38, 0.06);
         color: #004d26;
-        padding: 2px 6px;
-        border-radius: 4px;
+        padding: 4px 8px;
+        border-radius: 6px;
         vertical-align: middle;
-        margin-left: 6px;
+        margin-left: 8px;
+        letter-spacing: 0.2px;
+        border: 1px solid rgba(0, 77, 38, 0.08);
+    }
+
+    /* Responsive Grid Compensations */
+    @@media (max-width: 768px) {
+        .registry-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+
+        .search-filter-box {
+            width: 100%;
+        }
+
+        .registry-block {
+            padding: 16px;
+            overflow-x: auto;
+        }
     }
 </style>
 
@@ -103,10 +194,9 @@
 </div>
 
 <div class="registry-block">
-    <!-- Real-time Filter Dynamic UI Header Node -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <input type="text" id="fleetSearchField" class="search-filter-box" placeholder="🔍 Filter by Train Name or Code..." onkeyup="FilterFleetGridEngine()" />
-        <span class="text-muted style-span" style="font-size: 13px; font-weight: 600;">Showing <span id="activeCount">@Model.PakistanFleetRegistry.Count</span> Active Deployed Units</span>
+        <span class="text-muted style-span" style="font-size: 13px; font-weight: 600;">Showing <span id="activeCount">@(Model.PakistanFleetRegistry?.Count ?? 0)</span> Active Deployed Units</span>
     </div>
 
     <table class="table table-borderless align-middle mb-0" id="fleetDataTable">
@@ -114,6 +204,7 @@
             <tr style="border-bottom: 1.5px solid #f1f5f9; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
                 <th>Serial Code</th>
                 <th>Locomotive Engine Profile</th>
+                <th>Operational Track Framework</th>
                 <th>Volumetric Capacity</th>
                 <th>Bogie Segments</th>
                 <th>Status State</th>
@@ -121,10 +212,10 @@
             </tr>
         </thead>
         <tbody style="font-size: 14px; font-weight: 500;">
-            @if (!Model.PakistanFleetRegistry.Any())
+            @if (Model.PakistanFleetRegistry == null || !Model.PakistanFleetRegistry.Any())
             {
                 <tr id="emptyPlaceholder">
-                    <td colspan="6" class="text-center text-muted py-5">
+                    <td colspan="7" class="text-center text-muted py-5">
                         <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
                         <div style="font-weight: 700; color: #334155;">Sovereign Registry Vector Empty</div>
                         <div style="font-size: 12px; color: #94a3b8;">No registered locomotive entities discovered inside the database pipeline.</div>
@@ -136,19 +227,34 @@
                 @foreach (var train in Model.PakistanFleetRegistry)
                 {
                     <tr style="border-bottom: 1px solid #f8fafc;" class="fleet-row-item">
-                        <td style="font-weight: 800; color: #0f172a;" class="target-train-id">@train.TrainId</td>
-                        <td class="target-train-name" style="font-weight:600; color:#334155;">
-                            @train.Name <span class="pak-badge">PAK-RAIL</span>
+                        <td style="font-weight: 800; color: #0f172a;" class="target-train-id">
+                            @(string.IsNullOrEmpty(train.TrainId) ? "N/A" : train.TrainId)
                         </td>
-                        <td>@train.TotalCapacity Seats</td>
-                        <td>@train.TotalBogies Carriages</td>
+                        <td class="target-train-name" style="font-weight:600; color:#334155;">
+                            @(string.IsNullOrEmpty(train.Name) ? "Unnamed Train" : train.Name) <span class="pak-badge">PAK-RAIL</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2" style="font-size: 13px;">
+                                <span class="badge bg-light text-dark border px-2 py-1">Source</span>
+                                <span style="color: #004d26; font-weight: 700;">@(string.IsNullOrEmpty(train.DefaultSource) ? "Islamabad" : train.DefaultSource)</span>
+                                <span class="text-muted">➔</span>
+                                <span class="badge bg-light text-dark border px-2 py-1">Destination</span>
+                                <span style="color: #b91c1c; font-weight: 700;">@(string.IsNullOrEmpty(train.DefaultDestination) ? "Karachi" : train.DefaultDestination)</span>
+                            </div>
+                        </td>
+                        <td>
+                            @(string.IsNullOrEmpty(train.TotalCapacity) ? "0 Seats" : train.TotalCapacity.Contains("Seats") ? train.TotalCapacity : train.TotalCapacity + " Seats")
+                        </td>
+
+                        <td>
+                            @(string.IsNullOrEmpty(train.TotalBogies) ? "0 Carriages" : train.TotalBogies.Contains("Carriages") ? train.TotalBogies : train.TotalBogies + " Carriages")
+                        </td>
                         <td>
                             <span class="badge @(train.Status == "Active" ? "bg-success" : "bg-warning")" style="font-weight:700; font-size:11px;">
-                                @train.Status
+                                @(string.IsNullOrEmpty(train.Status) ? "Active" : train.Status)
                             </span>
                         </td>
                         <td class="text-end" style="padding-right: 12px;">
-                            <!-- Executable Edit and Delete Context Nodes -->
                             <a href="/Admin/Trains/Edit?id=@train.Id" class="action-icon-btn btn-edit-node" title="Edit Parameters">⚙️</a>
                             <a href="/Admin/Trains/Index?handler=PurgeAssetNode&id=@train.Id"
                                onclick="return confirm('Are you completely sure you want to permanently delete this locomotive instance from the sovereign registry matrix?')"
@@ -169,8 +275,12 @@
             let counter = 0;
 
             for (let i = 0; i < rows.length; i++) {
-                const trainId = rows[i].querySelector('.target-train-id').textContent.toLowerCase();
-                const trainName = rows[i].querySelector('.target-train-name').textContent.toLowerCase();
+                const idEl = rows[i].querySelector('.target-train-id');
+                const nameEl = rows[i].querySelector('.target-train-name');
+
+                // Safe checks inside Javascript to avoid crashes
+                const trainId = idEl ? idEl.textContent.toLowerCase() : "";
+                const trainName = nameEl ? nameEl.textContent.toLowerCase() : "";
 
                 if (trainId.includes(query) || trainName.includes(query)) {
                     rows[i].style.display = "";
@@ -179,7 +289,10 @@
                     rows[i].style.display = "none";
                 }
             }
-            document.getElementById('activeCount').textContent = counter;
+            const activeCountEl = document.getElementById('activeCount');
+            if (activeCountEl) {
+                activeCountEl.textContent = counter;
+            }
         }
     </script>
 }
