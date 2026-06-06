@@ -13,6 +13,22 @@ namespace Safar.Pages.Admin.Trains
         [BindProperty]
         public Train NewTrain { get; set; } = new Train();
 
+        // ?? Class Matrix Dynamic ViewBindings
+        [BindProperty]
+        public int EconomyBogies { get; set; }
+        [BindProperty]
+        public int EconomySeatsPerBogie { get; set; } = 72;
+
+        [BindProperty]
+        public int BusinessBogies { get; set; }
+        [BindProperty]
+        public int BusinessSeatsPerBogie { get; set; } = 48;
+
+        [BindProperty]
+        public int ExecutiveBogies { get; set; }
+        [BindProperty]
+        public int ExecutiveSeatsPerBogie { get; set; } = 30;
+
         public AddModel(IMongoDatabase database)
         {
             _trainCollection = database.GetCollection<Train>("Trains");
@@ -20,15 +36,18 @@ namespace Safar.Pages.Admin.Trains
 
         public void OnGet()
         {
-            // Default active set karein jab page load ho
-            NewTrain = new Train { Status = "Active" };
+            // Clean states mapping - Koi defaults backend se input areas mein nahi jayengi
+            NewTrain = new Train
+            {
+                Status = "Active",
+                DefaultSource = "",
+                DefaultDestination = ""
+            };
         }
 
         public IActionResult OnPost()
         {
-            // Modifying validation pipeline check: 
-            // Agar default ya automatic properties (jaise Id) ki wajah se state fail ho rhi hai, 
-            // to hum manual check karenge taake system choke na ho.
+            // Manual validation check for required core properties to prevent pipeline chokes
             if (string.IsNullOrEmpty(NewTrain.TrainId) || string.IsNullOrEmpty(NewTrain.Name))
             {
                 ModelState.AddModelError(string.Empty, "Train Code and Locomotive Model Name are strictly required.");
@@ -37,16 +56,24 @@ namespace Safar.Pages.Admin.Trains
 
             try
             {
-                // Force check: Agar status field bypass hui ho to safe assignment karein
+                // Status failback guarantee configuration
                 if (string.IsNullOrEmpty(NewTrain.Status))
                 {
                     NewTrain.Status = "Active";
                 }
 
-                // Core MongoDB Ingestion
+                // ?? Injecting the Dynamic Class Breakdown Layer into our verified Train entity
+                NewTrain.ClassDistribution = new ClassDistributionConfig
+                {
+                    Economy = new ClassMetrics { BogiesCount = EconomyBogies, SeatsPerBogie = EconomySeatsPerBogie },
+                    Business = new ClassMetrics { BogiesCount = BusinessBogies, SeatsPerBogie = BusinessSeatsPerBogie },
+                    Executive = new ClassMetrics { BogiesCount = ExecutiveBogies, SeatsPerBogie = ExecutiveSeatsPerBogie }
+                };
+
+                // Synchronous MongoDB cluster ingestion pipeline execution
                 _trainCollection.InsertOne(NewTrain);
 
-                // Absolute Redirect: Record add hote hi direct Fleet Management ledger table par jump karein
+                // Absolute Redirect back onto fleet verification list ledger dashboard
                 return RedirectToPage("/Admin/Trains/Index");
             }
             catch (Exception ex)

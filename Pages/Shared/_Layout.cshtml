@@ -3,42 +3,137 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Safar</title>
+    <title>@ViewData["Title"] - Safar Terminal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Safar.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-navbar {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02) !important;
+            padding: 16px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+            transition: transform 0.2s ease;
+        }
+
+            .navbar-brand:hover {
+                transform: scale(1.02);
+            }
+
+        .nav-link-custom {
+            color: #475569 !important;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 16px !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+            .nav-link-custom:hover {
+                color: #004d26 !important;
+                background-color: #e6f4ea;
+            }
+
+        .btn-admin-gate {
+            color: #64748b !important;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 16px !important;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-admin-gate:hover {
+                color: #0f172a !important;
+                border-color: #0f172a;
+                background-color: #f1f5f9;
+            }
+
+        .main-wrapper {
+            flex: 1;
+            padding-bottom: 80px; /* Overlaps protection layout */
+        }
+
+        .custom-footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 13px;
+            padding: 16px 0;
+            margin-top: auto;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light custom-navbar">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index"></a>
+                <a class="navbar-brand text-success" asp-page="/Customer/Index">
+                    🇵🇰 SAFAR
+                </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index"></a>
+                            <a class="nav-link nav-link-custom" asp-page="/Customer/Index">🎫 Book Tickets</a>
                         </li>
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy"></a>
+                            <a class="btn-admin-gate" asp-page="/Admin/Trains/Index">
+                                ⚙️ Admin Dashboard
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container main-wrapper mt-4">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Safar - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <footer class="custom-footer">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>&copy; 2026 - Safar Operational Fleet Terminal Management Suite</span>
+            <div class="d-flex align-items-center gap-2">
+                <div style="width: 7px; height: 7px; background: #22c55e; border-radius: 50%;"></div>
+                <span class="text-success fw-bold" style="font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Active Instance</span>
+            </div>
         </div>
     </footer>
 

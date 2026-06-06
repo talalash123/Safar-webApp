@@ -1,3 +1,13 @@
 ﻿@{
-    Layout = "_Layout";
+    var pageContext = ViewContext.ActionDescriptor.DisplayName;
+
+    // Agar URL ya file folder path 'Admin' cluster segment se trace ho raha ho
+    if (pageContext != null && pageContext.Contains("/Admin/"))
+    {
+        Layout = "_AdminLayout";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
 }

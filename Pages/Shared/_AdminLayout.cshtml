@@ -209,6 +209,12 @@
             <a href="/Admin/Bookings" class="menu-link">
                 <span>🎟️</span> Pass Bookings
             </a>
+
+            <hr class="text-muted my-3" />
+
+            <a href="/Customer/Index" class="menu-link text-danger">
+                <span>🔙</span> Exit Admin Panel
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -235,10 +241,14 @@
 
             links.forEach(link => {
                 link.classList.remove("active-node");
-                const hrefAttr = link.getAttribute("href").toLowerCase();
+                const hrefAttr = link.getAttribute("href");
 
-                if (currentPath === hrefAttr || currentPath.startsWith(hrefAttr + "/")) {
-                    link.classList.add("active-node");
+                if (hrefAttr) {
+                    const normalizedHref = hrefAttr.toLowerCase();
+                    // Exact match ya sub-path verification match logic
+                    if (currentPath === normalizedHref || currentPath.startsWith(normalizedHref + "/")) {
+                        link.classList.add("active-node");
+                    }
                 }
             });
         });

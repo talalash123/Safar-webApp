@@ -164,7 +164,7 @@
     }
 </style>
 
-<div class="container-fluid">
+<div class="container-fluid" style="max-width: 750px; margin-top: 20px;">
     <div class="mb-2">
         <span class="badge mb-2" style="background: #fff7ed; color: #c2410c; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px;">CONFIGURATION ENGINE</span>
         <h2 style="font-weight: 800; color: #0f172a; letter-spacing: -0.7px; margin: 0;">Modify Locomotive Parameters</h2>
@@ -197,14 +197,53 @@
                 </div>
             </div>
 
+            <div class="p-3 mb-4" style="background: #fff; border: 1px dashed #cbd5e1; border-radius: 14px;">
+                <h6 class="fw-bold text-dark text-uppercase mb-3" style="font-size: 11px; letter-spacing: 0.5px;">🗂️ Class Breakdown & Allocations</h6>
+
+                <div class="row mb-2 align-items-center">
+                    <div class="col-md-6 mb-2 mb-md-0">
+                        <label class="form-label text-success small fw-bold mb-1">🟢 Economy Bogies Count</label>
+                        <input type="number" id="ecoBogies" asp-for="EconomyBogies" class="form-control form-control-sm" style="border-radius:6px;" min="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Seats Per Economy Bogie</label>
+                        <input type="number" id="ecoSeats" asp-for="EconomySeatsPerBogie" class="form-control form-control-sm" style="border-radius:6px;" min="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                </div>
+
+                <div class="row mb-2 align-items-center">
+                    <div class="col-md-6 mb-2 mb-md-0">
+                        <label class="form-label text-primary small fw-bold mb-1">🔵 Business Bogies Count</label>
+                        <input type="number" id="bizBogies" asp-for="BusinessBogies" class="form-control form-control-sm" style="border-radius:6px;" min="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Seats Per Business Bogie</label>
+                        <input type="number" id="bizSeats" asp-for="BusinessSeatsPerBogie" class="form-control form-control-sm" style="border-radius:6px;" min="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-2 mb-md-0">
+                        <label class="form-label text-danger small fw-bold mb-1">🔴 Executive Bogies Count</label>
+                        <input type="number" id="execBogies" asp-for="ExecutiveBogies" class="form-control form-control-sm" style="border-radius:6px;" min="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Seats Per Executive Bogie</label>
+                        <input type="number" id="execSeats" asp-for="ExecutiveSeatsPerBogie" class="form-control form-control-sm" style="border-radius:6px;" min="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-6 input-wrapper">
                     <label class="premium-label">Passenger Seating Capacity</label>
-                    <input type="number" asp-for="SelectedTrain.TotalCapacity" class="premium-input" required />
+                    <input type="text" id="lblTotalSeats" class="premium-input" style="background: #f1f5f9; font-weight: 600;" readonly />
+                    <input type="hidden" id="hdnTotalSeats" asp-for="SelectedTrain.TotalCapacity" />
                 </div>
                 <div class="col-md-6 input-wrapper">
                     <label class="premium-label">Total Coaches / Bogies</label>
-                    <input type="number" asp-for="SelectedTrain.TotalBogies" class="premium-input" required />
+                    <input type="text" id="lblTotalBogies" class="premium-input" style="background: #f1f5f9; font-weight: 600;" readonly />
+                    <input type="hidden" id="hdnTotalBogies" asp-for="SelectedTrain.TotalBogies" />
                 </div>
             </div>
 
@@ -229,3 +268,31 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function CalculateTotalFleetSummary() {
+            const ecoB = parseInt(document.getElementById('ecoBogies').value) || 0;
+            const ecoS = parseInt(document.getElementById('ecoSeats').value) || 0;
+
+            const bizB = parseInt(document.getElementById('bizBogies').value) || 0;
+            const bizS = parseInt(document.getElementById('bizSeats').value) || 0;
+
+            const execB = parseInt(document.getElementById('execBogies').value) || 0;
+            const execS = parseInt(document.getElementById('execSeats').value) || 0;
+
+            const totalBogies = ecoB + bizB + execB;
+            const totalSeats = (ecoB * ecoS) + (bizB * bizS) + (execB * execS);
+
+            document.getElementById('lblTotalBogies').value = totalBogies + " Carriages";
+            document.getElementById('lblTotalSeats').value = totalSeats + " Seats";
+
+            document.getElementById('hdnTotalBogies').value = totalBogies + " Carriages";
+            document.getElementById('hdnTotalSeats').value = totalSeats + " Seats";
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            CalculateTotalFleetSummary();
+        });
+    </script>
+}

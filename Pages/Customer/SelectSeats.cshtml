@@ -1,0 +1,201 @@
+﻿@page
+@model Safar.Pages.Customer.SelectSeatsModel
+@{
+    ViewData["Title"] = "Select Berths";
+}
+
+<style>
+    .train-meta-banner {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    /* Seat Matrix Layout CSS */
+    .bogie-container {
+        background: #ffffff;
+        border: 2px solid #cbd5e1;
+        border-radius: 24px;
+        padding: 30px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
+    }
+
+    .seats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 seats per row (2 Left - Aisle - 2 Right) */
+        gap: 12px;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    /* Aisle (Rasta) create krne k liye center column logic spacer */
+    .seats-grid div:nth-child(4n-2) {
+        margin-right: 30px; /* Left side ki doosri seat ke baad gap */
+    }
+
+    /* Seat Styling checkboxes layers */
+    .seat-option {
+        position: relative;
+        display: block;
+        text-align: center;
+    }
+
+    .seat-option input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .seat-box {
+        background: #ffffff;
+        border: 2px solid #94a3b8;
+        color: #334155;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 12px 0;
+        border-radius: 8px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s ease;
+        display: block;
+    }
+
+    .seat-option input[type="checkbox"]:checked ~ .seat-box {
+        background: #004d26 !important;
+        border-color: #004d26 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(0, 77, 38, 0.2);
+    }
+
+    /* Booked / Disabled State */
+    .seat-box.booked {
+        background: #fee2e2 !important;
+        border-color: #fca5a5 !important;
+        color: #b91c1c !important;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    /* Dynamic Sidebar Ledger panel */
+    .summary-sticky-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.02);
+        position: sticky;
+        top: 20px;
+    }
+</style>
+
+<div class="container" style="max-width: 950px; margin-top: 24px;">
+
+    <div class="train-meta-banner d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h4 class="m-0" style="font-weight: 800; color: #0f172a;">🚂 @Model.CurrentTrain.Name (@Model.CurrentTrain.TrainId)</h4>
+            <span class="text-muted small">Selected Class Tier: <strong>@Model.SelectedClass</strong></span>
+        </div>
+        <div class="text-md-end">
+            <span class="badge bg-success text-white px-3 py-2" style="font-size:12px;">Fare per seat: Rs. @Model.BaseFare</span>
+        </div>
+    </div>
+
+    <form method="post" asp-page="./Checkout">
+        <input type="hidden" name="trainId" value="@Model.CurrentTrain.Id" />
+        <input type="hidden" name="selectedClass" value="@Model.SelectedClass" />
+        <input type="hidden" name="travelDate" value="@Model.TravelDateString" />
+        <input type="hidden" name="baseFare" id="hdnBaseFare" value="@Model.BaseFare" />
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-dark m-0">🛠️ Virtual Cabin Matrix Mapping</h5>
+                    <span class="text-muted small">Carriage Layout: 2 x 2 Allocation Config</span>
+                </div>
+
+                <div class="bogie-container">
+                    <div class="seats-grid">
+                        @for (int i = 1; i <= Model.TotalSeatsCount; i++)
+                        {
+                            string seatId = $"{Model.SelectedClass[0]}-S{i}"; // Generates token e.g., "B-S12" or "E-S5"
+                            bool isBooked = Model.ExistingBookedSeats.Contains(seatId);
+
+                            <div class="seat-option">
+                                @if (isBooked)
+                                {
+                                    <span class="seat-box booked">@i</span>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="selectedSeats" value="@seatId" id="chk-@i" onchange="UpdateLivePriceLedger()" />
+                                    <label for="chk-@i" class="seat-box">@i</label>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="summary-sticky-card">
+                    <h5 class="fw-bold text-dark mb-3">📋 Operational Cost Sheet</h5>
+                    <hr class="text-muted my-2" />
+
+                    <div class="d-flex justify-content-between my-3">
+                        <span class="text-secondary small fw-semibold">Seats Selected:</span>
+                        <strong class="text-dark" id="lblSeatsCount">0 Berths</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between my-3">
+                        <span class="text-secondary small fw-semibold">Allocated Codes:</span>
+                        <strong class="text-success small" id="lblSeatCodes">None Selected</strong>
+                    </div>
+
+                    <hr class="text-muted my-2" />
+
+                    <div class="d-flex justify-content-between align-items-center my-4">
+                        <span class="text-dark fw-bold">Aggregate Payable:</span>
+                        <h3 class="fw-extrabold text-success m-0" style="font-weight:900;">Rs. <span id="lblTotalBill">0</span></h3>
+                    </div>
+
+                    <button type="submit" id="btnProceed" class="btn btn-success w-100 py-3 fw-bold" style="background:#004d26; border-radius:12px;" disabled>
+                        ➔ Proceed to Passenger Manifest
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function UpdateLivePriceLedger() {
+            const checkboxes = document.querySelectorAll('input[name="selectedSeats"]:checked');
+            const baseFare = parseFloat(document.getElementById('hdnBaseFare').value) || 0;
+
+            let selectedCodes = [];
+            checkboxes.forEach((cb) => {
+                selectedCodes.push(cb.value);
+            });
+
+            const count = checkboxes.length;
+            const totalBill = count * baseFare;
+
+            // Update Interface tags live
+            document.getElementById('lblSeatsCount').textContent = count + " Berths";
+            document.getElementById('lblSeatCodes').textContent = count > 0 ? selectedCodes.join(', ') : "None Selected";
+            document.getElementById('lblTotalBill').textContent = totalBill.toLocaleString();
+
+            // Toggle Button deployment state
+            const btn = document.getElementById('btnProceed');
+            if (count > 0) {
+                btn.removeAttribute('disabled');
+            } else {
+                btn.setAttribute('disabled', 'disabled');
+            }
+        }
+    </script>
+}

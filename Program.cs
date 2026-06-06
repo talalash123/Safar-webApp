@@ -28,5 +28,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
+
+// ==========================================
+// ?? SAFAR DEFAULT ROUTING PIPELINE CONTROL
+// ==========================================
+// Jab bhi website khulegi, yeh automatic baghair kisi delay ke 
+// user ko Customer Portal ke main page par redirect kar dega.
+app.MapGet("/", context => {
+    context.Response.Redirect("/Customer/Index");
+    return System.Threading.Tasks.Task.CompletedTask;
+});
+// ==========================================
+
 app.MapRazorPages();
 app.Run();

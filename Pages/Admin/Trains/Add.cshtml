@@ -41,7 +41,7 @@
     }
 
     .input-wrapper:focus-within .premium-label {
-        color: #004d26; /* Input active hone par label color smoothly highlight hoga */
+        color: #004d26;
     }
 
     /* High-End Enterprise Inputs */
@@ -59,20 +59,17 @@
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-        /* Interactive Focus States */
         .premium-input:focus {
             border-color: #004d26;
             background: #ffffff;
             box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.06);
         }
 
-        /* Placeholder Styling for matching sleek aesthetic */
         .premium-input::placeholder {
             color: #94a3b8;
             font-weight: 400;
         }
 
-        /* Elegant Error Handling (Razor Pages validation error compatibility) */
         .premium-input.input-validation-error {
             border-color: #ef4444 !important;
             background: #fffafb;
@@ -102,7 +99,6 @@
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-        /* Micro-interactions on Hover & Click active states */
         .btn-sync-fleet:hover {
             background: #06391d;
             transform: translateY(-2px);
@@ -110,20 +106,9 @@
         }
 
         .btn-sync-fleet:active {
-            transform: translateY(0) scale(0.98); /* Click par real compression effect milega */
+            transform: translateY(0) scale(0.98);
         }
 
-        /* Sync Button Loading state support (if applied in operations) */
-        .btn-sync-fleet i, .btn-sync-fleet svg {
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .btn-sync-fleet:hover i, .btn-sync-fleet:hover svg {
-            transform: scale(1.1);
-        }
-
-    /* Responsive adjustment for forms built inside grid layout rows */
     @@media (max-width: 768px) {
         .form-row-grid {
             grid-template-columns: 1fr;
@@ -148,33 +133,72 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Train Code / Serial ID</label>
-                    <input type="text" asp-for="NewTrain.TrainId" class="form-control form-control-lg" placeholder="e.g., T1" style="border-radius:10px; font-size:14px;" required />
+                    <input type="text" asp-for="NewTrain.TrainId" class="form-control form-control-lg" placeholder="Type Train Code (e.g., T1)" style="border-radius:10px; font-size:14px;" required />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Locomotive Model Name</label>
-                    <input type="text" asp-for="NewTrain.Name" class="form-control form-control-lg" placeholder="e.g., IslamabadExpress" style="border-radius:10px; font-size:14px;" required />
+                    <input type="text" asp-for="NewTrain.Name" class="form-control form-control-lg" placeholder="Type Train Name" style="border-radius:10px; font-size:14px;" required />
                 </div>
             </div>
 
             <div class="row mb-3" style="background: #f8fafc; padding: 15px; border-radius: 12px; margin: 0 0 16px 0; border: 1px solid #e2e8f0;">
                 <div class="col-md-6">
                     <label class="form-label fw-bold text-success small text-uppercase" style="font-size:11px;">Operational From (Default Source)</label>
-                    <input type="text" asp-for="NewTrain.DefaultSource" class="form-control" placeholder="e.g., Islamabad" style="border-radius:8px;" required />
+                    <input type="text" asp-for="NewTrain.DefaultSource" class="form-control" placeholder="Type Source Station" style="border-radius:8px;" value="" required />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold text-success small text-uppercase" style="font-size:11px;">Operational To (Default Destination)</label>
-                    <input type="text" asp-for="NewTrain.DefaultDestination" class="form-control" placeholder="e.g., Karachi" style="border-radius:8px;" required />
+                    <input type="text" asp-for="NewTrain.DefaultDestination" class="form-control" placeholder="Type Destination Station" style="border-radius:8px;" value="" required />
+                </div>
+            </div>
+
+            <div class="p-3 mb-4" style="background: #fff; border: 1px dashed #cbd5e1; border-radius: 14px;">
+                <h6 class="fw-bold text-dark text-uppercase mb-3" style="font-size: 11px; letter-spacing: 0.5px;">🗂️ Class Breakdown & Allocations</h6>
+
+                <div class="row mb-2 align-items-center">
+                    <div class="col-md-6">
+                        <label class="form-label text-success small fw-bold mb-1">🟢 Economy Bogies Count</label>
+                        <input type="number" id="ecoBogies" asp-for="EconomyBogies" class="form-control form-control-sm" style="border-radius:6px;" min="0" placeholder="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Seats Per Economy Bogie</label>
+                        <input type="number" id="ecoSeats" asp-for="EconomySeatsPerBogie" class="form-control form-control-sm" style="border-radius:6px;" min="0" placeholder="e.g., 72" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                </div>
+
+                <div class="row mb-2 align-items-center">
+                    <div class="col-md-6">
+                        <label class="form-label text-primary small fw-bold mb-1">🔵 Business Bogies Count</label>
+                        <input type="number" id="bizBogies" asp-for="BusinessBogies" class="form-control form-control-sm" style="border-radius:6px;" min="0" placeholder="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Seats Per Business Bogie</label>
+                        <input type="number" id="bizSeats" asp-for="BusinessSeatsPerBogie" class="form-control form-control-sm" style="border-radius:6px;" min="0" placeholder="e.g., 48" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <label class="form-label text-danger small fw-bold mb-1">🔴 Executive Bogies Count</label>
+                        <input type="number" id="execBogies" asp-for="ExecutiveBogies" class="form-control form-control-sm" style="border-radius:6px;" min="0" placeholder="0" oninput="CalculateTotalFleetSummary()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Seats Per Executive Bogie</label>
+                        <input type="number" id="execSeats" asp-for="ExecutiveSeatsPerBogie" class="form-control form-control-sm" style="border-radius:6px;" min="0" placeholder="e.g., 30" oninput="CalculateTotalFleetSummary()" />
+                    </div>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Passenger Seating Capacity</label>
-                    <input type="number" asp-for="NewTrain.TotalCapacity" class="form-control" style="border-radius:8px;" required />
+                    <input type="text" id="lblTotalSeats" class="form-control" placeholder="Awaiting matrix input..." style="border-radius:8px; background: #f1f5f9; font-weight: 600;" readonly />
+                    <input type="hidden" id="hdnTotalSeats" asp-for="NewTrain.TotalCapacity" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold text-secondary small text-uppercase" style="font-size:11px;">Total Coaches / Bogies</label>
-                    <input type="number" asp-for="NewTrain.TotalBogies" class="form-control" style="border-radius:8px;" required />
+                    <input type="text" id="lblTotalBogies" class="form-control" placeholder="Awaiting matrix input..." style="border-radius:8px; background: #f1f5f9; font-weight: 600;" readonly />
+                    <input type="hidden" id="hdnTotalBogies" asp-for="NewTrain.TotalBogies" />
                 </div>
             </div>
 
@@ -192,3 +216,39 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function CalculateTotalFleetSummary() {
+            const ecoB = parseInt(document.getElementById('ecoBogies').value) || 0;
+            const ecoS = parseInt(document.getElementById('ecoSeats').value) || 0;
+
+            const bizB = parseInt(document.getElementById('bizBogies').value) || 0;
+            const bizS = parseInt(document.getElementById('bizSeats').value) || 0;
+
+            const execB = parseInt(document.getElementById('execBogies').value) || 0;
+            const execS = parseInt(document.getElementById('execSeats').value) || 0;
+
+            const totalBogies = ecoB + bizB + execB;
+            const totalSeats = (ecoB * ecoS) + (bizB * bizS) + (execB * execS);
+
+            if (totalBogies === 0 && totalSeats === 0) {
+                document.getElementById('lblTotalBogies').value = "";
+                document.getElementById('lblTotalSeats').value = "";
+                document.getElementById('hdnTotalBogies').value = "0 Carriages";
+                document.getElementById('hdnTotalSeats').value = "0 Seats";
+            } else {
+                document.getElementById('lblTotalBogies').value = totalBogies + " Carriages";
+                document.getElementById('lblTotalSeats').value = totalSeats + " Seats";
+                document.getElementById('hdnTotalBogies').value = totalBogies + " Carriages";
+                document.getElementById('hdnTotalSeats').value = totalSeats + " Seats";
+            }
+        }
+
+        // Form load par empty initialize karne ke liye function override kiya
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('lblTotalBogies').value = "";
+            document.getElementById('lblTotalSeats').value = "";
+        });
+    </script>
+}
