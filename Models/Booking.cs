@@ -18,6 +18,8 @@ namespace Safar.Models
 
         public string SourceStation { get; set; }
         public string DestinationStation { get; set; }
+
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime TravelDate { get; set; }
 
         public string CustomerName { get; set; }
@@ -27,8 +29,13 @@ namespace Safar.Models
         public string SelectedClass { get; set; } // Economy, Business, or Executive
         public List<string> BookedSeats { get; set; } = new List<string>(); // e.g., ["B1-S12", "B1-S13"]
 
+        // 💎 THE ULTIMATE FIX: Directs MongoDB driver to cleanly serialize and map BsonDecimal128 without breaking execution pipelines
+        [BsonRepresentation(BsonType.Decimal128)]
         public decimal TotalFare { get; set; }
+
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime BookingTimestamp { get; set; } = DateTime.Now;
+
         public string PaymentStatus { get; set; } = "Paid"; // Default paid for simulation
     }
 }

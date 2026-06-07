@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\usama\source\repos\Safar\Safar
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Bookings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQm9va2luZ3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

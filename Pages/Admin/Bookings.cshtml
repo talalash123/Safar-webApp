@@ -1,0 +1,75 @@
+﻿@page
+@model Safar.Pages.Admin.BookingsModel
+@{
+    ViewData["Title"] = "Pass Bookings Ledger";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark m-0">🎟️ Live Pass Bookings Ledger</h2>
+        <p class="text-muted small m-0">Audit log of all processed and paid transit tickets inside the cluster database.</p>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="border-radius: 14px; overflow: hidden;">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" style="background: #ffffff;">
+            <thead class="table-dark" style="background: #0f172a;">
+                <tr style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <th class="ps-4 py-3">PNR / Ticket</th>
+                    <th class="py-3">Lead Passenger</th>
+                    <th class="py-3">Train Profile</th>
+                    <th class="py-3">Route Block</th>
+                    <th class="py-3">Berths</th>
+                    <th class="py-3">Class</th>
+                    <th class="py-3">Total Fare</th>
+                    <th class="pe-4 py-3 text-end">Status</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 14px;">
+                @if (Model.BookingsList.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <span class="fs-4 d-block mb-2">📥</span> No booking transaction logs found in system context.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var booking in Model.BookingsList)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold text-success">@booking.TicketNumber</td>
+                            <td>
+                                <strong class="d-block text-dark">@booking.CustomerName</strong>
+                                <small class="text-muted">@booking.CustomerPhone</small>
+                            </td>
+                            <td>
+                                <span class="fw-semibold">🚂 @booking.TrainName</span>
+                            </td>
+                            <td>
+                                <div class="small">
+                                    <span class="text-success">🟢 @booking.SourceStation</span><br />
+                                    <span class="text-danger">🔴 @booking.DestinationStation</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">🎫 @string.Join(", ", booking.BookedSeats)</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">@booking.SelectedClass</span>
+                            </td>
+                            <td class="fw-bold text-dark">Rs. @booking.TotalFare.ToString("N0")</td>
+                            <td class="pe-4 text-end">
+                                <span class="badge bg-success-subtle text-success px-3 py-1.5" style="font-weight:700;">
+                                    @booking.PaymentStatus
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

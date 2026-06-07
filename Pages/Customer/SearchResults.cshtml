@@ -1,155 +1,135 @@
 ﻿@page
 @model Safar.Pages.Customer.SearchResultsModel
 @{
-    ViewData["Title"] = "Available Fleet Units";
+    ViewData["Title"] = "Search Results - Safar";
 }
 
 <style>
-    .route-header-card {
-        background: #ffffff;
+    body {
+        background-color: #f8fafc;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .main-container {
+        max-width: 950px;
+        margin: 40px auto;
+    }
+
+    .card-banner {
+        background: white;
+        border-radius: 14px;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
-        margin-bottom: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
     }
 
-    .train-data-card {
-        background: #ffffff;
+    .train-block {
+        background: white;
+        border-radius: 14px;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 28px;
-        margin-bottom: 24px;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 6px solid #22c55e;
+        transition: all 0.2s;
     }
 
-    .train-data-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px rgba(0, 77, 38, 0.05);
-        border-color: #cbd5e1;
-    }
+        .train-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
 
-    .class-pricing-box {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 16px;
-        text-align: center;
-        transition: all 0.2s ease;
-    }
-
-    .class-pricing-box:hover {
-        border-color: #004d26;
-        background: #fff;
-    }
-
-    .btn-book-class {
-        font-size: 13px;
-        font-weight: 700;
-        padding: 8px 16px;
-        border-radius: 8px;
-        width: 100%;
-        margin-top: 10px;
+    .class-btn {
         text-decoration: none;
-        display: inline-block;
-        text-align: center;
-        transition: all 0.15s ease;
+        display: block;
+        border-radius: 10px;
+        padding: 14px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        transition: all 0.2s;
     }
 
-    .btn-eco { background: #e6f4ea; color: #004d26; }
-    .btn-eco:hover { background: #004d26; color: #fff; }
-
-    .btn-biz { background: #e0f2fe; color: #0369a1; }
-    .btn-biz:hover { background: #0369a1; color: #fff; }
-
-    .btn-exec { background: #ffeeeb; color: #b91c1c; }
-    .btn-exec:hover { background: #b91c1c; color: #fff; }
+        .class-btn:hover {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            transform: scale(1.02);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
 </style>
 
-<div class="container" style="max-width: 850px; margin-top: 24px;">
+<div class="container main-container">
 
-    <div class="route-header-card d-flex justify-content-between align-items-center flex-wrap g-3">
+    <div class="card-banner p-4 mb-4 d-flex justify-content-between align-items-center">
         <div>
-            <span class="text-muted small text-uppercase fw-bold d-block" style="letter-spacing: 0.5px;">Requested Route</span>
-            <h4 class="m-0" style="font-weight: 800; color: #0f172a;">
-                🟢 @Model.Source ➔ 🔴 @Model.Destination
-            </h4>
+            <span class="text-uppercase text-muted small fw-bold d-block">Requested Route Segment</span>
+            <h3 class="m-0 fw-bold text-dark">🟢 @Model.SearchSource &rarr; 🎯 @Model.SearchDestination</h3>
         </div>
-        <div class="text-md-end">
-            <span class="text-muted small text-uppercase fw-bold d-block" style="letter-spacing: 0.5px;">Date of Journey</span>
-            <span class="badge bg-dark px-3 py-2" style="font-size: 13px; font-weight: 600; border-radius: 8px;">
-                📅 @Model.TravelDate.ToString("dd MMMM, yyyy")
-            </span>
+        <div>
+            <span class="badge bg-dark px-3 py-2 fs-6">📅 @Model.TravelDate.ToString("dd MMM, yyyy")</span>
         </div>
     </div>
 
-    <h5 class="fw-bold text-secondary mb-4" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.8px;">
-        Available Fleet Schedules (@Model.AvailableTrains.Count Units Found)
-    </h5>
+    <h6 class="text-secondary fw-bold mb-3 text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
+        Available Fleet Schedules (@Model.AvailableSchedules.Count Units Found)
+    </h6>
 
-    @if (Model.AvailableTrains.Count == 0)
+    @if (Model.AvailableSchedules.Count == 0)
     {
-        <div class="text-center p-5 backend-empty-state" style="background:#f8fafc; border-radius:16px; border: 1px dashed #cbd5e1;">
-            <span style="font-size:40px;">⚠️</span>
-            <h5 class="fw-bold mt-3" style="color:#475569;">No Operational Trains Found</h5>
-            <p class="text-muted small">We couldn't locate any active assets deploying on this network segment right now.</p>
-            <a href="/Customer/Index" class="btn btn-sm btn-success px-4 py-2 mt-2" style="background:#004d26; border-radius:8px;">➔ Modify Query</a>
+        <div class="card-banner text-center p-5 border border-dashed">
+            <span style="font-size: 48px;">⚠️</span>
+            <h4 class="fw-bold text-danger mt-3">No Operational Trains Found</h4>
+            <p class="text-muted small">We couldn't locate any active assets operating on this route segment for the selected day.</p>
+            <a href="/Customer/Index" class="btn btn-dark px-4 mt-2">Modify Query</a>
         </div>
     }
     else
     {
-        @foreach (var train in Model.AvailableTrains)
+        @foreach (var train in Model.AvailableSchedules)
         {
-            <div class="train-data-card">
-                <div class="d-flex justify-content-between align-items-start mb-4">
-                    <div>
-                        <span class="badge mb-1" style="background: #f1f5f9; color: #475569; font-weight: 700;">@train.TrainId</span>
-                        <h3 class="m-0" style="font-weight: 800; color: #0f172a; font-size: 22px;">@train.Name</h3>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge" style="background: #e6f4ea; color: #004d26; font-weight: 600; padding: 6px 12px; border-radius: 6px;">
-                            Active Operational
-                        </span>
-                    </div>
-                </div>
+            <div class="train-block p-4 mb-4 shadow-sm">
+                <div class="row align-items-center">
 
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="class-pricing-box">
-                            <span class="d-block fw-bold small text-success mb-1">🟢 Economy Class</span>
-                            <h4 class="fw-extrabold text-dark m-0">Rs. 1,200</h4>
-                            <span class="text-muted d-block" style="font-size: 11px; margin-top: 2px;">
-                                📦 @(train.ClassDistribution?.Economy?.BogiesCount ?? 0) Bogies Configured
-                            </span>
-                            <a href="/Customer/SelectSeats?id=@train.Id&class=Economy&date=@Model.TravelDate.ToString("yyyy-MM-dd")" class="btn-book-class btn-eco">
-                                Reserve Seats ➔
-                            </a>
+                    <div class="col-lg-4 col-md-12">
+                        <span class="badge bg-dark mb-2">Code: @train.TrainIdStr</span>
+                        <h4 class="fw-bold text-dark m-0">@train.Name</h4>
+                        <small class="text-muted d-block mt-1">Bogie Segments: <strong>@train.TotalBogies</strong></small>
+
+                        <div class="mt-3 p-2 bg-light rounded border d-flex justify-content-between align-items-center text-center">
+                            <div>
+                                <small class="text-muted d-block" style="font-size: 10px;">🟢 Departure</small>
+                                <strong class="text-success small">@train.DepartureTime</strong>
+                            </div>
+                            <div class="text-muted small">&rarr;</div>
+                            <div>
+                                <small class="text-muted d-block" style="font-size: 10px;">🎯 Arrival</small>
+                                <strong class="text-primary small">@train.ArrivalTime</strong>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="class-pricing-box">
-                            <span class="d-block fw-bold small text-primary mb-1">🔵 Business Class</span>
-                            <h4 class="fw-extrabold text-dark m-0">Rs. 2,800</h4>
-                            <span class="text-muted d-block" style="font-size: 11px; margin-top: 2px;">
-                                📦 @(train.ClassDistribution?.Business?.BogiesCount ?? 0) Bogies Configured
-                            </span>
-                            <a href="/Customer/SelectSeats?id=@train.Id&class=Business&date=@Model.TravelDate.ToString("yyyy-MM-dd")" class="btn-book-class btn-biz">
-                                Reserve Seats ➔
-                            </a>
-                        </div>
-                    </div>
+                    <div class="col-lg-8 col-md-12 mt-4 mt-lg-0">
+                        <span class="text-muted small fw-bold d-block text-lg-end mb-2 text-uppercase" style="font-size: 11px;">Select Travel Class Category</span>
 
-                    <div class="col-md-4">
-                        <div class="class-pricing-box">
-                            <span class="d-block fw-bold small text-danger mb-1">🔴 Executive Class</span>
-                            <h4 class="fw-extrabold text-dark m-0">Rs. 4,500</h4>
-                            <span class="text-muted d-block" style="font-size: 11px; margin-top: 2px;">
-                                📦 @(train.ClassDistribution?.Executive?.BogiesCount ?? 0) Bogies Configured
-                            </span>
-                            <a href="/Customer/SelectSeats?id=@train.Id&class=Executive&date=@Model.TravelDate.ToString("yyyy-MM-dd")" class="btn-book-class btn-exec">
-                                Reserve Seats ➔
-                            </a>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Economy&fare=@train.EconomyFare.ToString("F0")" class="class-btn text-center shadow-sm">
+                                    <span class="fw-bold text-success d-block" style="font-size: 13px;">Economy Class</span>
+                                    <h5 class="fw-bold text-dark m-0 mt-1" style="font-size: 16px;">Rs @train.EconomyFare.ToString("N0")</h5>
+                                    <small class="text-muted d-block mt-2" style="font-size: 11px;">Select Seats &rarr;</small>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4">
+                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Business&fare=@train.BusinessFare.ToString("F0")" class="class-btn text-center shadow-sm">
+                                    <span class="fw-bold text-primary d-block" style="font-size: 13px;">Business Class</span>
+                                    <h5 class="fw-bold text-dark m-0 mt-1" style="font-size: 16px;">Rs @train.BusinessFare.ToString("N0")</h5>
+                                    <small class="text-muted d-block mt-2" style="font-size: 11px;">Select Seats &rarr;</small>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4">
+                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Executive&fare=@train.ExecutiveFare.ToString("F0")" class="class-btn text-center shadow-sm">
+                                    <span class="fw-bold text-warning d-block" style="font-size: 13px;">Executive Class</span>
+                                    <h5 class="fw-bold text-dark m-0 mt-1" style="font-size: 16px;">Rs @train.ExecutiveFare.ToString("N0")</h5>
+                                    <small class="text-muted d-block mt-2" style="font-size: 11px;">Select Seats &rarr;</small>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

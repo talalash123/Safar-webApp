@@ -31,10 +31,10 @@
         margin: 0 auto;
     }
 
-    /* Aisle (Rasta) create krne k liye center column logic spacer */
-    .seats-grid div:nth-child(4n-2) {
-        margin-right: 30px; /* Left side ki doosri seat ke baad gap */
-    }
+        /* Aisle (Rasta) create krne k liye center column logic spacer */
+        .seats-grid div:nth-child(4n-2) {
+            margin-right: 30px; /* Left side ki doosri seat ke baad gap */
+        }
 
     /* Seat Styling checkboxes layers */
     .seat-option {
@@ -43,11 +43,11 @@
         text-align: center;
     }
 
-    .seat-option input[type="checkbox"] {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-    }
+        .seat-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
 
     .seat-box {
         background: #ffffff;
@@ -99,7 +99,7 @@
             <span class="text-muted small">Selected Class Tier: <strong>@Model.SelectedClass</strong></span>
         </div>
         <div class="text-md-end">
-            <span class="badge bg-success text-white px-3 py-2" style="font-size:12px;">Fare per seat: Rs. @Model.BaseFare</span>
+            <span class="badge bg-success text-white px-3 py-2" style="font-size:12px;">Fare per seat: Rs. @Model.BaseFare.ToString("F0")</span>
         </div>
     </div>
 
@@ -107,7 +107,7 @@
         <input type="hidden" name="trainId" value="@Model.CurrentTrain.Id" />
         <input type="hidden" name="selectedClass" value="@Model.SelectedClass" />
         <input type="hidden" name="travelDate" value="@Model.TravelDateString" />
-        <input type="hidden" name="baseFare" id="hdnBaseFare" value="@Model.BaseFare" />
+        <input type="hidden" name="baseFare" id="hdnBaseFare" value="@Model.BaseFare.ToString("F0")" />
 
         <div class="row g-4">
             <div class="col-lg-7">
@@ -174,6 +174,7 @@
     <script>
         function UpdateLivePriceLedger() {
             const checkboxes = document.querySelectorAll('input[name="selectedSeats"]:checked');
+            // Safe extraction pattern converting text directly to pure JS float tracking
             const baseFare = parseFloat(document.getElementById('hdnBaseFare').value) || 0;
 
             let selectedCodes = [];

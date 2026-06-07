@@ -19,6 +19,16 @@ namespace Safar.Pages.Customer
         public int TotalSeatsCount { get; set; }
         public decimal BaseFare { get; set; }
 
+        // ?? URL PARAMETERS BINDING GUARDS (Bina purane code ko chede dynamic tracking lagayi hai)
+        [BindProperty(SupportsGet = true)]
+        public string Src { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string Dest { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public decimal Fare { get; set; } // Tracks exact calculation sent from search grid
+
         public List<string> ExistingBookedSeats { get; set; } = new List<string>();
 
         public SelectSeatsModel(IMongoDatabase database)
@@ -43,10 +53,9 @@ namespace Safar.Pages.Customer
             SelectedClass = @class;
             TravelDateString = date;
 
-            // 1. AAPKI PRICING LOGIC CONFIGURATION
-            // Agar aapke scheduling dashboard par static integer base price assume ki ho to use filter karein, 
-            // yahan simulation standard base pricing setup apply kiya gaya hai:
-            decimal defaultSchedulingFare = 1500;
+            // 1. AAPKI PRICING LOGIC CONFIGURATION (Dynamic Parameter Fallback Added)
+            // Agar piche se exact parameter scale fare mil raha hai to wahi chalega, nahi to default mapping:
+            decimal defaultSchedulingFare = Fare > 0 ? Fare : 1500;
 
             if (@class == "Economy")
             {
@@ -56,12 +65,16 @@ namespace Safar.Pages.Customer
             else if (@class == "Business")
             {
                 TotalSeatsCount = CurrentTrain.ClassDistribution?.Business?.SeatsPerBogie ?? 48;
-                BaseFare = defaultSchedulingFare * 1.20m; // 20% Add-on Multiplier Matrix
+
+                // Agar piche se exact fare calculated aa rahi hai to multiply dobara na karein, direct apply ho
+                BaseFare = Fare > 0 ? Fare : (defaultSchedulingFare * 1.20m);
             }
             else if (@class == "Executive")
             {
                 TotalSeatsCount = CurrentTrain.ClassDistribution?.Executive?.SeatsPerBogie ?? 30;
-                BaseFare = defaultSchedulingFare * 1.50m; // 50% Add-on Multiplier Matrix
+
+                // Same logic for executive class pricing
+                BaseFare = Fare > 0 ? Fare : (defaultSchedulingFare * 1.50m);
             }
 
             // 2. REAL-TIME DOUBLE BOOKING CONCURRENCY GUARD FILTER

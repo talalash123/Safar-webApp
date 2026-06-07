@@ -35,10 +35,18 @@ namespace Safar.Models
         [BsonElement("DefaultDestination")]
         public string DefaultDestination { get; set; } = "Karachi";
 
+        // 🛑 Dynamic Stops System: Search matching query block ke liye simple string listing maps
+        [BsonElement("Stops")]
+        public List<string> Stops { get; set; } = new List<string>();
+
+        // 💰 Dynamic Core Base Fare: Har route aur tickets calculation ka standalone asset base rate
+        [BsonElement("BaseFare")]
+        public decimal BaseFare { get; set; }
+
         [BsonElement("RouteStops")]
         public List<BsonDocument> RouteStops { get; set; } = new List<BsonDocument>();
 
-        // 🚀 NEW: Class Partitioning Breakdown Schema Integration
+        // 🚀 Class Partitioning Breakdown Schema Integration
         [BsonElement("ClassDistribution")]
         public ClassDistributionConfig ClassDistribution { get; set; } = new ClassDistributionConfig();
     }

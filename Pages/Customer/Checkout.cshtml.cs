@@ -13,11 +13,23 @@ namespace Safar.Pages.Customer
         private readonly IMongoCollection<Train> _trainCollection;
         private readonly IMongoCollection<Booking> _bookingCollection;
 
-        [BindProperty] public string TrainId { get; set; }
-        [BindProperty] public string SelectedClass { get; set; }
-        [BindProperty] public string TravelDateString { get; set; }
-        [BindProperty] public decimal TotalPayable { get; set; }
-        [BindProperty] public string SeatsRawData { get; set; }
+        [BindProperty(Name = "trainId", SupportsGet = true)]
+        public string TrainId { get; set; }
+
+        [BindProperty(Name = "selectedClass", SupportsGet = true)]
+        public string SelectedClass { get; set; }
+
+        [BindProperty(Name = "travelDate", SupportsGet = true)]
+        public string TravelDateString { get; set; }
+
+        [BindProperty]
+        public decimal TotalPayable { get; set; }
+
+        [BindProperty(Name = "baseFare", SupportsGet = true)]
+        public decimal BaseFare { get; set; }
+
+        [BindProperty]
+        public string SeatsRawData { get; set; }
 
         [BindProperty] public string CustomerName { get; set; }
         [BindProperty] public string CustomerPhone { get; set; }
@@ -31,16 +43,36 @@ namespace Safar.Pages.Customer
             _bookingCollection = database.GetCollection<Booking>("Bookings");
         }
 
-        // Selected seats se initial validation params pull down krna via checkbox states POST redirect
         public void OnGet()
         {
-            // Failback wrapper handling fallback errors
             ExtractSeatsList();
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(List<string> selectedSeats)
         {
-            ExtractSeatsList();
+            // Sync seats input list stream securely
+            if (selectedSeats != null && selectedSeats.Count > 0)
+            {
+                SelectedSeatsList = selectedSeats;
+                SeatsRawData = string.Join(",", selectedSeats);
+            }
+            else
+            {
+                ExtractSeatsList();
+            }
+
+            // Recovery pricing parsing safeguard from direct Form values
+            if (BaseFare == 0 && !string.IsNullOrEmpty(Request.Form["baseFare"]))
+            {
+                decimal.TryParse(Request.Form["baseFare"], out decimal formFare);
+                BaseFare = formFare;
+            }
+
+            // Absolute mathematical calculation block override
+            if (SelectedSeatsList != null && SelectedSeatsList.Count > 0)
+            {
+                TotalPayable = SelectedSeatsList.Count * BaseFare;
+            }
 
             if (string.IsNullOrEmpty(CustomerName) || string.IsNullOrEmpty(CustomerPhone))
             {
@@ -50,46 +82,57 @@ namespace Safar.Pages.Customer
             var train = _trainCollection.Find(t => t.Id == TrainId).FirstOrDefault();
             if (train == null) return RedirectToPage("/Customer/Index");
 
-            DateTime.TryParse(TravelDateString, out DateTime parsedDate);
+            if (!DateTime.TryParse(TravelDateString, out DateTime parsedDate))
+            {
+                parsedDate = DateTime.Now;
+            }
 
-            // ?? Dynamic Unique Ticket PNR Generator Engine
+            // PNR Token formulation
             string trackingPNR = "SAFAR-" + Guid.NewGuid().ToString().Substring(0, 5).ToUpper() + "-" + new Random().Next(100, 999);
 
-            // ??? Formulate Domain Booking Object
+            // ?? Setup booking container object bypassing any implicit conversion dropouts
             var finalBooking = new Booking
             {
                 TicketNumber = trackingPNR,
                 TrainId = train.Id,
-                TrainName = train.Name,
-                SourceStation = train.DefaultSource,
-                DestinationStation = train.DefaultDestination,
+                TrainName = train.Name ?? "Safar Express",
+                SourceStation = train.DefaultSource ?? "Origin",
+                DestinationStation = train.DefaultDestination ?? "Destination",
                 TravelDate = parsedDate,
                 CustomerName = CustomerName,
                 CustomerPhone = CustomerPhone,
                 CustomerCNIC = CustomerCNIC,
                 SelectedClass = SelectedClass,
                 BookedSeats = SelectedSeatsList,
-                TotalFare = TotalPayable,
+
+                // SAFE VALUATION PIPELINE: Direct runtime multiplication guarantee
+                TotalFare = TotalPayable > 0 ? TotalPayable : (SelectedSeatsList.Count * (BaseFare > 0 ? BaseFare : 1500)),
+
                 BookingTimestamp = DateTime.Now,
                 PaymentStatus = "Paid"
             };
 
-            // Commit transaction layer directly inside database cluster mapping
+            // Commit record inside database safely
             _bookingCollection.InsertOne(finalBooking);
 
-            // Pass tracking variables into final printable receipt frame
+            // Pass the absolute generated String ID to TicketConfirmation
             return RedirectToPage("./TicketConfirmation", new { ticketId = finalBooking.Id });
         }
 
         private void ExtractSeatsList()
         {
-            // Captures parameters safely passed from checkouts checkbox parameters
-            var seatsQuery = Request.Method == "POST" ? SeatsRawData : Request.Query["selectedSeats"].ToString();
+            var seatsQuery = Request.Method == "POST" ? Request.Form["selectedSeats"].ToString() : Request.Query["selectedSeats"].ToString();
+
+            if (string.IsNullOrEmpty(seatsQuery) && Request.Method == "POST")
+            {
+                seatsQuery = SeatsRawData;
+            }
+
             SeatsRawData = seatsQuery;
 
             if (!string.IsNullOrEmpty(seatsQuery))
             {
-                SelectedSeatsList = seatsQuery.Split(',').Select(s => s.Trim()).ToList();
+                SelectedSeatsList = seatsQuery.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
             }
 
             if (Request.Method == "GET")
@@ -98,8 +141,18 @@ namespace Safar.Pages.Customer
                 SelectedClass = Request.Query["selectedClass"];
                 TravelDateString = Request.Query["travelDate"];
 
-                decimal.TryParse(Request.Query["baseFare"], out decimal baseFare);
-                TotalPayable = SelectedSeatsList.Count * baseFare;
+                decimal.TryParse(Request.Query["baseFare"], out decimal parsedBaseFare);
+                BaseFare = parsedBaseFare;
+                TotalPayable = SelectedSeatsList.Count * BaseFare;
+            }
+            else
+            {
+                if (BaseFare == 0)
+                {
+                    decimal.TryParse(Request.Form["baseFare"], out decimal formBaseFare);
+                    BaseFare = formBaseFare;
+                }
+                TotalPayable = SelectedSeatsList.Count * BaseFare;
             }
         }
     }

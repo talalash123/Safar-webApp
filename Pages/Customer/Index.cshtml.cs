@@ -1,50 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MongoDB.Driver;
-using Safar.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Safar.Models;
 
 namespace Safar.Pages.Customer
 {
-
     public class IndexModel : PageModel
     {
-        private readonly IMongoCollection<Train> _trainCollection;
+        private readonly IMongoCollection<Schedule> _scheduleCollection;
 
-        public List<string> UniqueSources { get; set; } = new List<string>();
-        public List<string> UniqueDestinations { get; set; } = new List<string>();
-
-        // Naya List property featured display k liye
-        public List<Train> FeaturedTrains { get; set; } = new List<Train>();
+        public List<string> UniqueStations { get; set; } = new List<string>();
 
         public IndexModel(IMongoDatabase database)
         {
-            _trainCollection = database.GetCollection<Train>("Trains");
+            _scheduleCollection = database.GetCollection<Schedule>("Schedules");
         }
 
         public void OnGet()
         {
-            // Database se sirf Active trains nikalna
-            var allTrains = _trainCollection.Find(t => t.Status == "Active").ToList();
+            var allSchedules = _scheduleCollection.Find(s => true).ToList();
+            var stationsSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            // 1. Dropdown matching mechanisms (Distinct Stations)
-            UniqueSources = allTrains
-                .Where(t => !string.IsNullOrEmpty(t.DefaultSource))
-                .Select(t => t.DefaultSource)
-                .Distinct()
-                .OrderBy(s => s)
-                .ToList();
+            foreach (var schedule in allSchedules)
+            {
+                if (!string.IsNullOrEmpty(schedule.SourceStation))
+                    stationsSet.Add(schedule.SourceStation.Trim());
 
-            UniqueDestinations = allTrains
-                .Where(t => !string.IsNullOrEmpty(t.DefaultDestination))
-                .Select(t => t.DefaultDestination)
-                .Distinct()
-                .OrderBy(d => d)
-                .ToList();
+                if (!string.IsNullOrEmpty(schedule.DestinationStation))
+                    stationsSet.Add(schedule.DestinationStation.Trim());
 
-            // 2. Niche dynamic tickets display krne k liye top 3 active trains pick krna
-            FeaturedTrains = allTrains.Take(3).ToList();
+                if (schedule.RouteStops != null)
+                {
+                    foreach (var stop in schedule.RouteStops)
+                    {
+                        if (!string.IsNullOrEmpty(stop.StationName))
+                            stationsSet.Add(stop.StationName.Trim());
+                    }
+                }
+            }
+
+            // Fallback baseline values taake agar DB empty bhi ho toh system look kharab na ho
+            if (stationsSet.Count == 0)
+            {
+                stationsSet.Add("Pindi");
+                stationsSet.Add("Gujaranwala");
+                stationsSet.Add("Lahore");
+                stationsSet.Add("Islamabad");
+            }
+
+            UniqueStations = stationsSet.OrderBy(s => s).ToList();
         }
     }
 }
