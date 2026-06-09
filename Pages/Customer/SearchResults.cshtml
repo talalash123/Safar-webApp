@@ -1,139 +1,462 @@
 ﻿@page
 @model Safar.Pages.Customer.SearchResultsModel
 @{
-    ViewData["Title"] = "Search Results - Safar";
+    ViewData["Title"] = "Select Fleet Category - PK SAFAR";
 }
 
 <style>
+    /* 🏛️ PK SAFAR Corporate Design System - Search Results */
+    :root {
+        --safar-green: #004d26;
+        --safar-green-dark: #05331b;
+        --safar-green-light: rgba(0, 77, 38, 0.05);
+        --safar-gold: #fbbf24;
+        --dark-slate: #0f172a;
+        --text-slate: #334155;
+        --text-muted: #64748b;
+        --bg-warm-beige: #fdfbf7;      
+        --border-subtle: #e7e0d5;      
+        --border-light: #f3ede2;
+        --radius-premium: 20px;
+        --radius-card: 14px;
+        --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     body {
-        background-color: #f8fafc;
-        font-family: 'Segoe UI', system-ui, sans-serif;
+        background-color: var(--bg-warm-beige);
+        font-family: system-ui, -apple-system, sans-serif;
+        color: var(--dark-slate);
+        margin: 0;
+        padding: 0;
     }
 
-    .main-container {
-        max-width: 950px;
-        margin: 40px auto;
+    .portal-container {
+        max-width: 1200px;
+        margin: 40px auto 100px auto;
+        padding: 0 24px;
     }
 
-    .card-banner {
-        background: white;
-        border-radius: 14px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    /* 🧭 Premium Edge-to-Edge Route Tracker Bar */
+    .master-route-strip {
+        background: linear-gradient(135deg, var(--dark-slate) 0%, var(--safar-green-dark) 100%);
+        border-radius: var(--radius-premium);
+        padding: 32px 40px;
+        color: #ffffff;
+        box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.18);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .train-block {
-        background: white;
-        border-radius: 14px;
-        border: 1px solid #e2e8f0;
-        border-left: 6px solid #22c55e;
-        transition: all 0.2s;
+    .route-visual-container {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        flex-grow: 1;
     }
 
-        .train-block:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-
-    .class-btn {
-        text-decoration: none;
+    .route-terminal-node .station-tag {
+        font-size: 11px;
+        color: rgba(253, 251, 247, 0.6);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
         display: block;
-        border-radius: 10px;
-        padding: 14px;
-        border: 1px solid #cbd5e1;
-        background: #ffffff;
-        transition: all 0.2s;
     }
 
-        .class-btn:hover {
-            background: #f0fdf4;
-            border-color: #22c55e;
-            transform: scale(1.02);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    .route-terminal-node .station-name {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        color: #ffffff;
+        line-height: 1.2;
+    }
+
+    .route-vector-bridge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-grow: 1;
+        max-width: 200px;
+        min-width: 100px;
+        position: relative;
+    }
+
+    .vector-line-dashed {
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 40%, rgba(255, 255, 255, 0.25) 40%);
+        background-size: 10px 12px;
+    }
+
+    .vector-transit-icon {
+        background: var(--safar-green);
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        margin-top: -16px;
+        z-index: 5;
+        box-shadow: 0 0 15px rgba(0, 77, 38, 0.5);
+    }
+
+    /* 📅 New Premium Date Switcher Segment */
+    .date-switcher-wrapper {
+        background: #ffffff;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-card);
+        padding: 12px;
+        box-shadow: 0 4px 15px rgba(27, 38, 24, 0.02);
+    }
+
+    .date-scroll-container {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+    }
+
+    .date-pill-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 110px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .date-pill-btn .day-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+    }
+
+    .date-pill-btn .date-label {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--dark-slate);
+        margin-top: 2px;
+    }
+
+    .date-pill-btn:hover {
+        background: var(--bg-warm-beige);
+        border-color: var(--border-subtle);
+    }
+
+    .date-pill-btn.active-pill {
+        background: var(--safar-green);
+        border-color: var(--safar-green);
+    }
+
+    .date-pill-btn.active-pill .day-label { color: rgba(255, 255, 255, 0.7); }
+    .date-pill-btn.active-pill .date-label { color: #ffffff; }
+
+    .custom-calendar-pill {
+        border: 1px dashed var(--border-subtle);
+        background: var(--bg-warm-beige);
+        justify-content: center;
+    }
+
+    /* 🚂 Professional Fleet Row Matrix */
+    .web-schedule-row {
+        background: #ffffff;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-premium);
+        margin-bottom: 24px;
+        box-shadow: 0 10px 25px -10px rgba(27, 38, 24, 0.04);
+        transition: var(--transition-smooth);
+        overflow: hidden;
+    }
+
+    .web-schedule-row:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 35px -10px rgba(0, 77, 38, 0.06);
+        border-color: rgba(0, 77, 38, 0.15);
+    }
+
+    .train-profile-section {
+        padding: 32px;
+        background: #ffffff;
+        border-right: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .train-identity-tag {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--safar-green);
+        background: var(--safar-green-light);
+        padding: 6px 12px;
+        border-radius: 6px;
+        display: inline-block;
+        margin-bottom: 12px;
+        border: 1px solid rgba(0, 77, 38, 0.08);
+        width: fit-content;
+    }
+
+    .train-main-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--dark-slate);
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+
+    .journey-timeline-center {
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        text-align: center;
+        border-right: 1px solid var(--border-light);
+        background: #fafaf9;
+    }
+
+    .timeline-time-display {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--dark-slate);
+    }
+
+    .timeline-label-display {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-top: 4px;
+        letter-spacing: 0.5px;
+    }
+
+    .pricing-matrix-container {
+        padding: 24px;
+        background: #ffffff;
+    }
+
+    .tier-pricing-column-anchor {
+        text-decoration: none !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: #ffffff;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-card);
+        padding: 18px;
+        height: 100%;
+        transition: var(--transition-smooth);
+    }
+
+    .tier-name-header {
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .tier-eco-text { color: #059669; }
+    .tier-biz-text { color: #2563eb; }
+    .tier-exec-text { color: #d97706; }
+
+    .tier-price-amount {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--dark-slate);
+        margin: 6px 0 0 0;
+    }
+
+    .tier-action-pill {
+        background: #f1f5f9;
+        color: var(--text-slate);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: center;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: var(--transition-smooth);
+    }
+
+    .tier-pricing-column-anchor:hover {
+        border-color: var(--dark-slate);
+        box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.08);
+        background: #fafaf9;
+    }
+
+    .tier-pricing-column-anchor:hover .tier-action-pill {
+        background: var(--safar-green);
+        color: #ffffff;
+    }
+
+    @@media (max-width: 991px) {
+        .train-profile-section, .journey-timeline-center {
+            border-right: none;
+            border-bottom: 1px solid var(--border-light);
         }
+    }
 </style>
 
-<div class="container main-container">
+<div class="container portal-container">
 
-    <div class="card-banner p-4 mb-4 d-flex justify-content-between align-items-center">
-        <div>
-            <span class="text-uppercase text-muted small fw-bold d-block">Requested Route Segment</span>
-            <h3 class="m-0 fw-bold text-dark">🟢 @Model.SearchSource &rarr; 🎯 @Model.SearchDestination</h3>
-        </div>
-        <div>
-            <span class="badge bg-dark px-3 py-2 fs-6">📅 @Model.TravelDate.ToString("dd MMM, yyyy")</span>
+    <div class="master-route-strip mb-4">
+        <div class="route-visual-container">
+            <div class="route-terminal-node">
+                <span class="station-tag">Origin Station</span>
+                <span class="station-name">@Model.SearchSource</span>
+            </div>
+            
+            <div class="route-vector-bridge">
+                <div class="vector-line-dashed"></div>
+                <div class="vector-transit-icon">🚂</div>
+            </div>
+
+            <div class="route-terminal-node">
+                <span class="station-tag">Destination Terminal</span>
+                <span class="station-name">@Model.SearchDestination</span>
+            </div>
         </div>
     </div>
 
-    <h6 class="text-secondary fw-bold mb-3 text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
-        Available Fleet Schedules (@Model.AvailableSchedules.Count Units Found)
-    </h6>
+    <div class="date-switcher-wrapper mb-5">
+        <div class="date-scroll-container">
+            @for (int i = 0; i < 5; i++)
+            {
+                var targetDate = DateTime.Today.AddDays(i);
+                var isSelected = targetDate.Date == Model.TravelDate.Date;
+                <button type="button" class="date-pill-btn @(isSelected ? "active-pill" : "")" 
+                        onclick="executeDateChange('@targetDate.ToString("yyyy-MM-dd")')">
+                    <span class="day-label">@targetDate.ToString("ddd")</span>
+                    <span class="date-label">@targetDate.ToString("dd MMM")</span>
+                </button>
+            }
+            
+            <button type="button" class="date-pill-btn custom-calendar-pill" onclick="document.getElementById('hiddenDatePicker').showPicker()">
+                <span class="day-label">Custom</span>
+                <span class="date-label">📅 Calendar</span>
+            </button>
+            <input type="date" id="hiddenDatePicker" class="d-none" value="@Model.TravelDate.ToString("yyyy-MM-dd")" onchange="executeDateChange(this.value)" />
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 px-1">
+        <h6 class="text-uppercase text-muted fw-bold m-0" style="font-size: 11px; letter-spacing: 1px;">
+            Available Operational Fleets (@Model.AvailableSchedules.Count Tracks Configured)
+        </h6>
+        <a href="/Customer/Index" class="text-decoration-none small fw-bold text-success" style="color: var(--safar-green) !important;">
+            Modify Route Framework &rarr;
+        </a>
+    </div>
 
     @if (Model.AvailableSchedules.Count == 0)
     {
-        <div class="card-banner text-center p-5 border border-dashed">
-            <span style="font-size: 48px;">⚠️</span>
-            <h4 class="fw-bold text-danger mt-3">No Operational Trains Found</h4>
-            <p class="text-muted small">We couldn't locate any active assets operating on this route segment for the selected day.</p>
-            <a href="/Customer/Index" class="btn btn-dark px-4 mt-2">Modify Query</a>
+        <div class="text-center p-5 bg-white border" style="border-radius: var(--radius-premium); border: 1px dashed var(--border-subtle) !important;">
+            <span style="font-size: 48px;" class="d-block mb-3">⚠️</span>
+            <h5 class="fw-bold text-dark m-0">No Matching Fleets Located</h5>
+            <p class="text-muted small mx-auto mt-2 mb-0" style="max-width: 450px; font-size: 14px; line-height: 1.6;">We couldn't track down any active transit lines operating on this network segment for the selected parameters.</p>
         </div>
     }
     else
     {
         @foreach (var train in Model.AvailableSchedules)
         {
-            <div class="train-block p-4 mb-4 shadow-sm">
-                <div class="row align-items-center">
+            <div class="web-schedule-row">
+                <div class="row g-0 align-items-stretch">
+                    
+                    <div class="col-xl-3 col-lg-4 col-md-12 train-profile-section">
+                        <span class="train-identity-tag">Asset @train.TrainIdStr</span>
+                        <h4 class="train-main-title">@train.Name</h4>
+                        <small class="text-muted d-block mt-2" style="font-size: 13px;">Carriages: <strong class="text-dark">@train.TotalBogies Units</strong></small>
+                    </div>
 
-                    <div class="col-lg-4 col-md-12">
-                        <span class="badge bg-dark mb-2">Code: @train.TrainIdStr</span>
-                        <h4 class="fw-bold text-dark m-0">@train.Name</h4>
-                        <small class="text-muted d-block mt-1">Bogie Segments: <strong>@train.TotalBogies</strong></small>
+                    <div class="col-xl-4 col-lg-4 col-md-6 journey-timeline-center">
+                        <div>
+                            <span class="timeline-time-display">@train.DepartureTime</span>
+                            <div class="timeline-label-display">Departure</div>
+                        </div>
+                        
+                        <div style="color: var(--border-subtle); font-size: 28px; font-weight: 200;">&brvbar;</div>
 
-                        <div class="mt-3 p-2 bg-light rounded border d-flex justify-content-between align-items-center text-center">
-                            <div>
-                                <small class="text-muted d-block" style="font-size: 10px;">🟢 Departure</small>
-                                <strong class="text-success small">@train.DepartureTime</strong>
-                            </div>
-                            <div class="text-muted small">&rarr;</div>
-                            <div>
-                                <small class="text-muted d-block" style="font-size: 10px;">🎯 Arrival</small>
-                                <strong class="text-primary small">@train.ArrivalTime</strong>
-                            </div>
+                        <div>
+                            <span class="timeline-time-display">@train.ArrivalTime</span>
+                            <div class="timeline-label-display">Arrival</div>
                         </div>
                     </div>
 
-                    <div class="col-lg-8 col-md-12 mt-4 mt-lg-0">
-                        <span class="text-muted small fw-bold d-block text-lg-end mb-2 text-uppercase" style="font-size: 11px;">Select Travel Class Category</span>
-
-                        <div class="row g-2">
-                            <div class="col-md-4">
-                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Economy&fare=@train.EconomyFare.ToString("F0")" class="class-btn text-center shadow-sm">
-                                    <span class="fw-bold text-success d-block" style="font-size: 13px;">Economy Class</span>
-                                    <h5 class="fw-bold text-dark m-0 mt-1" style="font-size: 16px;">Rs @train.EconomyFare.ToString("N0")</h5>
-                                    <small class="text-muted d-block mt-2" style="font-size: 11px;">Select Seats &rarr;</small>
+                    <div class="col-xl-5 col-lg-4 col-md-6 pricing-matrix-container">
+                        <div class="row h-100 g-2">
+                            
+                            <div class="col-4">
+                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Economy&fare=@train.EconomyFare.ToString("F0")" class="tier-pricing-column-anchor">
+                                    <div>
+                                        <span class="tier-name-header tier-eco-text">Economy</span>
+                                        <h5 class="tier-price-amount">Rs @train.EconomyFare.ToString("N0")</h5>
+                                    </div>
+                                    <div class="tier-action-pill">
+                                        <span>Select</span> <span>&rarr;</span>
+                                    </div>
                                 </a>
                             </div>
 
-                            <div class="col-md-4">
-                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Business&fare=@train.BusinessFare.ToString("F0")" class="class-btn text-center shadow-sm">
-                                    <span class="fw-bold text-primary d-block" style="font-size: 13px;">Business Class</span>
-                                    <h5 class="fw-bold text-dark m-0 mt-1" style="font-size: 16px;">Rs @train.BusinessFare.ToString("N0")</h5>
-                                    <small class="text-muted d-block mt-2" style="font-size: 11px;">Select Seats &rarr;</small>
+                            <div class="col-4">
+                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Business&fare=@train.BusinessFare.ToString("F0")" class="tier-pricing-column-anchor">
+                                    <div>
+                                        <span class="tier-name-header tier-biz-text">Business</span>
+                                        <h5 class="tier-price-amount">Rs @train.BusinessFare.ToString("N0")</h5>
+                                    </div>
+                                    <div class="tier-action-pill">
+                                        <span>Select</span> <span>&rarr;</span>
+                                    </div>
                                 </a>
                             </div>
 
-                            <div class="col-md-4">
-                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Executive&fare=@train.ExecutiveFare.ToString("F0")" class="class-btn text-center shadow-sm">
-                                    <span class="fw-bold text-warning d-block" style="font-size: 13px;">Executive Class</span>
-                                    <h5 class="fw-bold text-dark m-0 mt-1" style="font-size: 16px;">Rs @train.ExecutiveFare.ToString("N0")</h5>
-                                    <small class="text-muted d-block mt-2" style="font-size: 11px;">Select Seats &rarr;</small>
+                            <div class="col-4">
+                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Executive&fare=@train.ExecutiveFare.ToString("F0")" class="tier-pricing-column-anchor">
+                                    <div>
+                                        <span class="tier-name-header tier-exec-text">Executive</span>
+                                        <h5 class="tier-price-amount">Rs @train.ExecutiveFare.ToString("N0")</h5>
+                                    </div>
+                                    <div class="tier-action-pill">
+                                        <span>Select</span> <span>&rarr;</span>
+                                    </div>
                                 </a>
                             </div>
+
                         </div>
                     </div>
+
                 </div>
             </div>
         }
     }
 </div>
+
+<script>
+    function executeDateChange(selectedDate) {
+        if(!selectedDate) return;
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('date', selectedDate);
+        window.location.search = urlParams.toString();
+    }
+</script>

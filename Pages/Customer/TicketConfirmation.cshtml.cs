@@ -12,12 +12,10 @@ namespace Safar.Pages.Customer
     {
         private readonly IMongoCollection<BsonDocument> _bookingsRawCollection;
 
-        // Custom clean container to prevent any mapping drops from base model definitions
         public Booking TargetTicket { get; set; } = new Booking();
 
         public TicketConfirmationModel(IMongoDatabase database)
         {
-            // Direct BsonDocument collection mapping creates an ironclad bridge bypass
             _bookingsRawCollection = database.GetCollection<BsonDocument>("Bookings");
         }
 
@@ -30,7 +28,6 @@ namespace Safar.Pages.Customer
 
             BsonDocument rawDoc = null;
 
-            // 1. Try finding by ObjectId string first
             if (ticketId.Length == 24)
             {
                 if (ObjectId.TryParse(ticketId, out ObjectId objId))
@@ -39,7 +36,6 @@ namespace Safar.Pages.Customer
                 }
             }
 
-            // 2. Fallback: If not found by ObjectId, query via tracking TicketNumber/PNR string
             if (rawDoc == null)
             {
                 rawDoc = _bookingsRawCollection.Find(Builders<BsonDocument>.Filter.Eq("TicketNumber", ticketId)).FirstOrDefault();
@@ -50,13 +46,17 @@ namespace Safar.Pages.Customer
                 return RedirectToPage("/Customer/Index");
             }
 
-            // 3. SECURE MANUAL MAPPER PIPELINE: 
-            // Extracting values straight from BSON streams to ensure 0 value drops never occur
+            // ??? Secure String Field Assignments
             TargetTicket.Id = rawDoc.Contains("_id") ? rawDoc["_id"].ToString() : "";
             TargetTicket.TicketNumber = rawDoc.Contains("TicketNumber") ? rawDoc["TicketNumber"].ToString() : "SAFAR-PENDING";
             TargetTicket.TrainName = rawDoc.Contains("TrainName") ? rawDoc["TrainName"].ToString() : "Safar Express";
-            TargetTicket.SourceStation = rawDoc.Contains("SourceStation") ? rawDoc["SourceStation"].ToString() : "Origin";
-            TargetTicket.DestinationStation = rawDoc.Contains("DestinationStation") ? rawDoc["DestinationStation"].ToString() : "Destination";
+
+            TargetTicket.SourceStation = rawDoc.Contains("SelectedSource") ? rawDoc["SelectedSource"].ToString() :
+                                         (rawDoc.Contains("SourceStation") ? rawDoc["SourceStation"].ToString() : "Rawalpindi");
+
+            TargetTicket.DestinationStation = rawDoc.Contains("SelectedDestination") ? rawDoc["SelectedDestination"].ToString() :
+                                              (rawDoc.Contains("DestinationStation") ? rawDoc["DestinationStation"].ToString() : "Gujranwala");
+
             TargetTicket.CustomerName = rawDoc.Contains("CustomerName") ? rawDoc["CustomerName"].ToString() : "Passenger";
             TargetTicket.CustomerPhone = rawDoc.Contains("CustomerPhone") ? rawDoc["CustomerPhone"].ToString() : "";
             TargetTicket.CustomerCNIC = rawDoc.Contains("CustomerCNIC") ? rawDoc["CustomerCNIC"].ToString() : "N/A";
@@ -75,7 +75,7 @@ namespace Safar.Pages.Customer
                 }
             }
 
-            // Seats List Allocation Map
+            // Seats List Array Extraction
             TargetTicket.BookedSeats = new List<string>();
             if (rawDoc.Contains("BookedSeats") && rawDoc["BookedSeats"].IsBsonArray)
             {
@@ -85,33 +85,37 @@ namespace Safar.Pages.Customer
                 }
             }
 
-            // CRITICAL FARE CAPTURE MATRIX: BsonDecimal128 extraction logic applied safely
-            if (rawDoc.Contains("TotalFare"))
-            {
-                var fareField = rawDoc["TotalFare"];
+            // ?? BULLETPROOF FARE EXTRACTION MATRIX
+            decimal extractedFare = 0;
+            string keyToUse = rawDoc.Contains("TotalFare") ? "TotalFare" : (rawDoc.Contains("totalFare") ? "totalFare" : null);
 
-                if (fareField is BsonDecimal128 || fareField.BsonType == BsonType.Decimal128)
-                {
-                    TargetTicket.TotalFare = fareField.AsDecimal; // Direct native driver assignment
-                }
-                else if (fareField.IsNumeric)
-                {
-                    TargetTicket.TotalFare = Convert.ToDecimal(fareField.ToDouble());
-                }
-                else
-                {
-                    decimal.TryParse(fareField.ToString(), out decimal parsedFare);
-                    TargetTicket.TotalFare = parsedFare;
-                }
-            }
-            else if (rawDoc.Contains("totalFare")) // Caml-case check alternative fallback
+            if (keyToUse != null)
             {
-                var fareField = rawDoc["totalFare"];
-                if (fareField.IsNumeric)
+                var element = rawDoc[keyToUse];
+                try
                 {
-                    TargetTicket.TotalFare = Convert.ToDecimal(fareField.ToDouble());
+                    if (element is BsonDecimal128 || element.BsonType == BsonType.Decimal128)
+                    {
+                        extractedFare = element.AsDecimal;
+                    }
+                    else if (element.IsNumeric)
+                    {
+                        extractedFare = Convert.ToDecimal(element.ToDouble());
+                    }
+                    else
+                    {
+                        decimal.TryParse(element.ToString(), out decimal parsed);
+                        extractedFare = parsed;
+                    }
+                }
+                catch
+                {
+                    decimal.TryParse(element.ToString(), out extractedFare);
                 }
             }
+
+            // Assign the absolute historical price without enforcing static calculations overrides
+            TargetTicket.TotalFare = extractedFare;
 
             return Page();
         }

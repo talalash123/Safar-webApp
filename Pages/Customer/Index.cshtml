@@ -1,90 +1,305 @@
 ﻿@page
 @model Safar.Pages.Customer.IndexModel
 @{
-    ViewData["Title"] = "Safar Sovereign Portal";
+    ViewData["Title"] = "PK SAFAR | Premium Transit Portal";
 }
 
 <style>
+    /* 🌟 PK SAFAR Premium Corporate Tokens */
+    :root {
+        --brand-primary: #004d26;
+        --brand-primary-hover: #003319;
+        --brand-primary-light: rgba(0, 77, 38, 0.05);
+        --brand-dark: #0f172a;
+        --brand-light: #ffffff;
+        --bg-warm-beige: #fdfbf7;      /* Warm premium canvas background */
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border-subtle: #e7e0d5;      /* Tinted luxurious lines */
+        --accent-orange: #ea580c;
+        --glass-effect: rgba(255, 255, 255, 0.88);
+        --radius-xl: 24px;
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     body {
-        background-color: #f8fafc;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-warm-beige);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text-main);
+        margin: 0;
+        padding: 0;
     }
 
-    .hero-search-bg {
-        background: linear-gradient(135deg, #004d26 0%, #06391d 100%);
-        border-radius: 24px;
-        padding: 70px 40px;
+    /* 🚂 Edge-to-Edge Elite Hero Arena */
+    .premium-hero-fluid {
+        position: relative;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(0, 77, 38, 0.92) 100%), 
+                    url('https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1600&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Parallax aesthetic shift */
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: 120px 20px 180px 20px;
+        text-align: center;
+    }
+
+    .premium-tag {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         color: #ffffff;
-        box-shadow: 0 20px 40px rgba(0, 77, 38, 0.15);
-        margin-bottom: 40px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding: 8px 20px;
+        border-radius: 100px;
+        display: inline-block;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
 
-    .search-card {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 35px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e2e8f0;
-        margin-top: -50px;
+    .premium-title {
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 52px; /* Amplified grandeur scaling */
+        letter-spacing: -1.5px;
+        margin-top: 24px;
+        line-height: 1.15;
+    }
+
+    .premium-subtitle {
+        color: rgba(253, 251, 247, 0.85);
+        font-size: 17px;
+        max-width: 640px;
+        margin: 14px auto 0 auto;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    /* 🔍 Content Container Alignment Safehouse */
+    .container-custom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    /* 🔍 Floating Enterprise Search Console Console */
+    .search-console-card {
+        background: var(--glass-effect);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: var(--radius-xl);
+        padding: 32px;
+        box-shadow: 0 30px 60px -15px rgba(27, 38, 24, 0.12);
+        margin-top: -90px; /* Pulls beautifully into the dark hero panel */
         position: relative;
         z-index: 10;
+        transition: transform 0.3s var(--transition-smooth);
     }
 
-    .station-input {
-        padding: 14px 18px;
-        border-radius: 12px;
-        border: 1.5px solid #cbd5e1;
-        font-size: 15px;
-        font-weight: 500;
-        color: #0f172a;
-        width: 100%;
-        outline: none;
-        transition: all 0.2s;
+    .console-field-wrapper {
+        background: #ffffff;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 12px 20px;
+        display: flex;
+        flex-direction: column;
+        transition: var(--transition-smooth);
     }
 
-        .station-input:focus {
-            border-color: #004d26;
-            box-shadow: 0 0 0 4px rgba(0, 77, 38, 0.08);
-        }
+    .console-field-wrapper:focus-within {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 5px rgba(0, 77, 38, 0.06);
+        background: #ffffff;
+    }
 
-    .btn-search-fleet {
-        background: #004d26;
-        color: #ffffff;
-        font-weight: 700;
-        padding: 16px;
-        border-radius: 12px;
+    .console-label {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 6px;
+    }
+
+    .console-input-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .console-icon {
+        font-size: 18px;
+        filter: grayscale(20%);
+    }
+
+    .console-input {
         border: none;
+        outline: none;
         width: 100%;
         font-size: 16px;
-        box-shadow: 0 10px 20px rgba(0, 77, 38, 0.2);
-        transition: all 0.2s ease;
+        font-weight: 600;
+        color: var(--brand-dark);
+        background: transparent;
+    }
+
+    .console-input::placeholder {
+        color: #a1a1aa;
+    }
+
+    .btn-execute-search {
+        background: var(--brand-primary);
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        border-radius: var(--radius-lg);
+        height: 100%;
+        width: 100%;
+        min-height: 68px; /* Perfectly aligns with custom field sizing weights */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 10px 25px -5px rgba(0, 77, 38, 0.4);
+        transition: var(--transition-smooth);
         cursor: pointer;
     }
 
-        .btn-search-fleet:hover {
-            background: #06391d;
-            transform: translateY(-2px);
-        }
+    .btn-execute-search:hover {
+        background: var(--brand-primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px -5px rgba(0, 77, 38, 0.55);
+    }
+
+    /* 🌆 Showcase Architecture Component Modules */
+    .showcase-heading {
+        font-weight: 800;
+        color: var(--brand-dark);
+        font-size: 28px;
+        letter-spacing: -0.8px;
+    }
+
+    .showcase-card {
+        background: #ffffff;
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--border-subtle);
+        overflow: hidden;
+        transition: var(--transition-smooth);
+        height: 100%;
+        box-shadow: 0 10px 25px -10px rgba(27, 38, 24, 0.04);
+    }
+
+    .showcase-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(0, 77, 38, 0.15);
+        box-shadow: 0 25px 40px -15px rgba(0, 77, 38, 0.08);
+    }
+
+    .showcase-img-frame {
+        position: relative;
+        height: 230px;
+        overflow: hidden;
+        background-color: var(--border-subtle);
+    }
+
+    .showcase-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition-smooth);
+    }
+
+    .showcase-card:hover .showcase-img {
+        transform: scale(1.04);
+    }
+
+    .showcase-badge {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .showcase-content {
+        padding: 28px;
+    }
+
+    .showcase-title {
+        font-weight: 700;
+        font-size: 19px;
+        color: var(--brand-dark);
+        margin-bottom: 10px;
+    }
+
+    .showcase-desc {
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.65;
+        margin: 0;
+    }
+
+    @@media (max-width: 768px) {
+        .premium-title { font-size: 36px; }
+        .search-console-card { padding: 20px; margin-top: -50px; }
+        .btn-execute-search { min-height: 58px; }
+    }
 </style>
 
-<div class="container" style="max-width: 900px; margin-top: 40px; margin-bottom: 60px;">
+<div class="premium-hero-fluid">
+    <span class="premium-tag">Redefining Rail Operations</span>
+    <h1 class="premium-title">Your Sovereign Journey<br>Starts Here</h1>
+    <p class="premium-subtitle">Experience luxury lounge access at Lahore Junction, dynamic routing management, and streamlined booking matrices.</p>
+</div>
 
-    <div class="hero-search-bg text-center">
-        <span class="badge mb-3" style="background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; padding: 8px 16px; border-radius: 30px; letter-spacing: 1px;">SAFAR SOVEREIGN TRANSIT</span>
-        <h1 style="font-weight: 800; font-size: 42px; letter-spacing: -1px;">Find Your Next Journey</h1>
-        <p style="opacity: 0.85; font-size: 16px;">Select your terminal routing to fetch live operational schedules.</p>
-    </div>
+<div class="container-custom" style="margin-bottom: 100px;">
 
-    <div class="search-card">
+    <div class="search-console-card">
         <form method="get" asp-page="./SearchResults">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <label class="form-label text-secondary small fw-bold text-uppercase">Departing From</label>
-                    <input type="text" name="source" class="station-input" list="stationCluster" placeholder="Type or select origin..." autocomplete="off" required />
+            <div class="row g-3 align-items-center">
+
+                <div class="col-md-5">
+                    <div class="console-field-wrapper">
+                        <label class="console-label">Departing From</label>
+                        <div class="console-input-group">
+                            <span class="console-icon">📍</span>
+                            <input type="text" name="source" class="console-input" list="stationCluster" placeholder="Search origin station..." autocomplete="off" required />
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label text-secondary small fw-bold text-uppercase">Going To</label>
-                    <input type="text" name="destination" class="station-input" list="stationCluster" placeholder="Type or select destination..." autocomplete="off" required />
+
+                <div class="col-md-5">
+                    <div class="console-field-wrapper">
+                        <label class="console-label">Going To</label>
+                        <div class="console-input-group">
+                            <span class="console-icon">🎯</span>
+                            <input type="text" name="destination" class="console-input" list="stationCluster" placeholder="Search destination station..." autocomplete="off" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn-execute-search">
+                        <span>🔍</span> Find Fleet
+                    </button>
                 </div>
             </div>
 
@@ -94,14 +309,55 @@
                     <option value="@station"></option>
                 }
             </datalist>
-
-            <div class="row mt-4">
-                <div class="col-12">
-                    <button type="submit" class="btn-search-fleet">
-                        🔍 Search Available Trains & Cabin Berths
-                    </button>
-                </div>
-            </div>
         </form>
     </div>
+
+    <div class="mt-5 pt-4">
+        <div class="mb-4">
+            <h3 class="showcase-heading">Operational Hubs & Tiers</h3>
+            <p class="text-muted m-0" style="font-size: 14.5px;">Explore professional terminal hubs and elite transport configurations across the network.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="showcase-card">
+                    <div class="showcase-img-frame">
+                        <span class="showcase-badge" style="color: #fbbf24;">Executive Lounge</span>
+                        <img src="https://images.unsplash.com/photo-1541417904950-b855846fe074?auto=format&fit=crop&w=600&q=80" class="showcase-img" alt="Lahore Junction Corporate Club">
+                    </div>
+                    <div class="showcase-content">
+                        <h5 class="showcase-title">Lahore Junction Elite Club</h5>
+                        <p class="showcase-desc">Modern corporate style execution featuring noise-insulated private conference pods, bespoke catering infrastructure, and priority boarding channels.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="showcase-card">
+                    <div class="showcase-img-frame">
+                        <span class="showcase-badge" style="color: #38bdf8;">Business Cabins</span>
+                        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80" class="showcase-img" alt="Sovereign Sleeper Berths">
+                    </div>
+                    <div class="showcase-content">
+                        <h5 class="showcase-title">Sovereign Sleeper Modules</h5>
+                        <p class="showcase-desc">Fully customized climatic configuration berths utilizing ergonomic optimization matrices, fast charge points, and high-fidelity smart dashboarding.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="showcase-card">
+                    <div class="showcase-img-frame">
+                        <span class="showcase-badge" style="color: #34d399;">Premium Coaches</span>
+                        <img src="https://images.unsplash.com/photo-1532103054090-334e6e60b729?auto=format&fit=crop&w=600&q=80" class="showcase-img" alt="Interstate Transit Fleet">
+                    </div>
+                    <div class="showcase-content">
+                        <h5 class="showcase-title">Interstate Premium Transit</h5>
+                        <p class="showcase-desc">High-speed modular travel structures built for streamlined cross-country connection tracks with consistent scheduling optimization benchmarks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

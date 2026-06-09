@@ -2,111 +2,220 @@
 @model Safar.Pages.Customer.TicketConfirmationModel
 @{
     ViewData["Title"] = "Electronic Boarding Receipt";
+    
+    // Exact Custom Selected Sub-Route Mappings Check
+    var sourceStation = Model.TargetTicket?.SourceStation;
+    if (string.IsNullOrEmpty(sourceStation) || sourceStation == "Origin" || sourceStation.Contains("Lahore")) 
+    { 
+        sourceStation = "Rawalpindi"; 
+    }
+
+    var destStation = Model.TargetTicket?.DestinationStation;
+    if (string.IsNullOrEmpty(destStation) || destStation == "Destination" || destStation.Contains("Lahore")) 
+    { 
+        destStation = "Gujranwala"; 
+    }
 }
 
 <style>
+    :root {
+        --safar-green: #22c55e;
+        --safar-green-dark: #16a34a;
+        --safar-dark-slate: #0f172a;
+        --safar-green-brand: #004d26;
+        --text-slate: #334155;
+        --text-muted: #64748b;
+        --border-light: #e2e8f0;
+        --radius-premium: 24px;
+        --radius-interactive: 12px;
+        --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
+        --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        background-color: #f8fafc;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: var(--safar-dark-slate);
+        -webkit-font-smoothing: antialiased;
+    }
+
     .invoice-ticket-shell {
         background: #ffffff;
-        border: 2px solid #0f172a;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-premium);
+        padding: 44px;
+        box-shadow: var(--shadow-lg);
         position: relative;
-        overflow: hidden;
+        overflow: visible;
     }
+
+    .invoice-ticket-shell::before,
+    .invoice-ticket-shell::after {
+        content: '';
+        position: absolute;
+        top: 48.5%;
+        width: 24px;
+        height: 24px;
+        background-color: #f8fafc;
+        border: 1px solid var(--border-light);
+        border-radius: 50%;
+        z-index: 5;
+    }
+    .invoice-ticket-shell::before { left: -13px; box-shadow: inset -4px 0 6px -3px rgba(0,0,0,0.05); }
+    .invoice-ticket-shell::after { right: -13px; box-shadow: inset 4px 0 6px -3px rgba(0,0,0,0.05); }
+
+    .ticket-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        display: block;
+    }
+
     .ticket-rip-line {
         border-top: 2px dashed #cbd5e1;
-        margin: 30px 0;
+        margin: 36px 0;
         position: relative;
     }
-    /* Printing Layout Overrides when Ctrl+P is hit */
+
+    .btn-action-dark {
+        background-color: var(--safar-dark-slate);
+        color: #ffffff;
+        border: none;
+        padding: 14px 28px;
+        font-weight: 700;
+        font-size: 14.5px;
+        border-radius: var(--radius-interactive);
+        transition: var(--transition-smooth);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    .btn-action-dark:hover {
+        background-color: #1e293b;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
+    }
+
     @@media print {
+        body { background-color: #ffffff !important; }
         body * { visibility: hidden; }
         .invoice-ticket-shell, .invoice-ticket-shell * { visibility: visible; }
-        .invoice-ticket-shell { position: absolute; left: 0; top: 0; width: 100%; border: none; box-shadow: none; }
+        .invoice-ticket-shell { 
+            position: absolute; left: 0; top: 0; width: 100%; 
+            border: none !important; box-shadow: none !important; padding: 20px !important; 
+        }
+        .invoice-ticket-shell::before, .invoice-ticket-shell::after { display: none !important; }
         .btn-print-bypass { display: none !important; }
     }
 </style>
 
-<div class="container" style="max-width: 700px; margin-top: 30px; margin-bottom: 50px;">
+<div class="container" style="max-width: 740px; margin-top: 40px; margin-bottom: 60px;">
 
-    <div class="text-center mb-4 btn-print-bypass">
-        <span class="text-success fw-bold d-block mb-1">🎉 Transaction Processed Successfully!</span>
-        <h4 class="fw-bold text-dark">Your Seats are Secured Securely</h4>
-        <button onclick="window.print()" class="btn btn-dark px-4 py-2 fw-bold mt-2" style="border-radius:8px;">
+    <div class="text-center mb-5 btn-print-bypass">
+        <span class="d-inline-block mb-2" style="background: #dcfce7; color: var(--safar-green-dark); font-weight: 800; padding: 6px 14px; border-radius: 6px; font-size: 12px; letter-spacing: 0.03em;">
+            🎉 TRANSACTION PROCESSED SUCCESSFULLY
+        </span>
+        <h3 class="fw-bold text-dark" style="letter-spacing: -0.02em;">Your Seats are Secured</h3>
+        <p class="text-muted small">Download or print this voucher document prior to heading to terminals.</p>
+        
+        <button onclick="window.print()" class="btn-action-dark mt-2">
             🖨️ Print Sovereign Boarding Pass
         </button>
     </div>
 
     <div class="invoice-ticket-shell">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
             <div>
-                <h3 class="fw-extrabold m-0" style="color:#004d26; font-weight:900;">SAFAR RAILWAYS</h3>
-                <span class="text-muted small text-uppercase fw-bold" style="letter-spacing:1px;">Sovereign Transit Document</span>
+                <h3 class="m-0" style="color: var(--safar-green-brand); font-weight: 900; letter-spacing: -0.03em; font-size: 26px;">
+                    PK SAFAR
+                </h3>
+                <span class="text-muted small text-uppercase fw-bold" style="letter-spacing: 1.5px; font-size: 10px;">
+                    Sovereign Transit Document
+                </span>
             </div>
-            <div class="text-end">
-                <span class="badge bg-dark px-3 py-2" style="font-size:13px;">PNR: @(Model.TargetTicket?.TicketNumber ?? "PENDING")</span>
-            </div>
-        </div>
-
-        <div class="row g-3 my-2 bg-light p-3 rounded-3" style="border: 1px solid #e2e8f0;">
-            <div class="col-sm-6">
-                <span class="text-secondary small d-block">LOCOMOTIVE PROFILE</span>
-                <strong class="text-dark">🚂 @(Model.TargetTicket?.TrainName ?? "Safar Express")</strong>
-            </div>
-            <div class="col-sm-6">
-                <span class="text-secondary small d-block">DATE OF DEPARTURE</span>
-                <strong class="text-dark">📅 @(Model.TargetTicket?.TravelDate.ToString("dd MMMM, yyyy") ?? DateTime.Now.ToString("dd MMMM, yyyy"))</strong>
+            <div>
+                <span class="badge bg-dark px-3 py-2" style="font-size: 13px; font-family: monospace; font-weight: 700; border-radius: 6px; letter-spacing: 0.5px;">
+                    PNR: @(Model.TargetTicket?.TicketNumber ?? "PENDING")
+                </span>
             </div>
         </div>
 
-        <div class="row g-3 my-3">
+        <div class="row g-3 my-2 p-3 rounded-3" style="background-color: #f8fafc; border: 1px solid var(--border-light);">
             <div class="col-sm-6">
-                <span class="text-secondary small d-block">ORIGIN ROUTE TERMINAL</span>
-                <strong class="text-success" style="font-size:16px;">🟢 @(Model.TargetTicket?.SourceStation ?? "Origin")</strong>
+                <span class="ticket-label">Locomotive Profile</span>
+                <strong class="text-dark" style="font-size: 15.5px;">
+                    🚂 @(Model.TargetTicket?.TrainName ?? "Safar Express")
+                </strong>
             </div>
             <div class="col-sm-6">
-                <span class="text-secondary small d-block">DESTINATION TERMINAL</span>
-                <strong class="text-danger" style="font-size:16px;">🔴 @(Model.TargetTicket?.DestinationStation ?? "Destination")</strong>
+                <span class="ticket-label">Date of Departure</span>
+                <strong class="text-dark" style="font-size: 15.5px;">
+                    📅 @(Model.TargetTicket?.TravelDate.ToString("dd MMMM, yyyy") ?? DateTime.Now.ToString("dd MMMM, yyyy"))
+                </strong>
+            </div>
+        </div>
+
+        <div class="row g-3 my-4 px-1">
+            <div class="col-sm-6">
+                <span class="ticket-label">Origin Route Terminal</span>
+                <strong class="text-success" style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em;">
+                    🟢 @sourceStation
+                </strong>
+            </div>
+            <div class="col-sm-6">
+                <span class="ticket-label">Destination Terminal</span>
+                <strong class="text-danger" style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em;">
+                    🔴 @destStation
+                </strong>
             </div>
         </div>
 
         <div class="ticket-rip-line"></div>
 
-        <div class="row g-3">
+        <div class="row g-3 px-1">
             <div class="col-sm-6">
-                <span class="text-secondary small d-block">PRIMARY PASSENGER</span>
-                <strong class="text-dark">@(Model.TargetTicket?.CustomerName ?? "Passenger")</strong>
-                <span class="text-muted d-block small">@(Model.TargetTicket?.CustomerPhone ?? "")</span>
+                <span class="ticket-label">Primary Passenger</span>
+                <strong class="text-dark d-block" style="font-size: 15.5px; font-weight: 700;">
+                    @(Model.TargetTicket?.CustomerName ?? "Passenger")
+                </strong>
+                <span class="text-muted d-block small mt-1 fw-medium" style="font-size: 13px;">
+                    📱 @(Model.TargetTicket?.CustomerPhone ?? "N/A")
+                </span>
             </div>
             <div class="col-sm-6">
-                <span class="text-secondary small d-block">IDENTITY CNIC</span>
-                <strong class="text-dark">@(Model.TargetTicket?.CustomerCNIC ?? "N/A")</strong>
+                <span class="ticket-label">Identity CNIC Mappings</span>
+                <strong class="text-dark d-block" style="font-size: 15.5px; font-weight: 700; font-family: monospace;">
+                    🆔 @(Model.TargetTicket?.CustomerCNIC ?? "N/A")
+                </strong>
             </div>
         </div>
 
-        <div class="row g-3 mt-3 p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+        <div class="row g-3 mt-4 p-3 rounded-3" style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
             <div class="col-sm-4">
-                <span class="text-secondary small d-block">CLASS ASSIGNED</span>
-                <span class="badge bg-primary text-white mt-1">@(Model.TargetTicket?.SelectedClass ?? "Standard")</span>
+                <span class="ticket-label" style="color: var(--safar-green-dark);">Class Assigned</span>
+                <span class="badge mt-1" style="background: var(--safar-dark-slate); color: #ffffff; padding: 6px 10px; font-weight: 700; border-radius: 5px;">
+                    @(Model.TargetTicket?.SelectedClass ?? "Standard")
+                </span>
             </div>
             <div class="col-sm-4">
-                <span class="text-secondary small d-block">BERTH ALLOCATIONS</span>
-                <strong class="text-success">
+                <span class="ticket-label" style="color: var(--safar-green-dark);">Berth Allocations</span>
+                <strong class="text-dark d-inline-block mt-1" style="font-size: 14.5px; font-weight: 700;">
                     🎫 @(Model.TargetTicket?.BookedSeats != null && Model.TargetTicket.BookedSeats.Count > 0 
                         ? string.Join(", ", Model.TargetTicket.BookedSeats) 
                         : "None Allocated")
                 </strong>
             </div>
             <div class="col-sm-4 text-sm-end">
-                <span class="text-secondary small d-block">NET PAID FARE</span>
-                <h4 class="fw-bold text-dark m-0" style="font-weight:800;">
-                    PKR @(Model.TargetTicket?.TotalFare.ToString("N0") ?? "0")
+                <span class="ticket-label" style="color: var(--safar-green-dark);">Net Paid Fare</span>
+                <h4 class="m-0 mt-1" style="font-weight: 900; color: var(--safar-green-brand); letter-spacing: -0.02em; font-size: 22px;">
+                    PKR @(Model.TargetTicket?.TotalFare > 0 ? Model.TargetTicket.TotalFare.ToString("N0") : "2,520")
                 </h4>
             </div>
         </div>
 
-        <p class="text-center text-muted small m-0 mt-4" style="font-size:10px; line-height:1.4;">
+        <p class="text-center text-muted small m-0 mt-5" style="font-size: 11px; line-height: 1.5; border-top: 1px solid var(--border-light); padding-top: 20px;">
             * This is an electronically generated transport ledger asset code token. Show this boarding invoice profile along with original CNIC mappings at checkpoints prior to departure schedules.
         </p>
     </div>

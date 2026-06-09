@@ -1,182 +1,275 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Safar Terminal</title>
+    <title>@ViewData["Title"] - PK SAFAR Control Panel</title>
 
+    <!-- Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    
     <style>
+        /* 🎨 Design Tokens - Clean Corporate Palette */
         :root {
-            --pakistan-green: #004d26;
-            --pakistan-green-light: #e6f4ea;
-            --pakistan-green-hover: rgba(0, 77, 38, 0.08);
-            --premium-white: #ffffff;
-            --slate-900: #0f172a;
-            --slate-800: #1e293b;
-            --slate-700: #334155;
-            --slate-600: #475569;
-            --slate-500: #64748b;
-            --slate-100: #f1f5f9;
-            --slate-50: #f8fafc;
-            --sidebar-width: 260px;
-            --border-color: #f1f5f9;
+            /* Pakistan Green Theme */
+            --pk-green: #14532d;
+            --pk-green-dark: #0f3320;
+            --pk-green-light: #dcfce7;
+            
+            /* Modern Neutral Base */
+            --white-surface: #ffffff;
+            --page-bg: #f1f5f9; /* Slate 100 */
+            --text-main: #1e293b; /* Slate 800 */
+            --text-muted: #64748b; /* Slate 500 */
+            
+            /* Orange/Beige Accents */
+            --accent-alert: #f59e0b; /* Amber/Orange */
+            --beige-bg: #fffbeb;
+            
+            /* Spacing & Radius */
+            --sidebar-width: 280px;
+            --radius-lg: 16px;
             --radius-md: 10px;
-            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-subtle: 0 4px 20px rgba(0,0,0,0.05);
         }
 
+        /* 🔄 Global Reset */
         body, html {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background-color: var(--slate-50);
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: var(--slate-900);
+            background-color: var(--page-bg);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Fixed Sidebar Navigation */
+        /* 🗃️ Fixed Sidebar Container */
         .admin-sidebar {
             position: fixed;
             top: 0;
             left: 0;
             bottom: 0;
             width: var(--sidebar-width);
-            background: var(--premium-white);
-            border-right: 1px solid var(--border-color);
-            box-shadow: 4px 0 24px rgba(15, 23, 42, 0.015);
+            background: var(--white-surface);
+            box-shadow: var(--shadow-subtle);
+            border-right: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
-            z-index: 1050;
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
+        /* 🏷️ Brand Header */
         .sidebar-brand {
-            padding: 24px 20px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 28px 24px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            height: 75px;
-            box-sizing: border-box;
+            gap: 14px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-            .sidebar-brand h4 {
-                margin: 0;
-                font-weight: 800;
-                color: var(--pakistan-green);
-                letter-spacing: -0.5px;
-                font-size: 19px;
-            }
+        .flag-icon {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
 
-        /* Enhanced Scrollable Menu Container */
+        .brand-text h4 {
+            margin: 0;
+            font-weight: 800;
+            color: var(--pk-green);
+            font-size: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-alert); /* Orange Accent */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* 📜 Navigation Scroll Area */
         .sidebar-menu {
-            padding: 24px 14px;
+            padding: 24px 16px;
             flex-grow: 1;
             overflow-y: auto;
         }
+        
+        .sidebar-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
 
-            /* Custom Sleek Scrollbar for Sidebar Links */
-            .sidebar-menu::-webkit-scrollbar {
-                width: 5px;
-            }
+        /* 🏷️ Menu Section Labels */
+        .menu-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px 12px 12px;
+            margin-top: 10px;
+        }
 
-            .sidebar-menu::-webkit-scrollbar-track {
-                background: transparent;
-            }
-
-            .sidebar-menu::-webkit-scrollbar-thumb {
-                background: var(--slate-100);
-                border-radius: 10px;
-            }
-
-                .sidebar-menu::-webkit-scrollbar-thumb:hover {
-                    background: var(--slate-500);
-                }
-
-        /* Premium Functional Links */
+        /* 🔗 Navigation Links */
         .menu-link {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 12px 16px;
-            color: var(--slate-600);
+            color: var(--text-main);
             font-weight: 600;
             font-size: 14px;
             text-decoration: none;
             border-radius: var(--radius-md);
-            margin-bottom: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 4px;
             position: relative;
-            transition: var(--transition-smooth);
         }
 
-            /* Hover State with subtle push effect */
-            .menu-link:hover {
-                background: var(--slate-50);
-                color: var(--pakistan-green);
-                padding-left: 20px;
-            }
+        .menu-link:hover {
+            background-color: #f8fafc;
+            color: var(--pk-green);
+            transform: translateX(4px); /* Slide effect */
+        }
 
-            /* Active Routing Node Highlights */
-            .menu-link.active-node {
-                background: var(--pakistan-green-light) !important;
-                color: var(--pakistan-green) !important;
-                font-weight: 700;
-                padding-left: 20px;
-            }
+        /* Active State: Green Theme */
+        .menu-link.active-node {
+            background-color: var(--pk-green);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(20, 83, 45, 0.3);
+        }
+        
+        .menu-link.active-node::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 60%;
+            width: 4px;
+            background-color: #ffffff;
+            border-radius: 0 4px 4px 0;
+        }
 
-                /* Refined Active Left Bar Indicator */
-                .menu-link.active-node::before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    top: 20%;
-                    height: 60%;
-                    width: 4px;
-                    background-color: var(--pakistan-green);
-                    border-radius: 0 4px 4px 0;
-                }
+        /* Icons */
+        .menu-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
 
-            /* Menu Icons Sync */
-            .menu-link i, .menu-link svg {
-                font-size: 18px;
-                transition: var(--transition-smooth);
-                color: var(--slate-500);
-            }
+        /* Badges (Live/Orange) */
+        .menu-badge {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background-color: var(--beige-bg);
+            color: var(--accent-alert);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
 
-            .menu-link:hover i, .menu-link:hover svg,
-            .menu-link.active-node i, .menu-link.active-node svg {
-                color: var(--pakistan-green);
-            }
+        .menu-link.active-node .menu-badge {
+            background-color: rgba(255,255,255,0.2);
+            color: #ffffff;
+            border: none;
+        }
 
-        /* Sidebar Footer Enhancement */
+        /* 👤 User Footer Profile */
         .sidebar-footer {
-            padding: 18px 20px;
-            border-top: 1px solid var(--border-color);
-            background: var(--slate-50);
-            margin-top: auto;
+            padding: 20px;
+            margin: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Centralized View Injection Workspace */
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            background: var(--pk-green);
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        /* 🔴 Exit / Logout Button */
+        .logout-link {
+            border: 1px dashed #fecaca;
+            color: #ef4444;
+            background: #fef2f2;
+        }
+        .logout-link:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            transform: translateX(4px);
+        }
+
+        /* 📦 Main Content Area */
         .admin-main-content {
             margin-left: var(--sidebar-width);
             padding: 40px;
             min-height: 100vh;
-            background-color: var(--slate-50);
-            box-sizing: border-box;
+            background-color: var(--page-bg);
         }
 
-        @@media (max-width: 768px) {
+        /* Responsive Design */
+        @@media (max-width: 992px) {
             .admin-sidebar {
                 transform: translateX(-100%);
-                transition: var(--transition-smooth);
             }
-
             .admin-main-content {
                 margin-left: 0;
-                padding: 20px;
+                padding: 24px;
             }
-
-            .admin-sidebar.open {
+            .admin-sidebar.show-mobile {
                 transform: translateX(0);
             }
         }
@@ -184,70 +277,98 @@
 </head>
 <body>
 
+    <!-- Sidebar -->
     <aside class="admin-sidebar">
         <div class="sidebar-brand">
-            <span style="font-size: 18px;">🇵🇰</span>
-            <div>
-                <h4>SAFAR</h4>
-                <small style="font-size: 9px; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Smart Railway</small>
+            <div class="flag-icon">🇵🇰</div>
+            <div class="brand-text">
+                <h4>PK SAFAR</h4>
+                <span>Control Panel</span>
             </div>
         </div>
 
         <nav class="sidebar-menu">
+            <div class="menu-section-title">Core Operations</div>
+            
+            <!-- Note: Using asp-controller/asp-action is better in MVC, using href for fallback -->
             <a href="/Admin/Dashboard" class="menu-link">
-                <span>📊</span> Dashboard Core
+                <span class="menu-icon">📊</span>
+                <span class="menu-label">Dashboard</span>
             </a>
 
             <a href="/Admin/Trains/Index" class="menu-link">
-                <span>🚆</span> Fleet Management
+                <span class="menu-icon">🚆</span>
+                <span class="menu-label">Fleet Management</span>
             </a>
 
             <a href="/Admin/Schedules/Index" class="menu-link">
-                <span>📅</span> Route Schedules
+                <span class="menu-icon">📅</span>
+                <span class="menu-label">Schedules</span>
             </a>
+
+            <div class="menu-section-title">Commercials</div>
 
             <a href="/Admin/Bookings" class="menu-link">
-                <span>🎟️</span> Pass Bookings
+                <span class="menu-icon">🎟️</span>
+                <span class="menu-label">Bookings</span>
+                <span class="menu-badge">Live</span>
             </a>
 
-            <hr class="text-muted my-3" />
+            <div style="height: 20px;"></div>
 
-            <a href="/Customer/Index" class="menu-link text-danger">
-                <span>🔙</span> Exit Admin Panel
+            <!-- Logout / Customer View -->
+            <a href="/Customer/Index" class="menu-link logout-link">
+                <span class="menu-icon">🔙</span>
+                <span class="menu-label">Exit Admin</span>
             </a>
         </nav>
 
+        <!-- User Profile Footer -->
         <div class="sidebar-footer">
-            <div class="d-flex align-items-center gap-2">
-                <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%;"></div>
-                <span style="font-size: 11px; font-weight: 700; color: var(--slate-800);">Node Active: Admin</span>
+            <div class="user-avatar">AD</div>
+            <div class="user-info">
+                <div class="user-name">Admin Desk</div>
+                <div class="user-status">
+                    <span class="status-dot"></span> Online
+                </div>
             </div>
         </div>
     </aside>
 
+    <!-- Main Content Injection -->
     <main class="admin-main-content">
         @RenderBody()
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
+        // Auto-highlight Active Link
         document.addEventListener("DOMContentLoaded", function () {
+            // Normalize current path
             const currentPath = window.location.pathname.toLowerCase();
             const links = document.querySelectorAll(".menu-link");
 
             links.forEach(link => {
+                // Remove active class initially
                 link.classList.remove("active-node");
-                const hrefAttr = link.getAttribute("href");
 
-                if (hrefAttr) {
-                    const normalizedHref = hrefAttr.toLowerCase();
-                    // Exact match ya sub-path verification match logic
-                    if (currentPath === normalizedHref || currentPath.startsWith(normalizedHref + "/")) {
-                        link.classList.add("active-node");
+                const hrefAttr = link.getAttribute("href");
+                if (!hrefAttr) return;
+
+                const linkUrl = hrefAttr.toLowerCase();
+
+                // Check Logic: Exact match OR starts with
+                if (currentPath === linkUrl || currentPath.startsWith(linkUrl + "/")) {
+                    // Avoid highlighing "Exit Admin" if we are already on another admin page
+                    if(linkUrl.includes("exit") && !currentPath.includes("customer")) {
+                       // specific logic if needed
+                    } else {
+                       link.classList.add("active-node");
                     }
                 }
             });

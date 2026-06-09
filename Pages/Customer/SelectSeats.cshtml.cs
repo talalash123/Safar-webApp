@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using Safar.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Safar.Pages.Customer
 {
@@ -17,9 +18,10 @@ namespace Safar.Pages.Customer
         public string TravelDateString { get; set; }
 
         public int TotalSeatsCount { get; set; }
+        public int TotalBogiesCount { get; set; } = 1;
         public decimal BaseFare { get; set; }
+        public string DisplayTrainCode { get; set; }
 
-        // ?? URL PARAMETERS BINDING GUARDS (Bina purane code ko chede dynamic tracking lagayi hai)
         [BindProperty(SupportsGet = true)]
         public string Src { get; set; }
 
@@ -27,7 +29,10 @@ namespace Safar.Pages.Customer
         public string Dest { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public decimal Fare { get; set; } // Tracks exact calculation sent from search grid
+        public decimal Fare { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string CurrentBogie { get; set; }
 
         public List<string> ExistingBookedSeats { get; set; } = new List<string>();
 
@@ -37,7 +42,7 @@ namespace Safar.Pages.Customer
             _bookingCollection = database.GetCollection<Booking>("Bookings");
         }
 
-        public IActionResult OnGet(string id, string @class, string date)
+        public IActionResult OnGet(string id, string @class, string date, string bogie)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(@class))
             {
@@ -53,37 +58,54 @@ namespace Safar.Pages.Customer
             SelectedClass = @class;
             TravelDateString = date;
 
-            // 1. AAPKI PRICING LOGIC CONFIGURATION (Dynamic Parameter Fallback Added)
-            // Agar piche se exact parameter scale fare mil raha hai to wahi chalega, nahi to default mapping:
+            // Safe reflection check backup configuration
+            DisplayTrainCode = !string.IsNullOrEmpty(CurrentTrain.TrainId)
+                ? CurrentTrain.TrainId
+                : (CurrentTrain.Id != null && CurrentTrain.Id.Length > 5
+                    ? CurrentTrain.Id.Substring(CurrentTrain.Id.Length - 5).ToUpper()
+                    : "T-REG");
+
             decimal defaultSchedulingFare = Fare > 0 ? Fare : 1500;
+            string prefix = @class.Substring(0, 1).ToUpper();
 
             if (@class == "Economy")
             {
                 TotalSeatsCount = CurrentTrain.ClassDistribution?.Economy?.SeatsPerBogie ?? 72;
+                TotalBogiesCount = CurrentTrain.ClassDistribution?.Economy?.BogiesCount ?? 3;
                 BaseFare = defaultSchedulingFare;
             }
             else if (@class == "Business")
             {
                 TotalSeatsCount = CurrentTrain.ClassDistribution?.Business?.SeatsPerBogie ?? 48;
-
-                // Agar piche se exact fare calculated aa rahi hai to multiply dobara na karein, direct apply ho
-                BaseFare = Fare > 0 ? Fare : (defaultSchedulingFare * 1.20m);
+                TotalBogiesCount = CurrentTrain.ClassDistribution?.Business?.BogiesCount ?? 2;
+                BaseFare = Fare > 0 ? Fare : (defaultSchedulingFare * 1.40m);
             }
             else if (@class == "Executive")
             {
                 TotalSeatsCount = CurrentTrain.ClassDistribution?.Executive?.SeatsPerBogie ?? 30;
-
-                // Same logic for executive class pricing
-                BaseFare = Fare > 0 ? Fare : (defaultSchedulingFare * 1.50m);
+                TotalBogiesCount = CurrentTrain.ClassDistribution?.Executive?.BogiesCount ?? 1;
+                BaseFare = Fare > 0 ? Fare : (defaultSchedulingFare * 1.70m);
             }
 
-            // 2. REAL-TIME DOUBLE BOOKING CONCURRENCY GUARD FILTER
-            // Check mapping inside Bookings Collection to pull down already preserved berths
+            if (string.IsNullOrEmpty(bogie))
+            {
+                CurrentBogie = $"{prefix}1";
+            }
+            else
+            {
+                CurrentBogie = bogie;
+            }
+
+            // ?? FIXED: Strict Date Range Check for MongoDB Driver
             if (DateTime.TryParse(date, out DateTime parsedDate))
             {
+                DateTime startOfDay = parsedDate.Date;
+                DateTime endOfDay = startOfDay.AddDays(1);
+
                 var activeBookings = _bookingCollection.Find(b =>
                     b.TrainId == CurrentTrain.Id &&
-                    b.TravelDate.Date == parsedDate.Date &&
+                    b.TravelDate >= startOfDay &&
+                    b.TravelDate < endOfDay &&
                     b.SelectedClass == @class
                 ).ToList();
 
@@ -91,7 +113,14 @@ namespace Safar.Pages.Customer
                 {
                     if (booking.BookedSeats != null)
                     {
-                        ExistingBookedSeats.AddRange(booking.BookedSeats);
+                        foreach (var seat in booking.BookedSeats)
+                        {
+                            // Agar seat layout current bogie context "B1-" se match karti hai tabhi load karein
+                            if (seat.StartsWith(CurrentBogie + "-"))
+                            {
+                                ExistingBookedSeats.Add(seat);
+                            }
+                        }
                     }
                 }
             }

@@ -4,7 +4,233 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "Safar Transit Matrix";
 }
+<style>
+    /* 🎨 PK SAFAR PREMIUM MATRIX MANAGEMENT SYSTEM
+       Theme: Fine-tuned Schedule Grid with Warm Sand Canvas & Sunset Orange Elements
+    */
+    :root {
+        --brand-slate-900: #0f172a;
+        --brand-slate-700: #334155;
+        --brand-slate-400: #94a3b8;
+        --bg-warm-beige: #fdfbf7;      /* Unified global background theme canvas */
+        --border-subtle: #e7e0d5;      /* Structural refined beige line */
+        --border-light: #f3ede2;       /* Micro layout internal separation */
+        
+        /* Corporate Emerald Tones */
+        --brand-green: #004d26;
+        --brand-green-hover: #003319;
+        --brand-green-light: rgba(0, 77, 38, 0.05);
+        
+        /* Sunset Micro Accent Fire */
+        --accent-orange: #ea580c;
+        --accent-orange-light: #fff7ed;
+        
+        /* Depth Shadow Engines */
+        --card-shadow: 0 10px 25px -5px rgba(27, 38, 24, 0.03), 0 4px 12px -5px rgba(27, 38, 24, 0.01);
+        --hover-shadow: 0 16px 30px -10px rgba(0, 77, 38, 0.06);
+        --bezier-fast: cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
+    body {
+        background-color: var(--bg-warm-beige); /* Swapped out raw slate-50 background */
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: var(--brand-slate-700);
+        padding: 40px 20px;
+    }
+
+    /* Page Entrance Animation */
+    .dashboard-animate-fade {
+        animation: dashboardViewFade 0.45s var(--bezier-fast);
+    }
+
+    /* Modernized Header Typography Adjustments */
+    .main-panel-title {
+        font-weight: 800;
+        color: var(--brand-slate-900);
+        letter-spacing: -1.2px;
+        margin-bottom: 4px;
+    }
+
+    /* Customized Integrated Search Shell */
+    .search-card-wrapper {
+        border: 1px solid var(--border-subtle) !important;
+        background: #ffffff !important;
+        border-radius: 16px !important;
+        box-shadow: var(--card-shadow) !important;
+        transition: all 0.3s var(--bezier-fast);
+    }
+
+    .search-card-wrapper:focus-within {
+        border-color: var(--brand-green) !important;
+        box-shadow: 0 0 0 4px var(--brand-green-light) !important;
+    }
+
+    .custom-search-field {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--brand-slate-900);
+    }
+
+    /* Premium Sleek Table Container */
+    .matrix-table-card {
+        background: #ffffff;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 24px !important; /* Smoother corner alignment */
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: box-shadow 0.3s var(--bezier-fast);
+    }
+    
+    .matrix-table-card:hover {
+        box-shadow: var(--hover-shadow);
+    }
+
+    .matrix-table thead {
+        background: #faf8f5; /* Uniform header bar tint matching dashboard blocks */
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .matrix-table th {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 20px 24px !important;
+    }
+
+    /* Master Row Interaction & Micro Scale Feedback */
+    .schedule-master-row {
+        transition: all 0.25s var(--bezier-fast);
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .schedule-master-row:hover {
+        background-color: rgba(253, 251, 247, 0.9) !important; /* Premium beige row reflection */
+    }
+
+    /* Custom Metadata Pill Assemblies */
+    .metadata-pill {
+        background: #faf8f5;
+        color: var(--brand-slate-700);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border-subtle);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .serial-pill {
+        background: var(--brand-green-light);
+        color: var(--brand-green);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        border: 1px solid rgba(0, 77, 38, 0.12);
+    }
+
+    /* Dynamic Operational Nodes Styling */
+    .node-badge-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13.5px;
+    }
+
+    .terminal-node {
+        font-weight: 700;
+        color: var(--brand-slate-900);
+    }
+
+    /* Sophisticated Nested Details Design */
+    .inner-details-panel {
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 20px rgba(27, 38, 24, 0.02) !important;
+        background: #ffffff;
+        overflow: hidden;
+        padding: 16px;
+    }
+
+    .inner-details-header {
+        background: #faf8f5;
+        padding: 14px 20px;
+        border-radius: 10px;
+        border: 1px solid var(--border-subtle);
+        margin-bottom: 12px;
+    }
+
+    /* Chronology Stop Waypoint Cards */
+    .stop-card-node {
+        background: #ffffff;
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        padding: 16px;
+        transition: all 0.25s var(--bezier-fast);
+    }
+
+    .stop-card-node:hover {
+        border-color: rgba(0, 77, 38, 0.25);
+        box-shadow: 0 6px 16px rgba(0, 77, 38, 0.04);
+        transform: translateY(-2px); /* Smooth layout pop */
+    }
+
+    /* Action Modifiers Buttons (Themed Fine-Tuning) */
+    .btn-matrix-edit {
+        background: var(--brand-green-light);
+        color: var(--brand-green) !important;
+        border: 1px solid rgba(0, 77, 38, 0.15) !important;
+        font-weight: 700;
+        font-size: 12.5px;
+        border-radius: 10px;
+        padding: 8px 16px;
+        transition: all 0.25s var(--bezier-fast);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-matrix-edit:hover {
+        background: var(--brand-green);
+        color: #ffffff !important;
+        border-color: var(--brand-green) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 77, 38, 0.15);
+    }
+
+    .btn-matrix-delete {
+        background: #fff5f1; /* Adjusted to soft warm sunset orange base tint */
+        color: var(--accent-orange);
+        border: 1px solid rgba(234, 88, 12, 0.1) !important;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 700;
+        font-size: 12.5px;
+        transition: all 0.25s var(--bezier-fast);
+        cursor: pointer;
+    }
+
+    .btn-matrix-delete:hover {
+        background: var(--accent-orange);
+        color: #ffffff;
+        border-color: var(--accent-orange) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(234, 88, 12, 0.18);
+    }
+
+    @@keyframes dashboardViewFade {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 <div class="container-fluid p-0">
     <div class="mb-4">
         <h1 style="font-weight: 800; color: #0f172a; letter-spacing: -1px;">Safar Transit Dashboard</h1>

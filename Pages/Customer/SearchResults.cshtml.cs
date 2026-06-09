@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Safar.Pages.Customer
 {
-    // C# Model matching your EXACT MongoDB Trains schema from screenshot
+    // C# Model matching your EXACT MongoDB Trains schema
     [BsonIgnoreExtraElements]
     public class TrainCollectionModel
     {
@@ -111,9 +111,15 @@ namespace Safar.Pages.Customer
 
         public void OnGet()
         {
+            // ?? Premium Date Fallback Engine
             if (!string.IsNullOrEmpty(Date) && DateTime.TryParse(Date, out DateTime parsedDate))
             {
                 TravelDate = parsedDate;
+            }
+            else
+            {
+                TravelDate = DateTime.Today;
+                Date = TravelDate.ToString("yyyy-MM-dd");
             }
 
             var searchSource = Source?.Trim();
@@ -129,7 +135,7 @@ namespace Safar.Pages.Customer
 
             foreach (var train in allTrains)
             {
-                // NULL CHECK GUARD: Agar RouteStops hi khali hain toh agli train par chalien
+                // NULL CHECK GUARD: Agar RouteStops hi khali hain toh...
                 if (train.RouteStops == null || train.RouteStops.Count == 0)
                 {
                     continue;
@@ -154,7 +160,7 @@ namespace Safar.Pages.Customer
 
                     decimal economyFare = (decimal)baseTariff;
 
-                    // 4. Final Verification: Agar fares zero se barhi hain toh model mein add karein
+                    // 4. Verification & Model Population
                     AvailableSchedules.Add(new MatchedTrainViewModel
                     {
                         Id = train.Id ?? "",

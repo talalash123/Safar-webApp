@@ -1,46 +1,135 @@
 ﻿@page
 @model Safar.Pages.Customer.SelectSeatsModel
 @{
-    ViewData["Title"] = "Select Berths";
+    ViewData["Title"] = "Select Berths - PK SAFAR";
 }
 
 <style>
-    .train-meta-banner {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 20px;
+    /* 🏛️ Luxury Enterprise Design System Tokens */
+    :root {
+        --safar-green: #22c55e;
+        --safar-green-dark: #15803d;
+        --safar-blue-selected: #2563eb;
+        --safar-blue-hover: #1d4ed8;
+        --safar-red-booked: #ef4444;
+        --safar-dark-slate: #0f172a;
+        --safar-green-brand: #004d26;
+        --safar-gold: #fbbf24;
+        --text-slate: #334155;
+        --text-muted: #64748b;
+        --border-light: #e2e8f0;
+        --radius-premium: 16px;
+        --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        background-color: #f1f5f9;
+        font-family: system-ui, -apple-system, sans-serif;
+        color: var(--safar-dark-slate);
+    }
+
+    .portal-container {
+        max-width: 1140px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* 🧭 Premium High-End Metadata Banner */
+    .master-meta-strip {
+        background: linear-gradient(135deg, var(--safar-dark-slate) 0%, #05331b 100%);
+        border-radius: var(--radius-premium);
+        padding: 24px 32px;
+        color: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+    }
+
+    .meta-title-context h4 {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+
+    .class-tier-badge {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .fare-pill-badge {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--safar-gold);
+        backdrop-filter: blur(4px);
+    }
+
+    /* 🎛️ Bogie Selector Tabs Navigation */
+    .bogie-navigation-panel {
+        display: flex;
+        gap: 12px;
+        background: #e2e8f0;
+        padding: 8px;
+        border-radius: 12px;
         margin-bottom: 24px;
     }
 
-    /* Seat Matrix Layout CSS */
-    .bogie-container {
-        background: #ffffff;
-        border: 2px solid #cbd5e1;
-        border-radius: 24px;
-        padding: 30px;
-        position: relative;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
+    .bogie-tab-btn {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text-slate);
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: var(--transition-smooth);
     }
 
+        .bogie-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--safar-dark-slate);
+        }
+
+        .bogie-tab-btn.active-bogie {
+            background: #ffffff;
+            color: var(--safar-green-brand);
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+        }
+
+    /* 🚂 Cabin Layout Container styling */
+    .bogie-wrapper-card {
+        background: #ffffff;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-premium);
+        padding: 32px;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+    }
+
+    /* Seat Grid Matrix Alignment Rules */
     .seats-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* 4 seats per row (2 Left - Aisle - 2 Right) */
-        gap: 12px;
-        max-width: 450px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        max-width: 420px;
         margin: 0 auto;
     }
 
-        /* Aisle (Rasta) create krne k liye center column logic spacer */
+        /* Modern Aisle Generation Configuration */
         .seats-grid div:nth-child(4n-2) {
-            margin-right: 30px; /* Left side ki doosri seat ke baad gap */
+            margin-right: 32px;
         }
 
-    /* Seat Styling checkboxes layers */
     .seat-option {
         position: relative;
         display: block;
-        text-align: center;
     }
 
         .seat-option input[type="checkbox"] {
@@ -49,88 +138,190 @@
             cursor: pointer;
         }
 
+    /* 💺 High-End Minimalist Seat Elements (Default Green for Available) */
     .seat-box {
-        background: #ffffff;
-        border: 2px solid #94a3b8;
-        color: #334155;
+        background: #f0fdf4;
+        border: 2px solid var(--safar-green);
+        color: var(--safar-green-dark);
         font-weight: 700;
-        font-size: 13px;
-        padding: 12px 0;
-        border-radius: 8px;
+        font-size: 14px;
+        padding: 14px 0;
+        border-radius: 10px;
+        text-align: center;
         cursor: pointer;
         user-select: none;
-        transition: all 0.2s ease;
+        transition: var(--transition-smooth);
         display: block;
     }
 
+        .seat-box:hover:not(.booked) {
+            background: var(--safar-green);
+            color: #ffffff;
+        }
+
+    /* Checked State Accent Color Integration (Blue when clicked) */
     .seat-option input[type="checkbox"]:checked ~ .seat-box {
-        background: #004d26 !important;
-        border-color: #004d26 !important;
+        background: var(--safar-blue-selected) !important;
+        border-color: var(--safar-blue-selected) !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(0, 77, 38, 0.2);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
 
-    /* Booked / Disabled State */
+    /* Booked / Reserved State Rendering (Solid Red & Blocked) */
     .seat-box.booked {
-        background: #fee2e2 !important;
-        border-color: #fca5a5 !important;
-        color: #b91c1c !important;
+        background: #fef2f2 !important;
+        border-color: var(--safar-red-booked) !important;
+        color: var(--safar-red-booked) !important;
         cursor: not-allowed;
-        opacity: 0.7;
+        opacity: 0.85;
+        font-weight: 700;
+        box-shadow: none;
     }
 
-    /* Dynamic Sidebar Ledger panel */
+    /* Status Legends Indicator */
+    .legend-indicator-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    /* 📋 Sticky Invoice Sheet Sidebar Panels */
     .summary-sticky-card {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.02);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-premium);
+        padding: 28px;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
         position: sticky;
-        top: 20px;
+        top: 30px;
     }
+
+    .ledger-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 16px 0;
+    }
+
+    .ledger-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .ledger-value {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--safar-dark-slate);
+    }
+
+    .btn-premium-action {
+        background: var(--safar-green-brand);
+        color: #ffffff;
+        border: none;
+        width: 100%;
+        padding: 16px;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: var(--transition-smooth);
+    }
+
+        .btn-premium-action:hover:not(:disabled) {
+            background: #05331b;
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.2);
+        }
+
+        .btn-premium-action:disabled {
+            background: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
 </style>
 
-<div class="container" style="max-width: 950px; margin-top: 24px;">
+<div class="container portal-container">
 
-    <div class="train-meta-banner d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="master-meta-strip mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="meta-title-context">
+            <span class="class-tier-badge">Selected Cabin Configuration</span>
+            <h4>🚂 @Model.CurrentTrain.Name (@Model.DisplayTrainCode) &bull; <span class="text-warning">@Model.SelectedClass Class</span></h4>
+        </div>
         <div>
-            <h4 class="m-0" style="font-weight: 800; color: #0f172a;">🚂 @Model.CurrentTrain.Name (@Model.CurrentTrain.TrainId)</h4>
-            <span class="text-muted small">Selected Class Tier: <strong>@Model.SelectedClass</strong></span>
+            <div class="fare-pill-badge">
+                Base Price: Rs. @Model.BaseFare.ToString("N0") / Seat
+            </div>
         </div>
-        <div class="text-md-end">
-            <span class="badge bg-success text-white px-3 py-2" style="font-size:12px;">Fare per seat: Rs. @Model.BaseFare.ToString("F0")</span>
-        </div>
+    </div>
+
+    <div class="bogie-navigation-panel">
+        @for (int b = 1; b <= Model.TotalBogiesCount; b++)
+        {
+            string prefix = Model.SelectedClass.Substring(0, 1).ToUpper();
+            string bogieCode = $"{prefix}{b}";
+            string activeClass = (Model.CurrentBogie == bogieCode) ? "active-bogie" : "";
+
+            <a asp-page="./SelectSeats"
+               asp-route-id="@Model.CurrentTrain.Id"
+               asp-route-class="@Model.SelectedClass"
+               asp-route-date="@Model.TravelDateString"
+               asp-route-bogie="@bogieCode"
+               asp-route-src="@Model.Src"
+               asp-route-dest="@Model.Dest"
+               asp-route-fare="@Model.Fare"
+               class="bogie-tab-btn @activeClass">
+                💺 Bogie @bogieCode
+            </a>
+        }
     </div>
 
     <form method="post" asp-page="./Checkout">
         <input type="hidden" name="trainId" value="@Model.CurrentTrain.Id" />
         <input type="hidden" name="selectedClass" value="@Model.SelectedClass" />
         <input type="hidden" name="travelDate" value="@Model.TravelDateString" />
+        <input type="hidden" name="activeBogieCode" value="@Model.CurrentBogie" />
         <input type="hidden" name="baseFare" id="hdnBaseFare" value="@Model.BaseFare.ToString("F0")" />
 
         <div class="row g-4">
             <div class="col-lg-7">
-                <div class="mb-3 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold text-dark m-0">🛠️ Virtual Cabin Matrix Mapping</h5>
-                    <span class="text-muted small">Carriage Layout: 2 x 2 Allocation Config</span>
+                <div class="mb-3 d-flex justify-content-between align-items-center px-1">
+                    <h6 class="text-uppercase text-muted fw-bold m-0" style="font-size: 11px; letter-spacing: 0.8px;">
+                        Interactive Cabin Seating Map Layout (&bull; Bogie @Model.CurrentBogie)
+                    </h6>
+                    <span class="text-muted small fw-medium" style="font-size: 12px;">Standard 2 &times; 2 Aisle Row Configuration</span>
                 </div>
 
-                <div class="bogie-container">
+                <div class="bogie-wrapper-card mb-4">
+                    <div class="d-flex justify-content-center gap-4 mb-5 border-bottom pb-3 flex-wrap" style="font-size: 12.5px;">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="legend-indicator-dot" style="border: 2px solid var(--safar-green); background: #f0fdf4;"></span>
+                            <span class="text-muted fw-medium">Available (Green)</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="legend-indicator-dot" style="background: var(--safar-blue-selected);"></span>
+                            <span class="text-muted fw-medium">Your Selection (Blue)</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="legend-indicator-dot" style="background: #fef2f2; border: 2px solid var(--safar-red-booked);"></span>
+                            <span class="text-muted fw-medium">Occupied (Red)</span>
+                        </div>
+                    </div>
+
                     <div class="seats-grid">
                         @for (int i = 1; i <= Model.TotalSeatsCount; i++)
                         {
-                            string seatId = $"{Model.SelectedClass[0]}-S{i}"; // Generates token e.g., "B-S12" or "E-S5"
-                            bool isBooked = Model.ExistingBookedSeats.Contains(seatId);
+                            string compoundSeatId = $"{Model.CurrentBogie}-S{i}";
+                            bool isBooked = Model.ExistingBookedSeats.Contains(compoundSeatId);
 
                             <div class="seat-option">
                                 @if (isBooked)
                                 {
-                                    <span class="seat-box booked">@i</span>
+                                    <span class="seat-box booked" title="Already booked for @Model.TravelDateString">@i</span>
                                 }
                                 else
                                 {
-                                    <input type="checkbox" name="selectedSeats" value="@seatId" id="chk-@i" onchange="UpdateLivePriceLedger()" />
+                                    <input type="checkbox" name="selectedSeats" value="@compoundSeatId" id="chk-@i" onchange="UpdateLivePriceLedger()" />
                                     <label for="chk-@i" class="seat-box">@i</label>
                                 }
                             </div>
@@ -141,28 +332,40 @@
 
             <div class="col-lg-5">
                 <div class="summary-sticky-card">
-                    <h5 class="fw-bold text-dark mb-3">📋 Operational Cost Sheet</h5>
-                    <hr class="text-muted my-2" />
+                    <h5 class="fw-bold text-dark mb-1" style="letter-spacing: -0.3px;">Operational Cost Summary</h5>
+                    <p class="text-muted small mb-0">Live calculation values based on selected inventory rows</p>
 
-                    <div class="d-flex justify-content-between my-3">
-                        <span class="text-secondary small fw-semibold">Seats Selected:</span>
-                        <strong class="text-dark" id="lblSeatsCount">0 Berths</strong>
+                    <hr class="my-3" style="color: var(--border-light);" />
+
+                    <div class="ledger-row">
+                        <span class="ledger-label">Active Bogie Room</span>
+                        <span class="ledger-value text-end text-primary">Bogie @Model.CurrentBogie</span>
                     </div>
 
-                    <div class="d-flex justify-content-between my-3">
-                        <span class="text-secondary small fw-semibold">Allocated Codes:</span>
-                        <strong class="text-success small" id="lblSeatCodes">None Selected</strong>
+                    <div class="ledger-row">
+                        <span class="ledger-label">Total Selected Seats</span>
+                        <span class="ledger-value text-end" id="lblSeatsCount">0 Berths</span>
                     </div>
 
-                    <hr class="text-muted my-2" />
+                    <div class="ledger-row">
+                        <span class="ledger-label">Allocated Berth Codes</span>
+                        <span class="ledger-value text-success text-end small" id="lblSeatCodes" style="max-width: 200px; word-wrap: break-word;">None Selected</span>
+                    </div>
+
+                    <hr class="my-3" style="color: var(--border-light);" />
 
                     <div class="d-flex justify-content-between align-items-center my-4">
-                        <span class="text-dark fw-bold">Aggregate Payable:</span>
-                        <h3 class="fw-extrabold text-success m-0" style="font-weight:900;">Rs. <span id="lblTotalBill">0</span></h3>
+                        <div>
+                            <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 10px; letter-spacing: 0.5px;">Aggregate Gross Payable</span>
+                            <span class="small text-muted fw-medium">Taxes & fees structured inside</span>
+                        </div>
+                        <h3 class="fw-extrabold text-success m-0" style="font-weight: 900; letter-spacing: -0.5px;">
+                            Rs. <span id="lblTotalBill">0</span>
+                        </h3>
                     </div>
 
-                    <button type="submit" id="btnProceed" class="btn btn-success w-100 py-3 fw-bold" style="background:#004d26; border-radius:12px;" disabled>
-                        ➔ Proceed to Passenger Manifest
+                    <button type="submit" id="btnProceed" class="btn-premium-action" disabled>
+                        Proceed to Passenger Manifest &nbsp; &rarr;
                     </button>
                 </div>
             </div>
@@ -174,7 +377,6 @@
     <script>
         function UpdateLivePriceLedger() {
             const checkboxes = document.querySelectorAll('input[name="selectedSeats"]:checked');
-            // Safe extraction pattern converting text directly to pure JS float tracking
             const baseFare = parseFloat(document.getElementById('hdnBaseFare').value) || 0;
 
             let selectedCodes = [];
@@ -185,12 +387,10 @@
             const count = checkboxes.length;
             const totalBill = count * baseFare;
 
-            // Update Interface tags live
             document.getElementById('lblSeatsCount').textContent = count + " Berths";
             document.getElementById('lblSeatCodes').textContent = count > 0 ? selectedCodes.join(', ') : "None Selected";
             document.getElementById('lblTotalBill').textContent = totalBill.toLocaleString();
 
-            // Toggle Button deployment state
             const btn = document.getElementById('btnProceed');
             if (count > 0) {
                 btn.removeAttribute('disabled');
