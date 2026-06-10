@@ -31,9 +31,19 @@ namespace Safar.Pages.Customer
         [BindProperty]
         public string SeatsRawData { get; set; }
 
-        [BindProperty] public string CustomerName { get; set; }
-        [BindProperty] public string CustomerPhone { get; set; }
-        [BindProperty] public string CustomerCNIC { get; set; }
+        [BindProperty] public string LeadName { get; set; }
+        [BindProperty] public string LeadPhone { get; set; }
+        [BindProperty] public string LeadCNIC { get; set; }
+
+        // 🧠 AI Demographic Fields for Smart Seating
+        [BindProperty] public int LeadAge { get; set; } = 30;
+        [BindProperty] public string LeadGender { get; set; } = "Male";
+        [BindProperty] public bool IsWithFamily { get; set; } = false;
+
+        [BindProperty] public int PassengerCount { get; set; } = 1;
+        [BindProperty] public string PassengerManifest { get; set; }
+
+        public List<PassengerManifestItem> ParsedPassengers { get; set; } = new List<PassengerManifestItem>();
 
         public List<string> SelectedSeatsList { get; set; } = new List<string>();
 
@@ -46,6 +56,33 @@ namespace Safar.Pages.Customer
         public void OnGet()
         {
             ExtractSeatsList();
+            ParseManifest();
+        }
+
+        private void ParseManifest()
+        {
+            if (!string.IsNullOrEmpty(PassengerManifest))
+            {
+                try
+                {
+                    ParsedPassengers = System.Text.Json.JsonSerializer.Deserialize<List<PassengerManifestItem>>(PassengerManifest) 
+                                       ?? new List<PassengerManifestItem>();
+                }
+                catch
+                {
+                    ParsedPassengers = new List<PassengerManifestItem>();
+                }
+            }
+
+            // Fallback: If manifest is empty but PassengerCount is set, add default items
+            if (ParsedPassengers.Count == 0 && PassengerCount > 0)
+            {
+                ParsedPassengers.Add(new PassengerManifestItem { Name = LeadName ?? "Lead Passenger", Age = LeadAge, Gender = LeadGender });
+                for (int i = 1; i < PassengerCount; i++)
+                {
+                    ParsedPassengers.Add(new PassengerManifestItem { Name = $"Passenger {i + 1}", Age = 30, Gender = "Male" });
+                }
+            }
         }
 
         public IActionResult OnPost(List<string> selectedSeats)
@@ -74,8 +111,9 @@ namespace Safar.Pages.Customer
                 TotalPayable = SelectedSeatsList.Count * BaseFare;
             }
 
-            if (string.IsNullOrEmpty(CustomerName) || string.IsNullOrEmpty(CustomerPhone))
+            if (string.IsNullOrEmpty(LeadName) || string.IsNullOrEmpty(LeadPhone))
             {
+                ParseManifest();
                 return Page();
             }
 
@@ -99,11 +137,19 @@ namespace Safar.Pages.Customer
                 SourceStation = train.DefaultSource ?? "Origin",
                 DestinationStation = train.DefaultDestination ?? "Destination",
                 TravelDate = parsedDate,
-                CustomerName = CustomerName,
-                CustomerPhone = CustomerPhone,
-                CustomerCNIC = CustomerCNIC,
+                CustomerName = LeadName,
+                CustomerPhone = LeadPhone,
+                CustomerCNIC = LeadCNIC,
                 SelectedClass = SelectedClass,
                 BookedSeats = SelectedSeatsList,
+
+                // 🧠 AI Demographic Data for Smart Seating
+                CustomerDetails = new CustomerDetailInfo
+                {
+                    Age = LeadAge > 0 ? LeadAge : 30,
+                    Gender = !string.IsNullOrEmpty(LeadGender) ? LeadGender : "Male",
+                    IsWithFamily = IsWithFamily
+                },
 
                 // SAFE VALUATION PIPELINE: Direct runtime multiplication guarantee
                 TotalFare = TotalPayable > 0 ? TotalPayable : (SelectedSeatsList.Count * (BaseFare > 0 ? BaseFare : 1500)),

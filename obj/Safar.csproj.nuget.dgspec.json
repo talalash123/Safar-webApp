@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\usama\\source\\repos\\Safar\\Safar\\Safar.csproj": {}
+    "C:\\Users\\laptop zone\\Documents\\Safar-webApp\\Safar.csproj": {}
   },
   "projects": {
-    "C:\\Users\\usama\\source\\repos\\Safar\\Safar\\Safar.csproj": {
+    "C:\\Users\\laptop zone\\Documents\\Safar-webApp\\Safar.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\usama\\source\\repos\\Safar\\Safar\\Safar.csproj",
+        "projectUniqueName": "C:\\Users\\laptop zone\\Documents\\Safar-webApp\\Safar.csproj",
         "projectName": "Safar",
-        "projectPath": "C:\\Users\\usama\\source\\repos\\Safar\\Safar\\Safar.csproj",
-        "packagesPath": "C:\\Users\\usama\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\usama\\source\\repos\\Safar\\Safar\\obj\\",
+        "projectPath": "C:\\Users\\laptop zone\\Documents\\Safar-webApp\\Safar.csproj",
+        "packagesPath": "C:\\Users\\laptop zone\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\laptop zone\\Documents\\Safar-webApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\usama\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\laptop zone\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,12 +44,21 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.ML": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.ML.FastTree": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.21.0, )"
@@ -77,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

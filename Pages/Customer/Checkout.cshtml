@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model Safar.Pages.Customer.CheckoutModel
 @{
     ViewData["Title"] = "Passenger Manifest";
@@ -160,51 +160,86 @@
             <input type="hidden" asp-for="TravelDateString" />
             <input type="hidden" asp-for="TotalPayable" />
             <input type="hidden" asp-for="SeatsRawData" />
+            <input type="hidden" name="baseFare" value="@Model.BaseFare" />
+            <input type="hidden" asp-for="LeadName" />
+            <input type="hidden" asp-for="LeadPhone" />
+            <input type="hidden" asp-for="LeadCNIC" />
+            <input type="hidden" asp-for="LeadAge" />
+            <input type="hidden" asp-for="LeadGender" />
+            <input type="hidden" asp-for="IsWithFamily" />
+            <input type="hidden" asp-for="PassengerCount" />
+            <input type="hidden" asp-for="PassengerManifest" />
 
             <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 15px;">
-                <span>📞</span> Lead Passenger (Primary Contact)
+                <span>📞</span> Lead Passenger (Primary Contact Details)
             </h6>
 
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <label class="form-label form-label-custom">Full Name</label>
-                    <input type="text" asp-for="CustomerName" class="form-control" placeholder="e.g., M Talal Ashraf" required />
+            <div class="row g-3 mb-4 p-3 bg-light rounded-3 border mx-0">
+                <div class="col-md-4">
+                    <span class="form-label form-label-custom">Full Name</span>
+                    <strong class="text-dark d-block">@Model.LeadName</strong>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label form-label-custom">Phone Number</label>
-                    <input type="tel" asp-for="CustomerPhone" class="form-control" placeholder="e.g., 03XXXXXXXXX" required />
+                <div class="col-md-4">
+                    <span class="form-label form-label-custom">Phone Number</span>
+                    <strong class="text-dark d-block">@Model.LeadPhone</strong>
                 </div>
-                <div class="col-12">
-                    <label class="form-label form-label-custom">CNIC / B-Form Number</label>
-                    <input type="text" asp-for="CustomerCNIC" class="form-control" placeholder="e.g., 37405-XXXXXXX-X" required />
+                <div class="col-md-4">
+                    <span class="form-label form-label-custom">CNIC / B-Form</span>
+                    <strong class="text-dark d-block">@Model.LeadCNIC</strong>
+                </div>
+            </div>
+
+            <div class="p-3 mb-4 mt-3 border" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border-radius: var(--radius-interactive); border-color: #bbf7d0 !important;">
+                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 14px;">
+                    <span>🧠</span> Smart Seating Profile Inputs
+                </h6>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <span class="form-label form-label-custom">Age</span>
+                        <strong class="text-dark d-block">@Model.LeadAge Years</strong>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="form-label form-label-custom">Gender</span>
+                        <strong class="text-dark d-block">@Model.LeadGender</strong>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="form-label form-label-custom">Traveling with Family?</span>
+                        <strong class="text-dark d-block">@(Model.IsWithFamily ? "Yes" : "No")</strong>
+                    </div>
                 </div>
             </div>
 
             <hr class="my-4" style="color: var(--border-light); opacity: 0.7;" />
 
             <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 15px;">
-                <span>👥</span> Bound Passengers Allocations
+                <span>👥</span> Passenger Manifest & Seat Assignments
             </h6>
 
-            <div class="d-flex flex-column gap-3 mb-5">
-                @for (int i = 0; i < Model.SelectedSeatsList.Count; i++)
+            <div class="d-flex flex-column gap-3 mb-4">
+                @for (int i = 0; i < Model.ParsedPassengers.Count; i++)
                 {
-                    <div class="passenger-block">
-                        <div class="mb-3">
-                            <span class="berth-badge">Berth Assignment: @Model.SelectedSeatsList[i]</span>
+                    var p = Model.ParsedPassengers[i];
+                    var assignedSeat = Model.SelectedSeatsList.Count > i ? Model.SelectedSeatsList[i] : "Unassigned";
+
+                    <div class="passenger-block d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <span class="berth-badge mb-2">Passenger @(i + 1)</span>
+                            <div class="fw-bold text-dark" style="font-size: 15.5px;">@p.Name</div>
+                            <span class="text-muted small">Age: @p.Age &bull; Gender: @p.Gender</span>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-sm-8">
-                                <label class="form-label form-label-custom">Passenger Full Name</label>
-                                <input type="text" class="form-control form-control-sm" placeholder="Full name as on CNIC" required />
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="form-label form-label-custom">Age</label>
-                                <input type="number" class="form-control form-control-sm" placeholder="Years" min="1" max="120" required />
-                            </div>
+                        <div class="text-end">
+                            <span class="form-label form-label-custom text-uppercase">Assigned Berth</span>
+                            <strong class="text-success" style="font-size: 18px; font-weight: 800;">🎫 @assignedSeat</strong>
                         </div>
                     </div>
                 }
+            </div>
+
+            <div class="text-center mb-4">
+                <a href="/Customer/PassengerInfo?id=@Model.TrainId&src=@Request.Query["src"]&dest=@Request.Query["dest"]&date=@Model.TravelDateString&class=@Model.SelectedClass&fare=@Model.BaseFare&LeadName=@Model.LeadName&LeadPhone=@Model.LeadPhone&LeadCNIC=@Model.LeadCNIC&LeadAge=@Model.LeadAge&LeadGender=@Model.LeadGender&IsWithFamily=@Model.IsWithFamily&PassengerCount=@Model.PassengerCount" 
+                   class="text-decoration-none small fw-bold text-primary">
+                    ✏️ Modify Passenger Demographics or Contact Details
+                </a>
             </div>
 
             <button type="submit" class="btn-premium-action">

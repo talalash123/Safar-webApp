@@ -9,99 +9,105 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Safar
 build_property.RootNamespace = Safar
-build_property.ProjectDir = C:\Users\usama\source\repos\Safar\Safar\
+build_property.ProjectDir = C:\Users\laptop zone\Documents\Safar-webApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\usama\source\repos\Safar\Safar
+build_property.MSBuildProjectDirectory = C:\Users\laptop zone\Documents\Safar-webApp
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Bookings.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Bookings.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQm9va2luZ3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Dashboard.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Schedules/Create.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Schedules/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cU2NoZWR1bGVzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Schedules/Edit.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Schedules/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cU2NoZWR1bGVzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Schedules/Index.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Schedules/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cU2NoZWR1bGVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Trains/Add.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Trains/Add.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5zXEFkZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Trains/Edit.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Trains/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5zXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Admin/Trains/Index.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Admin/Trains/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Customer/Checkout.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Customer/Checkout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcQ2hlY2tvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Customer/Index.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Customer/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Customer/SearchResults.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Customer/PassengerInfo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcUGFzc2VuZ2VySW5mby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Customer/SearchResults.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcU2VhcmNoUmVzdWx0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Customer/SelectSeats.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Customer/SelectSeats.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcU2VsZWN0U2VhdHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Customer/TicketConfirmation.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Customer/TicketConfirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcVGlja2V0Q29uZmlybWF0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Error.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Index.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Login.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Privacy.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Shared/_AdminLayout.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Shared/_AdminLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/_ViewImports.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/_ViewStart.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/usama/source/repos/Safar/Safar/Pages/Shared/_Layout.cshtml]
+[C:/Users/laptop zone/Documents/Safar-webApp/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-ac1op7wqm2

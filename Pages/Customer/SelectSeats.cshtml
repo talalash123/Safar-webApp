@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model Safar.Pages.Customer.SelectSeatsModel
 @{
     ViewData["Title"] = "Select Berths - PK SAFAR";
@@ -239,6 +239,58 @@
             color: #94a3b8;
             cursor: not-allowed;
         }
+
+    /* 🧠 AI Recommended Seat Glow */
+    .seat-box.ai-recommended {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+        border: 2px solid #f59e0b !important;
+        color: #92400e !important;
+        animation: aiPulse 2s ease-in-out infinite;
+        position: relative;
+        font-weight: 800;
+        box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+    }
+
+    .seat-box.ai-recommended::after {
+        content: '⭐';
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        font-size: 14px;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+
+    @@keyframes aiPulse {
+        0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.25); }
+        50% { box-shadow: 0 0 24px rgba(245, 158, 11, 0.55); }
+    }
+
+    .ai-banner {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 1px solid #fcd34d;
+        border-radius: 14px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+    }
+
+    .ai-banner-icon {
+        font-size: 28px;
+        flex-shrink: 0;
+    }
+
+    .ai-banner-badge {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
 </style>
 
 <div class="container portal-container">
@@ -270,6 +322,14 @@
                asp-route-src="@Model.Src"
                asp-route-dest="@Model.Dest"
                asp-route-fare="@Model.Fare"
+               asp-route-passengerCount="@Model.PassengerCount"
+               asp-route-leadName="@Model.LeadName"
+               asp-route-leadPhone="@Model.LeadPhone"
+               asp-route-leadCNIC="@Model.LeadCNIC"
+               asp-route-leadAge="@Model.LeadAge"
+               asp-route-leadGender="@Model.LeadGender"
+               asp-route-isWithFamily="@Model.IsWithFamily"
+               asp-route-passengerManifest="@Model.PassengerManifest"
                class="bogie-tab-btn @activeClass">
                 💺 Bogie @bogieCode
             </a>
@@ -282,6 +342,14 @@
         <input type="hidden" name="travelDate" value="@Model.TravelDateString" />
         <input type="hidden" name="activeBogieCode" value="@Model.CurrentBogie" />
         <input type="hidden" name="baseFare" id="hdnBaseFare" value="@Model.BaseFare.ToString("F0")" />
+        <input type="hidden" name="passengerCount" value="@Model.PassengerCount" />
+        <input type="hidden" name="leadName" value="@Model.LeadName" />
+        <input type="hidden" name="leadPhone" value="@Model.LeadPhone" />
+        <input type="hidden" name="leadCNIC" value="@Model.LeadCNIC" />
+        <input type="hidden" name="leadAge" value="@Model.LeadAge" />
+        <input type="hidden" name="leadGender" value="@Model.LeadGender" />
+        <input type="hidden" name="isWithFamily" value="@Model.IsWithFamily.ToString()" />
+        <input type="hidden" name="passengerManifest" value="@Model.PassengerManifest" />
 
         <div class="row g-4">
             <div class="col-lg-7">
@@ -306,7 +374,29 @@
                             <span class="legend-indicator-dot" style="background: #fef2f2; border: 2px solid var(--safar-red-booked);"></span>
                             <span class="text-muted fw-medium">Occupied (Red)</span>
                         </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="legend-indicator-dot" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b;"></span>
+                            <span class="text-muted fw-medium">AI Recommended (Gold)</span>
+                        </div>
                     </div>
+
+                    @if (!string.IsNullOrEmpty(Model.RecommendedSeatId))
+                    {
+                    <div class="ai-banner mb-4">
+                        <span class="ai-banner-icon">🧠</span>
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="ai-banner-badge">AI Recommendation</span>
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Smart Seating Engine</span>
+                            </div>
+                            <p class="mb-0 small" style="color: #92400e; font-size: 12.5px; line-height: 1.5;">
+                                Based on your profile analysis, we recommend seat 
+                                <strong class="text-dark" style="font-size: 14px;">@Model.RecommendedSeatId</strong> 
+                                for optimal comfort and safety. Look for the <span style="color: #f59e0b;">⭐ glowing seat</span> below.
+                            </p>
+                        </div>
+                    </div>
+                    }
 
                     <div class="seats-grid">
                         @for (int i = 1; i <= Model.TotalSeatsCount; i++)
@@ -321,8 +411,9 @@
                                 }
                                 else
                                 {
-                                    <input type="checkbox" name="selectedSeats" value="@compoundSeatId" id="chk-@i" onchange="UpdateLivePriceLedger()" />
-                                    <label for="chk-@i" class="seat-box">@i</label>
+                                    bool isRecommended = compoundSeatId == Model.RecommendedSeatId;
+                                    <input type="checkbox" name="selectedSeats" value="@compoundSeatId" id="chk-@i" onchange="UpdateLivePriceLedger()" @(isRecommended ? "checked" : "") />
+                                    <label for="chk-@i" class="seat-box @(isRecommended ? "ai-recommended" : "")" title="@(isRecommended ? "⭐ AI Recommended Seat" : "")">@i</label>
                                 }
                             </div>
                         }
@@ -347,9 +438,12 @@
                         <span class="ledger-value text-end" id="lblSeatsCount">0 Berths</span>
                     </div>
 
-                    <div class="ledger-row">
-                        <span class="ledger-label">Allocated Berth Codes</span>
-                        <span class="ledger-value text-success text-end small" id="lblSeatCodes" style="max-width: 200px; word-wrap: break-word;">None Selected</span>
+                    <div class="ledger-row flex-column align-items-stretch">
+                        <div class="d-flex justify-content-between w-100">
+                            <span class="ledger-label">Allocated Berth Codes</span>
+                            <span class="ledger-value text-success text-end small" id="lblSeatCodes" style="max-width: 200px; word-wrap: break-word;">None Selected</span>
+                        </div>
+                        <span id="lblSeatWarning" class="text-danger small fw-bold mt-1 d-block text-end">⚠️ Please select @Model.PassengerCount seat(s).</span>
                     </div>
 
                     <hr class="my-3" style="color: var(--border-light);" />
@@ -375,6 +469,8 @@
 
 @section Scripts {
     <script>
+        const requiredCount = parseInt("@Model.PassengerCount") || 1;
+
         function UpdateLivePriceLedger() {
             const checkboxes = document.querySelectorAll('input[name="selectedSeats"]:checked');
             const baseFare = parseFloat(document.getElementById('hdnBaseFare').value) || 0;
@@ -387,16 +483,35 @@
             const count = checkboxes.length;
             const totalBill = count * baseFare;
 
-            document.getElementById('lblSeatsCount').textContent = count + " Berths";
+            document.getElementById('lblSeatsCount').textContent = count + " Berth(s) Selected (Required: " + requiredCount + ")";
             document.getElementById('lblSeatCodes').textContent = count > 0 ? selectedCodes.join(', ') : "None Selected";
             document.getElementById('lblTotalBill').textContent = totalBill.toLocaleString();
 
             const btn = document.getElementById('btnProceed');
-            if (count > 0) {
+            const warningEl = document.getElementById('lblSeatWarning');
+            
+            if (count === requiredCount) {
                 btn.removeAttribute('disabled');
+                if (warningEl) {
+                    warningEl.textContent = "✓ Correct number of seats selected.";
+                    warningEl.className = "text-success small fw-bold mt-1 d-block text-end";
+                }
             } else {
                 btn.setAttribute('disabled', 'disabled');
+                if (warningEl) {
+                    if (count < requiredCount) {
+                        warningEl.textContent = "⚠️ Please select " + (requiredCount - count) + " more seat(s).";
+                    } else {
+                        warningEl.textContent = "⚠️ Too many seats selected! Deselect " + (count - requiredCount) + " seat(s).";
+                    }
+                    warningEl.className = "text-danger small fw-bold mt-1 d-block text-end";
+                }
             }
         }
+
+        // Auto-update on page load to reflect AI pre-selected seat
+        document.addEventListener('DOMContentLoaded', function() {
+            UpdateLivePriceLedger();
+        });
     </script>
 }

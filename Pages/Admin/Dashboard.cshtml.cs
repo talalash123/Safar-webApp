@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Safar.Models;
+using SafarWebApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,18 @@ namespace Safar.Pages.Admin
         public Dictionary<string, int> StationTraffic { get; set; } = new Dictionary<string, int>();
         public Dictionary<string, int> ClassDistribution { get; set; } = new Dictionary<string, int>();
 
-        public DashboardModel(IMongoDatabase database)
+        // 🧠 AI Dynamic Pricing Simulation Outputs
+        public decimal AiPriceHighDemand { get; set; }
+        public decimal AiPriceStandard { get; set; }
+        public decimal AiPriceLowDemand { get; set; }
+
+        private readonly DynamicPricingService _pricingService;
+
+        public DashboardModel(IMongoDatabase database, DynamicPricingService pricingService)
         {
             _bookingCollection = database.GetCollection<Booking>("Bookings");
             _trainCollection = database.GetCollection<Train>("Trains");
+            _pricingService = pricingService;
         }
 
         public void OnGet()
@@ -122,6 +131,20 @@ namespace Safar.Pages.Admin
             if (!ClassDistribution.ContainsKey("Business")) ClassDistribution["Business"] = 0;
             if (!ClassDistribution.ContainsKey("Economy")) ClassDistribution["Economy"] = 0;
             if (!ClassDistribution.ContainsKey("Executive")) ClassDistribution["Executive"] = 0;
+
+            // 🧠 AI Dynamic Pricing Simulations
+            try
+            {
+                AiPriceHighDemand = _pricingService.PredictOptimalPrice(1500, 8, 1, true);
+                AiPriceStandard = _pricingService.PredictOptimalPrice(1500, 60, 10, false);
+                AiPriceLowDemand = _pricingService.PredictOptimalPrice(1500, 140, 30, false);
+            }
+            catch
+            {
+                AiPriceHighDemand = 0;
+                AiPriceStandard = 0;
+                AiPriceLowDemand = 0;
+            }
         }
     }
 

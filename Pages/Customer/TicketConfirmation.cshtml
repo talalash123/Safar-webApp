@@ -1,20 +1,11 @@
-﻿@page
+@page
 @model Safar.Pages.Customer.TicketConfirmationModel
 @{
     ViewData["Title"] = "Electronic Boarding Receipt";
     
     // Exact Custom Selected Sub-Route Mappings Check
-    var sourceStation = Model.TargetTicket?.SourceStation;
-    if (string.IsNullOrEmpty(sourceStation) || sourceStation == "Origin" || sourceStation.Contains("Lahore")) 
-    { 
-        sourceStation = "Rawalpindi"; 
-    }
-
-    var destStation = Model.TargetTicket?.DestinationStation;
-    if (string.IsNullOrEmpty(destStation) || destStation == "Destination" || destStation.Contains("Lahore")) 
-    { 
-        destStation = "Gujranwala"; 
-    }
+    var sourceStation = !string.IsNullOrEmpty(Model.TargetTicket?.SourceStation) ? Model.TargetTicket.SourceStation : "Rawalpindi";
+    var destStation = !string.IsNullOrEmpty(Model.TargetTicket?.DestinationStation) ? Model.TargetTicket.DestinationStation : "Lahore";
 }
 
 <style>

@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model Safar.Pages.Customer.SearchResultsModel
 @{
     ViewData["Title"] = "Select Fleet Category - PK SAFAR";
@@ -14,8 +14,8 @@
         --dark-slate: #0f172a;
         --text-slate: #334155;
         --text-muted: #64748b;
-        --bg-warm-beige: #fdfbf7;      
-        --border-subtle: #e7e0d5;      
+        --bg-warm-beige: #fdfbf7;
+        --border-subtle: #e7e0d5;
         --border-light: #f3ede2;
         --radius-premium: 20px;
         --radius-card: 14px;
@@ -137,33 +137,38 @@
         align-items: center;
     }
 
-    .date-pill-btn .day-label {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        letter-spacing: 0.5px;
-    }
+        .date-pill-btn .day-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
 
-    .date-pill-btn .date-label {
-        font-size: 16px;
-        font-weight: 800;
-        color: var(--dark-slate);
-        margin-top: 2px;
-    }
+        .date-pill-btn .date-label {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--dark-slate);
+            margin-top: 2px;
+        }
 
-    .date-pill-btn:hover {
-        background: var(--bg-warm-beige);
-        border-color: var(--border-subtle);
-    }
+        .date-pill-btn:hover {
+            background: var(--bg-warm-beige);
+            border-color: var(--border-subtle);
+        }
 
-    .date-pill-btn.active-pill {
-        background: var(--safar-green);
-        border-color: var(--safar-green);
-    }
+        .date-pill-btn.active-pill {
+            background: var(--safar-green);
+            border-color: var(--safar-green);
+        }
 
-    .date-pill-btn.active-pill .day-label { color: rgba(255, 255, 255, 0.7); }
-    .date-pill-btn.active-pill .date-label { color: #ffffff; }
+            .date-pill-btn.active-pill .day-label {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .date-pill-btn.active-pill .date-label {
+                color: #ffffff;
+            }
 
     .custom-calendar-pill {
         border: 1px dashed var(--border-subtle);
@@ -182,11 +187,11 @@
         overflow: hidden;
     }
 
-    .web-schedule-row:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 35px -10px rgba(0, 77, 38, 0.06);
-        border-color: rgba(0, 77, 38, 0.15);
-    }
+        .web-schedule-row:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 35px -10px rgba(0, 77, 38, 0.06);
+            border-color: rgba(0, 77, 38, 0.15);
+        }
 
     .train-profile-section {
         padding: 32px;
@@ -210,6 +215,21 @@
         margin-bottom: 12px;
         border: 1px solid rgba(0, 77, 38, 0.08);
         width: fit-content;
+    }
+
+    /* 🧠 AI Dynamic Badge Style */
+    .ai-dynamic-badge {
+        font-size: 10px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        display: inline-block;
+        margin-top: 12px;
+        width: fit-content;
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
     }
 
     .train-main-title {
@@ -270,9 +290,17 @@
         letter-spacing: 0.8px;
     }
 
-    .tier-eco-text { color: #059669; }
-    .tier-biz-text { color: #2563eb; }
-    .tier-exec-text { color: #d97706; }
+    .tier-eco-text {
+        color: #059669;
+    }
+
+    .tier-biz-text {
+        color: #2563eb;
+    }
+
+    .tier-exec-text {
+        color: #d97706;
+    }
 
     .tier-price-amount {
         font-size: 20px;
@@ -305,10 +333,10 @@
         background: #fafaf9;
     }
 
-    .tier-pricing-column-anchor:hover .tier-action-pill {
-        background: var(--safar-green);
-        color: #ffffff;
-    }
+        .tier-pricing-column-anchor:hover .tier-action-pill {
+            background: var(--safar-green);
+            color: #ffffff;
+        }
 
     @@media (max-width: 991px) {
         .train-profile-section, .journey-timeline-center {
@@ -326,7 +354,7 @@
                 <span class="station-tag">Origin Station</span>
                 <span class="station-name">@Model.SearchSource</span>
             </div>
-            
+
             <div class="route-vector-bridge">
                 <div class="vector-line-dashed"></div>
                 <div class="vector-transit-icon">🚂</div>
@@ -345,13 +373,13 @@
             {
                 var targetDate = DateTime.Today.AddDays(i);
                 var isSelected = targetDate.Date == Model.TravelDate.Date;
-                <button type="button" class="date-pill-btn @(isSelected ? "active-pill" : "")" 
-                        onclick="executeDateChange('@targetDate.ToString("yyyy-MM-dd")')">
-                    <span class="day-label">@targetDate.ToString("ddd")</span>
-                    <span class="date-label">@targetDate.ToString("dd MMM")</span>
-                </button>
+            <button type="button" class="date-pill-btn @(isSelected ? "active-pill" : "")"
+                    onclick="executeDateChange('@targetDate.ToString("yyyy-MM-dd")')">
+                <span class="day-label">@targetDate.ToString("ddd")</span>
+                <span class="date-label">@targetDate.ToString("dd MMM")</span>
+            </button>
             }
-            
+
             <button type="button" class="date-pill-btn custom-calendar-pill" onclick="document.getElementById('hiddenDatePicker').showPicker()">
                 <span class="day-label">Custom</span>
                 <span class="date-label">📅 Calendar</span>
@@ -371,90 +399,92 @@
 
     @if (Model.AvailableSchedules.Count == 0)
     {
-        <div class="text-center p-5 bg-white border" style="border-radius: var(--radius-premium); border: 1px dashed var(--border-subtle) !important;">
-            <span style="font-size: 48px;" class="d-block mb-3">⚠️</span>
-            <h5 class="fw-bold text-dark m-0">No Matching Fleets Located</h5>
-            <p class="text-muted small mx-auto mt-2 mb-0" style="max-width: 450px; font-size: 14px; line-height: 1.6;">We couldn't track down any active transit lines operating on this network segment for the selected parameters.</p>
-        </div>
+    <div class="text-center p-5 bg-white border" style="border-radius: var(--radius-premium); border: 1px dashed var(--border-subtle) !important;">
+        <span style="font-size: 48px;" class="d-block mb-3">⚠️</span>
+        <h5 class="fw-bold text-dark m-0">No Matching Fleets Located</h5>
+        <p class="text-muted small mx-auto mt-2 mb-0" style="max-width: 450px; font-size: 14px; line-height: 1.6;">We couldn't track down any active transit lines operating on this network segment for the selected parameters.</p>
+    </div>
     }
     else
     {
-        @foreach (var train in Model.AvailableSchedules)
+    @foreach (var train in Model.AvailableSchedules)
         {
-            <div class="web-schedule-row">
-                <div class="row g-0 align-items-stretch">
-                    
-                    <div class="col-xl-3 col-lg-4 col-md-12 train-profile-section">
-                        <span class="train-identity-tag">Asset @train.TrainIdStr</span>
-                        <h4 class="train-main-title">@train.Name</h4>
-                        <small class="text-muted d-block mt-2" style="font-size: 13px;">Carriages: <strong class="text-dark">@train.TotalBogies Units</strong></small>
+    <div class="web-schedule-row">
+        <div class="row g-0 align-items-stretch">
+
+            <div class="col-xl-3 col-lg-4 col-md-12 train-profile-section">
+                <span class="train-identity-tag">Asset @train.TrainIdStr</span>
+                <h4 class="train-main-title">@train.Name</h4>
+                <small class="text-muted d-block mt-2" style="font-size: 13px;">Carriages: <strong class="text-dark">@train.TotalBogies Units</strong></small>
+
+                <span class="ai-dynamic-badge" title="Fares adjusted based on real-time demand">⚡ Live AI Pricing</span>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-6 journey-timeline-center">
+                <div>
+                    <span class="timeline-time-display">@train.DepartureTime</span>
+                    <div class="timeline-label-display">Departure</div>
+                </div>
+
+                <div style="color: var(--border-subtle); font-size: 28px; font-weight: 200;">&brvbar;</div>
+
+                <div>
+                    <span class="timeline-time-display">@train.ArrivalTime</span>
+                    <div class="timeline-label-display">Arrival</div>
+                </div>
+            </div>
+
+            <div class="col-xl-5 col-lg-4 col-md-6 pricing-matrix-container">
+                <div class="row h-100 g-2">
+
+                    <div class="col-4">
+                        <a href="/Customer/PassengerInfo?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Economy&fare=@train.EconomyFare.ToString("F0")" class="tier-pricing-column-anchor">
+                            <div>
+                                <span class="tier-name-header tier-eco-text">Economy</span>
+                                <h5 class="tier-price-amount">Rs @train.EconomyFare.ToString("N0")</h5>
+                            </div>
+                            <div class="tier-action-pill">
+                                <span>Select</span> <span>&rarr;</span>
+                            </div>
+                        </a>
                     </div>
 
-                    <div class="col-xl-4 col-lg-4 col-md-6 journey-timeline-center">
-                        <div>
-                            <span class="timeline-time-display">@train.DepartureTime</span>
-                            <div class="timeline-label-display">Departure</div>
-                        </div>
-                        
-                        <div style="color: var(--border-subtle); font-size: 28px; font-weight: 200;">&brvbar;</div>
-
-                        <div>
-                            <span class="timeline-time-display">@train.ArrivalTime</span>
-                            <div class="timeline-label-display">Arrival</div>
-                        </div>
+                    <div class="col-4">
+                        <a href="/Customer/PassengerInfo?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Business&fare=@train.BusinessFare.ToString("F0")" class="tier-pricing-column-anchor">
+                            <div>
+                                <span class="tier-name-header tier-biz-text">Business</span>
+                                <h5 class="tier-price-amount">Rs @train.BusinessFare.ToString("N0")</h5>
+                            </div>
+                            <div class="tier-action-pill">
+                                <span>Select</span> <span>&rarr;</span>
+                            </div>
+                        </a>
                     </div>
 
-                    <div class="col-xl-5 col-lg-4 col-md-6 pricing-matrix-container">
-                        <div class="row h-100 g-2">
-                            
-                            <div class="col-4">
-                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Economy&fare=@train.EconomyFare.ToString("F0")" class="tier-pricing-column-anchor">
-                                    <div>
-                                        <span class="tier-name-header tier-eco-text">Economy</span>
-                                        <h5 class="tier-price-amount">Rs @train.EconomyFare.ToString("N0")</h5>
-                                    </div>
-                                    <div class="tier-action-pill">
-                                        <span>Select</span> <span>&rarr;</span>
-                                    </div>
-                                </a>
+                    <div class="col-4">
+                        <a href="/Customer/PassengerInfo?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Executive&fare=@train.ExecutiveFare.ToString("F0")" class="tier-pricing-column-anchor">
+                            <div>
+                                <span class="tier-name-header tier-exec-text">Executive</span>
+                                <h5 class="tier-price-amount">Rs @train.ExecutiveFare.ToString("N0")</h5>
                             </div>
-
-                            <div class="col-4">
-                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Business&fare=@train.BusinessFare.ToString("F0")" class="tier-pricing-column-anchor">
-                                    <div>
-                                        <span class="tier-name-header tier-biz-text">Business</span>
-                                        <h5 class="tier-price-amount">Rs @train.BusinessFare.ToString("N0")</h5>
-                                    </div>
-                                    <div class="tier-action-pill">
-                                        <span>Select</span> <span>&rarr;</span>
-                                    </div>
-                                </a>
+                            <div class="tier-action-pill">
+                                <span>Select</span> <span>&rarr;</span>
                             </div>
-
-                            <div class="col-4">
-                                <a href="/Customer/SelectSeats?id=@train.Id&src=@Model.SearchSource&dest=@Model.SearchDestination&date=@Model.Date&class=Executive&fare=@train.ExecutiveFare.ToString("F0")" class="tier-pricing-column-anchor">
-                                    <div>
-                                        <span class="tier-name-header tier-exec-text">Executive</span>
-                                        <h5 class="tier-price-amount">Rs @train.ExecutiveFare.ToString("N0")</h5>
-                                    </div>
-                                    <div class="tier-action-pill">
-                                        <span>Select</span> <span>&rarr;</span>
-                                    </div>
-                                </a>
-                            </div>
-
-                        </div>
+                        </a>
                     </div>
 
                 </div>
             </div>
+
+        </div>
+    </div>
         }
     }
 </div>
 
 <script>
     function executeDateChange(selectedDate) {
-        if(!selectedDate) return;
+        if (!selectedDate) return;
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('date', selectedDate);
         window.location.search = urlParams.toString();

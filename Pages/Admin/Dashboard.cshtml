@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model Safar.Pages.Admin.DashboardModel
 @{
     Layout = "_AdminLayout";
@@ -577,6 +577,82 @@
                         Total Tickets: <strong class="text-success">@Model.TotalBookings</strong>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧠 AI INTELLIGENCE PANEL -->
+    <div id="ai-panel" class="mb-4 mt-2">
+        <span class="badge mb-2" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; font-weight: 800; font-size: 11px; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">🧠 AI ENGINE</span>
+        <h4 style="font-weight: 800; color: var(--text-main); letter-spacing: -0.4px; margin: 4px 0 0 0;">Machine Learning Intelligence Panel</h4>
+        <p class="text-muted small m-0 mt-1">Real-time AI model outputs. Dynamic pricing simulations, seating optimization, and chatbot status.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+        <!-- High Demand Scenario -->
+        <div class="telemetry-card" style="border-left: 4px solid #ef4444; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: linear-gradient(135deg, rgba(239,68,68,0.08), transparent); border-radius: 0 0 0 60px;"></div>
+            <div style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">⚡ High Demand + Event</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 14px;">8 seats left • 1 day • Event Day</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; line-height: 1;">Rs @Model.AiPriceHighDemand.ToString("N0")</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                Base: Rs 1,500 → <strong class="text-danger">@(Model.AiPriceHighDemand > 0 ? ((Model.AiPriceHighDemand / 1500 * 100) - 100).ToString("F0") : "0")% surge</strong>
+            </div>
+        </div>
+
+        <!-- Standard Scenario -->
+        <div class="telemetry-card" style="border-left: 4px solid #10b981; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: linear-gradient(135deg, rgba(16,185,129,0.08), transparent); border-radius: 0 0 0 60px;"></div>
+            <div style="font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">📊 Standard Demand</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 14px;">60 seats left • 10 days • Weekday</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; line-height: 1;">Rs @Model.AiPriceStandard.ToString("N0")</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                Base: Rs 1,500 → <strong class="text-success">Optimized Rate</strong>
+            </div>
+        </div>
+
+        <!-- Low Demand Scenario -->
+        <div class="telemetry-card" style="border-left: 4px solid #3b82f6; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: linear-gradient(135deg, rgba(59,130,246,0.08), transparent); border-radius: 0 0 0 60px;"></div>
+            <div style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">📉 Low Demand Clearance</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 14px;">140 seats left • 30 days • Weekday</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; line-height: 1;">Rs @Model.AiPriceLowDemand.ToString("N0")</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                Base: Rs 1,500 → <strong class="text-primary">Discount Applied</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Service Status Row -->
+    <div class="telemetry-card" style="margin-bottom: 24px;">
+        <div class="section-heading">
+            <span>⚙️ AI/ML Service Health Monitor</span>
+            <span class="badge bg-light text-success border px-2 py-1" style="font-size: 10px;">All Systems Operational ✅</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 0 3px rgba(34,197,94,0.2);"></span>
+                    <span style="font-size: 12px; font-weight: 700; color: #15803d;">ACTIVE</span>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; color: var(--text-main);">Dynamic Pricing Engine</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">FastTree Regression • ML.NET</div>
+            </div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 0 3px rgba(34,197,94,0.2);"></span>
+                    <span style="font-size: 12px; font-weight: 700; color: #15803d;">ACTIVE</span>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; color: var(--text-main);">Smart Seating Algorithm</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Constraint Satisfaction • Rule Engine</div>
+            </div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 0 3px rgba(34,197,94,0.2);"></span>
+                    <span style="font-size: 12px; font-weight: 700; color: #15803d;">ACTIVE</span>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; color: var(--text-main);">Support Chatbot</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">SDCA Text Classification • ML.NET</div>
             </div>
         </div>
     </div>

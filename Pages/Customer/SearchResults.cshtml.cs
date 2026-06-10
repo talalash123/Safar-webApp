@@ -6,6 +6,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SafarWebApp.Services; // 🧠 ML Services namespace
 
 namespace Safar.Pages.Customer
 {
@@ -18,10 +19,10 @@ namespace Safar.Pages.Customer
         public string Id { get; set; }
 
         [BsonElement("SerialCode")]
-        public string SerialCode { get; set; } // e.g., "T1", "T2"
+        public string SerialCode { get; set; }
 
         [BsonElement("LocomotiveEngineProfile")]
-        public string LocomotiveEngineProfile { get; set; } // e.g., "IslamabadExpress"
+        public string LocomotiveEngineProfile { get; set; }
 
         [BsonElement("VolumetricCapacity")]
         public string VolumetricCapacity { get; set; }
@@ -63,9 +64,12 @@ namespace Safar.Pages.Customer
         public string Id { get; set; }
         public string TrainIdStr { get; set; }
         public string Name { get; set; }
+
+        // 🧠 These will now hold the AI-Optimized Prices
         public decimal EconomyFare { get; set; }
         public decimal BusinessFare { get; set; }
         public decimal ExecutiveFare { get; set; }
+
         public string TotalBogies { get; set; }
         public string ArrivalTime { get; set; }
         public string DepartureTime { get; set; }
@@ -74,6 +78,9 @@ namespace Safar.Pages.Customer
     public class SearchResultsModel : PageModel
     {
         private readonly IMongoCollection<TrainCollectionModel> _trainCollection;
+
+        // 🧠 1. Declare the AI Pricing Service
+        private readonly DynamicPricingService _pricingService;
 
         [BindProperty(SupportsGet = true)]
         public string Source { get; set; }
@@ -90,10 +97,11 @@ namespace Safar.Pages.Customer
 
         public List<MatchedTrainViewModel> AvailableSchedules { get; set; } = new List<MatchedTrainViewModel>();
 
-        public SearchResultsModel(IMongoDatabase database)
+        // 🧠 2. Inject BOTH MongoDB and the AI Pricing Service via Constructor
+        public SearchResultsModel(IMongoDatabase database, DynamicPricingService pricingService)
         {
-            // Direct tracking inside Trains since your records live there right now
             _trainCollection = database.GetCollection<TrainCollectionModel>("Trains");
+            _pricingService = pricingService;
         }
 
         private bool IsStationMatch(string userInput, string dbStation)
@@ -127,21 +135,20 @@ namespace Safar.Pages.Customer
 
             if (string.IsNullOrEmpty(searchSource) || string.IsNullOrEmpty(searchDest)) return;
 
-            // Selected day nikalna (e.g., "Sunday")
-            string selectedDayOfWeek = TravelDate.ToString("DayOfWeek");
-
             // 1. Direct Trains collection se saara data load karein
             var allTrains = _trainCollection.Find(t => t.StatusState == "Active").ToList();
 
+            // 🧠 PREPARE AI VARIABLES
+            int daysLeft = (TravelDate - DateTime.Today).Days;
+            if (daysLeft < 0) daysLeft = 0; // Prevent negative days for past searches
+            bool isEventDay = TravelDate.DayOfWeek == DayOfWeek.Saturday || TravelDate.DayOfWeek == DayOfWeek.Sunday;
+
             foreach (var train in allTrains)
             {
-                // NULL CHECK GUARD: Agar RouteStops hi khali hain toh...
-                if (train.RouteStops == null || train.RouteStops.Count == 0)
-                {
-                    continue;
-                }
+                // NULL CHECK GUARD
+                if (train.RouteStops == null || train.RouteStops.Count == 0) continue;
 
-                // 2. Dynamic Route Matrix Scanning (Intermediate stops checking)
+                // 2. Dynamic Route Matrix Scanning
                 var stops = train.RouteStops;
                 var startStop = stops.FirstOrDefault(s => s != null && IsStationMatch(searchSource, s.StationName));
                 var endStop = stops.FirstOrDefault(s => s != null && IsStationMatch(searchDest, s.StationName));
@@ -149,27 +156,45 @@ namespace Safar.Pages.Customer
                 // Agar user ka source aur destination is train ke route stops mein mil jata hai
                 if (startStop != null && endStop != null && startStop.SequenceOrder < endStop.SequenceOrder)
                 {
-                    // 3. Real Price Calculation: End stop fare minus Start stop fare
+                    // 3. Real Price Calculation (Base Fare)
                     double baseTariff = endStop.PriceFromSource - startStop.PriceFromSource;
+                    if (baseTariff <= 0) baseTariff = endStop.PriceFromSource;
 
-                    // Agar pehla hi station ho toh automatic endStop ki price lag jaye
+                    // 🛠️ SAFETY NET: If the admin hasn't set individual station prices yet, 
+                    // force the base tariff to the default 2500 so the AI doesn't break.
                     if (baseTariff <= 0)
                     {
-                        baseTariff = endStop.PriceFromSource;
+                        baseTariff = 2500;
                     }
 
-                    decimal economyFare = (decimal)baseTariff;
+                    // ==========================================
+                    // 🧠 4. APPLY MACHINE LEARNING DYNAMIC PRICING
+                    // ==========================================
+                    // Since live booking count isn't in TrainCollectionModel yet, 
+                    // we simulate remaining seats (e.g., 40 seats left) for the AI model to process.
+                    int simulatedRemainingSeats = 40;
 
-                    // 4. Verification & Model Population
+                    decimal aiEconomyFare = _pricingService.PredictOptimalPrice(
+                        (decimal)baseTariff,
+                        simulatedRemainingSeats,
+                        daysLeft,
+                        isEventDay
+                    );
+                    // ==========================================
+
+                    // 5. Verification & Model Population
                     AvailableSchedules.Add(new MatchedTrainViewModel
                     {
                         Id = train.Id ?? "",
                         TrainIdStr = train.SerialCode ?? "T1",
                         Name = train.LocomotiveEngineProfile ?? "Safar Express",
                         TotalBogies = train.BogieSegments ?? "10 Carriages",
-                        EconomyFare = economyFare,
-                        BusinessFare = economyFare * 1.40m,  // 40% Markup
-                        ExecutiveFare = economyFare * 1.70m, // 70% Markup
+
+                        // 🧠 Assigning the AI calculated prices (applying standard markups to the AI base)
+                        EconomyFare = aiEconomyFare,
+                        BusinessFare = Math.Round(aiEconomyFare * 1.40m, 2),  // 40% Markup on AI price
+                        ExecutiveFare = Math.Round(aiEconomyFare * 1.70m, 2), // 70% Markup on AI price
+
                         DepartureTime = startStop.DepartureTime ?? "00:00 AM",
                         ArrivalTime = endStop.ArrivalTime ?? "00:00 PM"
                     });

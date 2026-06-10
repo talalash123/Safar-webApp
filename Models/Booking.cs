@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -26,6 +26,10 @@ namespace Safar.Models
         public string CustomerPhone { get; set; }
         public string CustomerCNIC { get; set; }
 
+        // 🧠 AI Demographic Data for Smart Seating Engine
+        [BsonIgnoreIfNull]
+        public CustomerDetailInfo CustomerDetails { get; set; }
+
         public string SelectedClass { get; set; } // Economy, Business, or Executive
         public List<string> BookedSeats { get; set; } = new List<string>(); // e.g., ["B1-S12", "B1-S13"]
 
@@ -38,4 +42,13 @@ namespace Safar.Models
 
         public string PaymentStatus { get; set; } = "Paid"; // Default paid for simulation
     }
-}
+
+    // 🧠 Sub-Document: Passenger Demographics for AI Seating Optimization
+    [BsonIgnoreExtraElements]
+    public class CustomerDetailInfo
+    {
+        public int Age { get; set; } = 30;
+        public string Gender { get; set; } = "Male";
+        public bool IsWithFamily { get; set; } = false;
+    }
+}
